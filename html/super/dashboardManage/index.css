@@ -1,0 +1,14 @@
+.dialog .el-select {
+    width: 100%;
+}
+.el-form .el-button {
+    width: 100%;
+}
+.editDialog {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 3000;
+}

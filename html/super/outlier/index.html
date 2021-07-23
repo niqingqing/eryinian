@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>离群设置</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+			addTags:null,
+        };
+
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="outliertoolbar" >
+			<el-button type="info" size="small"  @click="outlierAdd" >添加</el-button>
+			<el-button type="warning" size="small" @click="outlierUpdate" >修改</el-button>
+			<el-button type="danger" size="small"  @click="outlierDelete" :loading="outlierDeleteBtnDisable">删除</el-button>
+			<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('outlier', true);">导出</el-button>
+		</div>
+
+
+		<table id="outlier"></table>
+
+		<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="120px" >
+                <el-form-item label="名称" prop="cname"  >
+                    <el-input type="text" v-model="form.cname" auto-complete="off" ></el-input>
+                </el-form-item>
+                <el-form-item label="成员" prop="tag">
+                        <el-select v-model="tagCodes" filterable multiple collapse-tags placeholder="请选择" filterable @change='getTagsByCodes'>
+                            <el-option
+                                    v-for="item in projTags"
+                                    :key="item.mac"
+                                    :label="item.mac"
+                                    :value="item.mac">
+                            </el-option>
+                        </el-select>
+                </el-form-item>
+
+                <el-form-item label="监管模式" prop="model">
+                    <el-radio v-model="form.model" label="moreMonitorOne">主监</el-radio>
+                    <el-radio v-model="form.model" label="moreMonitorAll">互监</el-radio>
+                </el-form-item>
+                <el-form-item label="被监人" prop="watchman" v-if="form.model=='moreMonitorOne'">
+                    <el-select v-model="form.watchman" filterable placeholder="请选择">
+                        <el-option
+                            v-for="item in form.tags"
+                            :key="item.mac"
+                            :label="item.mac"
+                            :value="item.mac">
+                        </el-option>
+                        </el-select>
+                </el-form-item>
+        
+                <el-form-item label="距离范围" prop="distance">
+                    <el-input type="number" v-model="form.distance" auto-complete="off" placeholder='单位:m'></el-input>
+                </el-form-item>
+                <el-form-item label="有效期" prop="validityTime" v-if="form.model=='moreMonitorAll'">
+                    <el-date-picker
+                        v-model="form.datetimeRange"
+                        type="datetimerange"
+                        size='small'
+                        align="right"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :default-time="['12:00:00', '08:00:00']">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="颜色" prop="color">
+                    <el-color-picker v-model="form.color"></el-color-picker>
+                </el-form-item>
+               
+               
+				<div style="clear:both;text-align:center;">
+					<el-button type="primary" @click="submitForm('form')" size="small" :loading="outlierBtnDisable">提交</el-button>
+				</div>
+
+			</el-form>
+
+		</el-dialog>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

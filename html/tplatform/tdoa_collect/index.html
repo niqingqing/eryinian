@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>tdoa数据采集</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script src="../../common/plugins/highcharts/highcharts.js"></script>
+
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+	<script type="text/javascript" src="../common/commHelper.js" ></script>
+
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="sourceBufToolbar" >
+			<el-button type="primary"  size="small" @click="sourceImport"  :loading="sourceImportBtnDisable">入库</el-button>
+			<el-button type="danger"  size="small"  @click="clearAll"  :loading="clearAllDisable">清库</el-button>
+			<!--<el-button type="danger"  size="small"  @click="sourceDelete"  :loading="sourceDeleteBtnDisable">清库</el-button>-->
+			<el-button type="info"  size="small" onclick="UBIT.bootstrapTableExportCsv('sourceBuftable', true);">导出</el-button>
+
+			<label>开启测试</label>
+			<el-switch
+					v-model="debugBuf"
+					on-text=""
+					:disabled="sourceFlagDisable"
+					@change="sourceFlagChange"
+					off-text="">
+			</el-switch>
+
+		</div>
+
+
+		<el-row >
+			<el-col :span="24"><table id="sourceBuftable"></table></el-col>
+		</el-row>
+
+
+		<el-row v-show="tableShows.tdoa_show">
+			<div id="tdoaToolbar" >
+				<el-button type="danger"  size="small" @click="clearTable('tdoa')" :loading="clearTable_tdoa_disable">清库</el-button>
+				<el-button type="info"  size="small" onclick="UBIT.bootstrapTableExportCsv('tdoaTable', true);">导出</el-button>
+			</div>
+
+			<el-col :span="24"><table id="tdoaTable"></table></el-col>
+		</el-row>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

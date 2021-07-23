@@ -1,0 +1,161 @@
+/* 样式重置 */
+body,h1,h2,h3,h4,h5,h6,div,p,dl,dt,dd,ol,ul,li,form,a,img,span,strong,var,em,input,textarea,select,option{
+    margin: 0;
+    padding: 0;
+}
+html,body{
+    font-family:"微软雅黑",Arail,Tabhoma;
+     font-size: 16px;
+      text-align: left;
+      color: #323232;
+      letter-spacing: 2px;
+  }
+ul,ol{
+    list-style: none;
+}
+img{
+    border: 0;
+}
+input,select,textarea{
+    outline:0;
+}
+textarea{
+    resize:none;
+}
+table{
+    
+     // border-spacing: 0;
+}
+strong,var,em{
+    font-weight: normal;
+     font-style: normal;
+ }
+a{
+    text-decoration: none;
+}
+.wrap{
+    width: 1200px;
+    margin: 0 auto;
+}
+.header{
+    background-color: #108d7e;
+    height: 70px;
+    overflow: hidden;
+    line-height: 70px;
+    padding:0 20px;
+    .head_title{
+        float:left;
+        font-size: 20px;
+        color:#fff;
+    }
+    div{
+        float:right;
+
+    }
+    .user_box{
+        font-size:14px;
+        span{
+            display:block;
+            float:right;
+            margin:0 10px;
+            color:#fff;
+        }
+        .exit{
+            margin-top:20px;
+            cursor:pointer;
+            box-sizing: border-box;
+            width:60px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 2px;
+            border:1px solid #fff;
+            &:hover{
+                background-color: #fff;
+                color:#108d7e;
+            }
+        }
+    }
+}
+.nav{
+    float: left;
+    background-color: #108d7e;
+    height: 514px;
+    width:200px;
+    a{
+        float: left;
+        padding:10px 0;
+        color:#fff;
+        width:200px;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        border-bottom: 1px solid #88c9c2;
+    }
+    a:first-child{
+        border-top: 1px solid #88c9c2;
+    }
+    .show_bd{
+        background-color: #1cc5ad;
+    }
+}
+.content{
+    float: left;
+    width: 1000px;
+    background-color:#f5f5f5;
+    .main{
+      margin: 20px auto 10px auto;
+      // display:inline-block;
+      .userData{
+        margin:0 auto;
+        border-collapse: collapse;
+        width:94%;
+        border:1px solid #ccc;
+        background-color: #fff;
+        td{
+            font-size:14px;
+            border:1px solid #ccc;
+            line-height: 40px;
+            text-align: center;
+          }
+        .checkBtn{
+                color:#fff;
+                display: inline-block;
+                margin: 0 5px;
+                cursor: pointer;
+                padding: 0 5px;
+                border-radius: 5px;
+                background-color: #1cc5ad;
+                font-size:12px;
+                line-height: 20px;
+            }
+        .checkText{
+                color:#09b79e;
+                font-size:14px;
+                &.active{
+                    color:#e84242;
+                }
+            }
+        }
+    }
+
+}
+
+//组件
+.pages{
+    // width:1000px;
+    display: inline-block;
+    margin:0 38px 10px 38px;
+    span{
+        float: right;
+        margin:0 6px;
+    }
+    button{
+        margin:0 6px;
+        font-size:14px;
+        border: 1px solid #1cc5ad;
+        color:#1cc5ad;
+        background-color: #fff;
+        border-radius:4px;
+        float: right;
+    }
+}

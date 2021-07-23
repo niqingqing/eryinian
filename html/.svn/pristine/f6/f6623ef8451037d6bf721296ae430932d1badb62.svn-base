@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轨迹查询</title>
+
+    <link rel="stylesheet" href="../../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="index.css">
+
+</head>
+<body>
+
+<div id="app">
+
+    <el-row style="text-align: center; height: 56px;line-height: 56px;background: #1f1f1f;box-shadow: 0 5px 20px 0 rgba(0 ,0 ,0 ,0.4);">
+        <b style="color: #fff;font-weight: normal">历史轨迹查询: </b>
+        <el-select v-model="tagCode" clearable filterable  placeholder="请选择标签">
+            <el-option
+                    v-for="item in tagList"
+                    :key="item.code"
+                    :label="item.alias"
+                    :value="item.code">
+            </el-option>
+        </el-select>
+        <el-date-picker
+                v-model="datetimeRange"
+                type="datetimerange"
+                placeholder="选择时间段"
+                :picker-options="pickerOptions"
+                range-separator="  至  "
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                align="right">
+        </el-date-picker>
+        <el-button type="primary" icon="el-icon-search" @click="listHistory">查询</el-button>
+    </el-row>
+
+
+    <div style="height: calc(100vh - 56px); background: url('../realTimeQuery/images/bg.jpg');">
+
+        <div style="width: 78%; height: calc(100vh - 108px); margin: 25px 20px; border-radius: 3px;float: left;">
+            <!--            <el-divider content-position="left">轨迹播放</el-divider>-->
+
+            <div style="text-align: center; font-size: 18px; height: 32px;line-height: 32px; background: #515151; color: #ffa33f;
+            border-top-left-radius: 3px;border-top-right-radius: 3px;border-bottom: 1px solid #757575;"><b>轨迹播放</b>
+            </div>
+
+
+            <div v-if="playbackMaps.length > 0">
+                <div style="width: 100%; height: 40px;background: #515151; color: #c9c9c9; line-height: 40px; text-align: center;display: flex;justify-content: space-between;">
+                    <!--                当前位置:病房楼1-1 2021-4-3 16:13:45-2021-4-3 16:13:49-->
+                    <div style="opacity: 0;">
+                        <el-button type="text" @click="playbackLast"><<</el-button>
+                        <el-button type="text" @click="playbackNext">>></el-button>
+                    </div>
+                    <div>
+                        <span v-text="maps[playbackMaps[currentPlaybackMapIndex].mapId].cname"></span>
+                        <span style="margin-left: 10px;"
+                              v-text="playbackMaps[currentPlaybackMapIndex].startTime"></span>
+                        至
+                        <span v-text="playbackMaps[currentPlaybackMapIndex].endTime"></span>
+                    </div>
+                    <div>
+                        <el-button type="text" @click="playbackLast" v-bind:style="{color: playbackLastBtnColor}"><< 上一个</el-button>
+                        &nbsp;&nbsp;&nbsp;
+                        <el-button type="text" @click="playbackNext" v-bind:style="{color: playbackNextBtnColor}">下一个 >></el-button>
+                    </div>
+                </div>
+            </div>
+            <div v-if="playbackMaps.length > 0" v-loading="mainMapLoad"
+                 style="width: calc(100% - 2px); height: calc(100% - 72px);display: flex; justify-content: center; align-items: center;border: 1px solid #e5e5e5;">
+                <iframe id="mainMap" :src="singleMapUrl + playbackMaps[currentPlaybackMapIndex].mapId" width="100%"
+                        height="100%"></iframe>
+            </div>
+
+            <div v-if="playbackMaps.length <= 0"
+                 style="width: calc(100% - 2px);text-align: center;height: calc(100vh - 140px);border: 1px solid rgb(235, 235, 235); background: #fff;">
+                <div style="margin-top:30vh;">您查询的历史数据为空！</div>
+            </div>
+
+        </div>
+
+
+        <div style="width: calc(22% - 64px); height: calc(100vh - 108px); margin: 25px 20px 25px 0px; border: 1px solid #ebebeb;border-radius: 3px; float: left; ">
+            <div style="text-align: center;height: 32px;line-height: 32px;font-size: 18px;background: #515151; color: #ffa33f;
+            border-top-left-radius: 3px;border-top-right-radius: 3px;border-bottom: 1px solid #757575;"><b>经过的地图</b>
+            </div>
+            <div class="list" style="overflow-y: auto;height: calc(100vh - 140px);background: #fff;">
+                <div v-if="playbackMaps.length <= 0" style="width: 100%;height: auto);text-align: center;margin-top: 30vh;">
+                    您查询的历史数据为空！
+                </div>
+                <div class="playback-map" style="width: 94%; height: 208px; margin: 0 auto; margin-top: 16px;padding: 5px"
+                     v-for="(playbackMap, index) in playbackMaps"
+                     v-bind:class="{'current-playback-map': index == currentPlaybackMapIndex, 'mouseover': index == mouseoverPlaybackMapIndex}"
+                     @mouseover="mouseoverPlaybackMapIndex = index" @mouseleave="mouseoverPlaybackMapIndex = -1"  @click="playbackThis(index)"
+                >
+
+                    <div style="width: 100%;height: 150px;position: relative;">
+                        <div class="play-shade">
+                            <!--播放-->
+                            <span v-if="index == currentPlaybackMapIndex" style="background: #fff;padding: 9px 20px;border-radius: 4px;font-size: 20px;font-weight: bold;color: #000;">| |</span>
+                            <!--暂停-->
+                            <i v-if="index != currentPlaybackMapIndex" class="el-icon-caret-right"
+                               style="background: #fff;padding: 12px 20px;border-radius: 4px;font-size: 20px;"></i>
+                        </div>
+<!--                        <iframe :id="'playbackMapIframe_' + index" :src="singleMapUrl + playbackMap.mapId" width=100% height="170px"></iframe>-->
+                        <img :src="mapImgUrl + maps[playbackMap.mapId].filePath" style="width: 100%;height: 100%;"/>
+                    </div>
+                    <div style="width: 100%; height: 54px;">
+                        <!--                病房楼1-1 2021-4-3 16:13:45-2021-4-3 16:13:49-->
+                        <div style="height: 34px; line-height: 34px; margin-left: 8px;">
+                            <span v-text="maps[playbackMap.mapId].cname"
+                                  style="font-size: 16px; line-height: 24px;height: 24px;"></span>
+<!--                            <el-button type="text" @click="playbackThis(index)">播放</el-button>-->
+                            <!--                         <span style="margin-right: 0px">播放</span>-->
+
+                        </div>
+                        <div style="font-size: 14px;color: #363636;margin-left: 8px;line-height: 20px;height: 20px;">
+                            <span v-text="playbackMap.startTime"></span>
+                            至
+                            <span v-text="playbackMap.endTime"></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--<div style="width: 100%; height: 200px; border: 1px solid blue;margin-top: 5px;">
+                <div style="width: 100%; height: 30px">
+                    病房楼1-1 2021-4-3 16:13:45-2021-4-3 16:13:49
+                </div>
+                <iframe src="/map/map2d/svg/single-map.html?map=2" width=100% height="170px"></iframe>
+            </div>-->
+
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript" src="../../../common/js/comm.js"></script>
+<script type="text/javascript" src="../../../common/js/vue.min.js"></script>
+<script type="text/javascript" src="../../../common/plugins/jQuery/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../../common/plugins/element-ui/element-ui/lib/index.js"></script>
+<script type="text/javascript" src="./index.js"></script>
+</body>
+
+</html>

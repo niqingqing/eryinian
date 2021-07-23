@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>多组定位双曲线</title>
+
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="./index.css">
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script src="../../common/plugins/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+    <script type="text/javascript" src="../../common/js/session-check.js" ></script>
+    <script type="text/javascript" src="../../common/js/moment.min.js" ></script>
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+            datas:null,
+        };
+
+    </script>
+
+    <style >
+
+
+    </style>
+
+</head>
+<body>
+
+
+
+<div id="mapSvg"></div>
+
+<div id="app" >
+    <div class="menu" >
+        <div>
+            <ul class="set">
+                <li :class="{one:showSet.one}">
+                    <el-button type="danger" size="small"  @click="clearAll" :loading="clearAllDisable">清库</el-button>
+                    <label>开启测试</label>
+                    <el-switch
+                            v-model="debugBuf"
+                            on-text=""
+                            :disabled="sourceFlagDisable"
+                            @change="sourceFlagChange"
+                            off-text="">
+                    </el-switch>
+                    <!--选择地图获取数据-->
+                    <template>
+                        <el-select v-model="currentMap" filterable placeholder="请选择地图" @change="reloadByMap()">
+                            <el-option
+                                    v-for="item in maps"
+                                    :key="item.cname"
+                                    :label="item.cname"
+                                    :value="currentProj+'_'+item.id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </template>
+
+                    <el-input placeholder="tagCode" v-model="tag_filter" style="width: 100px" @change="save_tag_filter"></el-input>
+                    <el-input-number v-model="point" @change="handleChange" :min="0" :max="max"></el-input-number>
+                    <el-button type="danger" size="small" onclick="clearCir()">清除</el-button>
+                    <!--<el-button type="primary" size="small" onclick="exportCSV()">导出</el-button>-->
+
+                    <el-input placeholder="pointSize" v-model="pointSize" style="width: 80px" @change="save_tag_filter"></el-input>
+                    <el-input placeholder="strokeWidth" v-model="strokeWidth" style="width: 80px" ></el-input>
+                </li>
+                <li :class="{two:showSet.two}">
+                   所有双曲线 <el-switch
+                            v-model="isDrawHyperbola"
+                            on-text=""
+                            off-text="">
+                    </el-switch>
+
+                    所有圆 <el-switch
+                            v-model="isDrawSourceHyperbola"
+                            on-text=""
+                            off-text=""></el-switch>
+
+                    参考点圆 <el-switch
+                        v-model="isDrawRefCircle"
+                        on-text=""
+                        off-text=""></el-switch>
+
+                    定位圆 <el-switch
+                        v-model="isDrawCoordCircle"
+                        on-text=""
+                        off-text=""></el-switch>
+
+                    所有定位 <el-switch
+                            v-model="isDrawAnchorLine"
+                            on-text=""
+                            off-text="">
+                    </el-switch>
+                    符合定位包 <el-switch
+                        v-model="isDrawOkTdoa"
+                        on-text=""
+                        off-text="">
+                    </el-switch>
+                    过滤定位包 <el-switch
+                        v-model="isDrawFilterTdoa"
+                        on-text=""
+                        off-text="">
+                    </el-switch>
+                    测距线 <el-switch
+                        v-model="isDrawDistanceLine"
+                        on-text=""
+                        off-text="">
+                    </el-switch>
+                </li>
+                <li :class="{three:showSet.three}">
+                    <!--<el-button type="info" size="small" @click="loadSeq()">加载tdoa包</el-button>-->
+                    <!--<el-button type="info" size="small" @click="getStepCalc()">获得计算</el-button>-->
+                    <el-input-number v-model="playTime" :min="10" :max="5000" aria-placeholder="播放间隔ms"></el-input-number>
+                    <el-input-number v-model="playNum" :min="0" :max="max" aria-placeholder="播放位置"></el-input-number>
+                    <el-button type="info" size="small" @click="startPlay()">开始播放</el-button>
+                    <el-button type="info" size="small" @click="stopPlay()">停止播放</el-button>
+                    <el-input-number v-model="showPositinNum" :min="0" :max="2000" aria-placeholder="显示位置个数"></el-input-number>
+                </li>
+                <li :class="{four:showSet.four}">
+                    <el-input-number v-model="timeSpace" :min="100" :max="20000" aria-placeholder="获取tdoa间隔ms"></el-input-number>
+                    <el-button type="info" size="small" @click="restartTimeInterval()">设置获取tdoa间隔</el-button>
+                    <el-button type="info" size="small" @click="showAllDatas()">查看定位数据</el-button>
+                </li>
+            </ul>
+            <div><span>{{onceTdoas}}</span> <span>=====tdoa总数:{{max}}</span></div>
+            <div class="ctlShow">
+                <ul>
+                    <li>
+                        <el-button type="info" size="small" @click="toggleShow('one')">手动设置</el-button>
+                    </li>
+                    <li>
+                        <el-button type="info" size="small" @click="toggleShow('two')">画线设置</el-button>
+                    </li>
+                    <li>
+                        <el-button type="info" size="small" @click="toggleShow('three')">自动设置</el-button>
+                    </li>
+                    <li>
+                        <el-button type="info" size="small" @click="toggleShow('four')">间隔设置</el-button>
+                    </li>
+                    <li>
+                        <el-button type="info" size="small" @click="toggleShow('five')">颜色设置</el-button>
+                    </li>
+                    <li>
+                        <el-button type="info" size="small" @click="setShowAll">所有设置</el-button>
+                    </li>
+                </ul>
+                <el-button type="warning" size="small">显示隐藏<i class="el-icon-arrow-up el-icon--right"></i></el-button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<footer>
+    <script type="text/javascript" src="../../common/js/raphael.js" ></script>
+    <script type="text/javascript" src="../../common/js/raphael.pan-zoom.js"></script>
+    <script type="text/javascript" src="../common/commHelper.js" ></script>
+    <script type="text/javascript" src="../common/paperHelper.js" ></script>
+    <script type="text/javascript" src="tdoa.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+</footer>
+
+</body>
+</html>

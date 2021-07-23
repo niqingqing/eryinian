@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title~~</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+		UBIT.initLang('project');
+	</script>
+
+</head>
+<body>
+
+	<div id="app" v-cloak>
+
+		<div id="projecttoolbar" >
+			<el-button type="info" size="small" @click="projectAdd">~~add~~</el-button>
+			<el-button type="warning" size="small" @click="projectUpdate">~~update~~</el-button>
+			<el-button type="danger" size="small" @click="projectDelete" :loading="projectDeleteBtnDisable">~~delete~~</el-button>
+			<el-button type="success" size="small"  @click="projectManage">~~projectManage~~</el-button>
+			<el-button type='success' size='small' @click='startExportsData' >~~exportData~~</el-button>
+			<el-button type='success' size='small' @click='importData'  class='import-exports'>~~importData~~</el-button>
+			<el-button type="info" size="small" onclick="UBIT.bootstrapTableExportCsv('projecttable', true);">~~exports~~</el-button>
+			<input type="file" id='importDataInput' accept="Application/json" style='display: none;'>
+		</div>
+
+
+		<table id="projecttable"></table>
+
+		<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="100px" class="demo-ruleForm">
+
+					<el-form-item >
+						<span  style="color:red;">~~formNote~~</span>
+					</el-form-item>
+
+			  		<el-form-item label="~~code~~" prop="code" >
+			    		<el-input type="text" v-model="form.code" :disabled='isShow' auto-complete="off" :maxlength="32" placeholder="~~codePla~~"></el-input>
+				  	</el-form-item>
+				  	<el-form-item label="~~cname~~" prop="cname">
+			    		<el-input type="text" v-model="form.cname" auto-complete="off" :maxlength="128"></el-input>
+				  	</el-form-item>
+					<!--<el-form-item label="~~projType~~" prop="projType">-->
+						<!--<el-input type="text" v-model="form.projType" auto-complete="off" maxlength="20"></el-input>-->
+					<!--</el-form-item>-->
+
+				  	<el-form-item label="~~status~~" prop="status">
+				  	 	<el-select v-model="form.status" placeholder="~~select~~">
+						    <el-option
+						      v-for="item in status"
+						      :key="item.code"
+						      :label="item.cname"
+						      :value="item.code">
+						    </el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="~~managerId~~" prop="managerId">
+						<el-select v-model="form.managerId" placeholder="~~select~~">
+						    <el-option
+						      v-for="item in managers"
+							  :key="item.code"
+						      :label="item.cname"
+						      :value="item.id">
+						    </el-option>
+						 </el-select>
+
+					</el-form-item>
+
+					<el-form-item label="~~userId~~" prop="userId">
+						<el-select v-model="form.userId" placeholder="~~select~~">
+						    <el-option
+						      v-for="item in proj_users"
+							  :key="item.code"
+						      :label="item.cname"
+						      :value="item.id">
+						    </el-option>
+						 </el-select>
+
+					</el-form-item>
+
+				  	<el-form-item label="~~cellPhone~~" prop="tel">
+			    		<el-input type="tel" :maxlength='15' min='0' step='1' v-model="form.tel" auto-complete="off"></el-input>
+				  	</el-form-item>
+				  	<el-form-item label="~~email~~" prop="email">
+			    		<el-input type="email" v-model="form.email" auto-complete="off" :maxlength="32"></el-input>
+				  	</el-form-item>
+				  	<el-form-item label="~~address~~" prop="address">
+			    		<el-input type="text" v-model="form.address" auto-complete="off" :maxlength="255"></el-input>
+				  	</el-form-item>
+				  	<el-form-item label="~~company~~" prop="company">
+			    		<el-input type="text" v-model="form.company" auto-complete="off" :maxlength="127"></el-input>
+				  	</el-form-item>
+
+                <el-form-item label="~~logo~~" prop="logo">
+                    <el-upload
+                            ref='imgUpload'
+                            :multiple='imgUpload.multiple'
+                            name='img'
+                            :headers='imgUpload.headers'
+                            :action="imgUpload.url"
+                            :disabled = 'imgUpload.disabled'
+                            :auto-upload="imgUpload.auto"
+                            :on-success="handleImgUpload"
+                            :on-remove="handleRemove"
+                            list-type="picture-card"
+                            :file-list="imgUpload.imgUrl"
+                    >
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                </el-form-item>
+
+				<el-form-item label="" prop="" v-show="pixelLength>40">
+					<template slot-scope="scope" >
+						<span style="color:#FEB725;" >~~logoNote~~</span>
+					</template>
+				</el-form-item>
+
+				   <el-form-item label="~~description~~" prop="description">
+					<el-input type="text" v-model="form.description" auto-complete="off" :maxlength="127"></el-input>
+				   </el-form-item>
+
+
+
+
+				  	<el-form-item>
+				   		<el-button type="primary" @click="submitForm('form')" :loading="projectBtnDisable" size="small">~~submit~~</el-button>
+					</el-form-item>
+			</el-form>
+
+		</el-dialog>
+		<el-dialog class='exports-data-dialog' :title='exportsDataForm.title' :visible.sync="exportsDataForm.visible">
+			<el-row>
+				<el-col :span=10>
+					<div class='import-exports-label'>选择要导出的项目</div>
+					</el-col>
+				<el-col :span=14>
+					<el-select v-model='exportsDataForm.projects' multiple>
+						<el-option v-for="(item,index) in projectList" :key='index' :lable='item.cname' :value='item.code'></el-option>
+					</el-select>
+				</el-col>
+			</el-row>
+			<el-row class='row'>
+				<el-col :span=8 :offset=8>
+					<el-button @click='exportsData' type='primary'>开始导出</el-button>
+				</el-col>
+			</el-row>
+		</el-dialog>
+		<el-dialog class='import-data-dialog' @close='importDataClose' :title='importDataForm.title' :visible.sync="importDataForm.visible">
+			<div class='import-data-dialog-note'>提示:当前数据导入会覆盖原有数据,请谨慎操作</div>
+			<el-row v-for='(item,index) in importDataForm.projects' :key='index' class='row'>
+				<el-col :span=10>
+					<div class='import-exports-label'>原项目{{item.source}}迁移到</div>
+				</el-col>
+				<el-col :span=13>
+					<el-input v-model='importDataForm.projects[index].target' placeholder='新项目'></el-input>
+				</el-col>
+			</el-row>
+			<el-row class='row'>
+				<el-col :span=8 :offset=8>
+					<el-button @click='submitImportData' type='primary' :disabled="noSubmit">确认无误,提交</el-button>
+				</el-col>
+			</el-row>
+		</el-dialog>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title~~</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+	     	addTags:null,
+        };
+		UBIT.initLang('imitate');
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="imitatetoolbar" >
+			<el-button type="info" size="small"  @click="imitateAdd" >~~add~~</el-button>
+			<el-button type="warning" size="small" @click="imitateUpdate" >~~update~~</el-button>
+			<el-button type="danger" size="small"  @click="imitateDelete" :loading="imitateDeleteBtnDisable">~~delete~~</el-button>
+			<el-button type="warning" size="small" @click="imitateAction('start')" >~~start~~</el-button>
+			<el-button type="warning" size="small" @click="imitateAction('stop')" >~~stop~~</el-button>
+			<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('imitate', true);">~~exports~~</el-button>
+		</div>
+
+
+		<table id="imitate"></table>
+
+		<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" ref="form" label-width="200px" class="demo-ruleForm">
+				<!-- msgType为sos或power时tag必填 -->
+				<el-form-item label="~~msgType~~" prop="msgType">
+					<el-select v-model="form.msgType" placeholder="~~msgTypePla~~" @change="" filterable>
+						<el-option
+								v-for="item in msgTypes"
+								:key="item.code"
+								:label="item.name"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~projectId~~" prop="projectId">
+					<el-select v-model="form.projectCode" filterable placeholder="~~select~~" @change="getProjDatas">
+						<el-option
+								v-for="item in projects"
+								:key="item.code"
+								:label="item.code"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				  	<el-form-item label="~~mapId~~" prop="mapId">
+			    		<el-select v-model="form.mapId" placeholder="~~select~~" filterable>
+						    <el-option
+						      v-for="i in projMaps"
+							  :key="i.id"
+						      :label="i.cname"
+						      :value="i.id.toString()">
+						    </el-option>
+						 </el-select>
+					  </el-form-item>
+					  
+					  <el-form-item label="~~anchor~~" prop="anchor">
+						<el-input type="text" v-model="form.anchor" placeholder="~~anchorPla~~"></el-input>
+					</el-form-item>
+
+					<el-form-item label="~~tag~~" prop="tag">
+						<el-input type="text" v-model="form.tag" placeholder="~~tagPla~~"></el-input>
+					</el-form-item>
+					<el-form-item label="~~model~~" prop="model" >
+					<el-input type="number" v-model="form.coord_interval" min="1" step="1" placeholder="ms"></el-input>
+					</el-form-item>
+					<!-- 电量信息 -->
+					<el-form-item label="~~power~~" prop="power" v-show="form.msgType=='power'">
+						<el-input type="number" v-model="form.power_power" placeholder="~~power~~"></el-input>
+					</el-form-item>
+
+					<!-- 透传信息 -->
+					<!-- <el-form-item label="透传信息" prop="passthrough" v-show="form.msgType=='passthrough'">
+						<el-input type="number" v-model="form.passthrough_data" placeholder="透传信息"></el-input>
+					</el-form-item> -->
+					<!-- 围栏报警 -->
+					<!-- <el-form-item label="围栏" prop="fenceAlert_fenceId" v-show="form.msgType=='fenceAlert'">
+							<el-select v-model="form.fenceAlert_fenceId" placeholder="触发围栏">
+									<el-option
+											v-for="i in projFences"
+											:key="i.id"
+											:label="i.cname"
+											:value="i.id">
+									</el-option>
+								</el-select>
+					</el-form-item> -->
+					<!-- <el-form-item label="触发方式" prop="fenceAlert__isIn" v-show="form.msgType=='fenceAlert'">
+						<el-select v-model="form.fenceAlert__isIn" placeholder="触发方式">
+							<el-option
+									v-for="i in projMaps"
+									:key="i.cname"
+									:label="i.cname"
+									:value="i.id">
+							</el-option>
+						</el-select>
+					</el-form-item> -->
+
+					<!-- sos -->
+					<el-form-item label="~~sos_type~~" prop="sos_type" v-show="form.msgType=='sos'">
+							<el-select v-model="form.sos_type" placeholder="~~sos_type~~" filterable>
+									<el-option
+											v-for="i in sos_types"
+											:key="i"
+											:label="i"
+											:value="i">
+									</el-option>
+								</el-select>
+					</el-form-item>
+
+
+				
+				<el-form-item label="~~tagNum~~" prop="model" v-show="form.msgType=='coord'">
+					<el-input type="number" v-model="form.coord_tagNum" min="1" step="1" placeholder="~~tagNum~~"></el-input>
+				</el-form-item>
+				<el-form-item label="~~coord_xStart~~" prop="model" v-show="form.msgType=='coord'">
+						<el-input type="number" v-model="form.coord_xStart" min="1" step="1" placeholder=""></el-input>
+					</el-form-item>
+				<el-form-item label='~~coord_yStart~~' prop="model" v-show="form.msgType=='coord'">
+						<el-input type="number" v-model="form.coord_yStart" min="1" step="1" placeholder=""></el-input>
+				</el-form-item>					
+				<el-form-item label="~~coord_xEnd~~" prop="model" v-show="form.msgType=='coord'">
+					<el-input type="number" v-model="form.coord_xEnd" min="1" step="1" placeholder=""></el-input>
+				</el-form-item>
+				<el-form-item label="~~coord_yEnd~~" prop="model" v-show="form.msgType=='coord'">
+					<el-input type="number" v-model="form.coord_yEnd" min="1" step="1" placeholder=""></el-input>
+				</el-form-item>
+				<el-form-item label="~~coord_xStep~~" prop="model" v-show="form.msgType=='coord'">
+					<el-input type="number" v-model="form.coord_xStep" min="1" step="1" placeholder=""></el-input>
+				</el-form-item>					
+				<el-form-item label="~~coord_yStep~~" prop="model" v-show="form.msgType=='coord'">
+					<el-input type="number" v-model="form.coord_yStep" min="1" step="1" placeholder=""></el-input>
+				</el-form-item>
+				<div style="clear:both;text-align:center;">
+					<el-button type="primary" @click="submitForm('form')" size="small" :loading="imitateBtnDisable">~~submit~~</el-button>
+				</div>
+			</el-form>
+
+		</el-dialog>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

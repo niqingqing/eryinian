@@ -1,0 +1,208 @@
+var app;
+
+app = new Vue({
+    el: "#app",
+    data: {
+        mapList:[],//地图列表
+
+        firstMapId:0,//第一张地图ID
+        firstMapName:null,//第一张地图名字
+        secondMapId:0,//第二张地图ID
+        secondMapName:null,//第二张地图名字
+        thirdMapId:0,//第三张地图ID
+        thirdMapName:null,//第三张地图名字
+        fourthMapId:0,//第四张地图ID
+        fourthMapName:null,//第四张地图名字
+
+        currentFirstIframe:null,
+
+    },
+
+
+    created: function () {
+        let api_token = localStorage.getItem("api_token");//从缓存中获取api_token
+        let userData = JSON.parse(localStorage.getItem("userData"));//从缓存中获取当前登录用户
+
+        let beforeUser = localStorage.getItem("beforeUser");//获取之前登录用户
+        if(beforeUser == null ||beforeUser == "" || beforeUser == undefined){
+            localStorage.setItem("beforeUser",userData.code);//存入登录用户为之前用户
+        }
+        //判断当前登录用户和缓存登录用户是否一样
+        if(userData.code == localStorage.getItem("beforeUser")){
+
+        }else{
+            //登录用户不同时 1.将iframe地图Id缓存删除 2.将前用户替换成当前用户
+            localStorage.removeItem("firstMapId");
+            localStorage.removeItem("secondMapId");
+            localStorage.removeItem("thirdMapId");
+            localStorage.removeItem("fourthMapId");
+            localStorage.setItem("beforeUser",userData.code);
+        }
+        //判断刚进入分屏页面是否有缓存,如果没有设置默认缓存
+        let firstMapId = localStorage.getItem("firstMapId");
+        if(firstMapId == null ||firstMapId == "" | firstMapId == undefined){
+            localStorage.setItem("firstMapId",2);
+        }
+        let secondMapId = localStorage.getItem("secondMapId");
+        if(secondMapId == null ||secondMapId == "" | secondMapId == undefined){
+            localStorage.setItem("secondMapId",3);
+        }
+        let thirdMapId = localStorage.getItem("thirdMapId");
+        if(thirdMapId == null ||thirdMapId == "" | thirdMapId == undefined){
+            localStorage.setItem("thirdMapId",4);
+        }
+        let fourthMapId = localStorage.getItem("fourthMapId");
+        if(fourthMapId == null ||fourthMapId == "" | fourthMapId == undefined){
+            localStorage.setItem("fourthMapId",5);
+        }
+
+        //获取地图列表
+        this.getMapList(api_token);
+
+    },
+    methods:{
+
+        //获取地图列表
+        getMapList:function(api_token){
+            let _this = this;
+            $.ajax({
+                url: UBIT.host + "/super/map/list",
+                type:"GET",
+                data:{
+                    api_token:api_token,
+                },
+                dataType:"json",
+                success:function (response){
+                    _this.mapList = response;
+                    //初始化第一个iframe中src的值
+                    _this.firstIframeSrc(null);
+                    //初始化第二个iframe中src的值
+                    _this.secondIframeSrc(null);
+                    //初始化第三个iframe中src的值
+                    _this.thirdIframeSrc(null);
+                    //初始化第四个iframe中src的值
+                    _this.fourthIframeSrc(null);
+                },
+                error: function(errorMessage) {
+                    console.log('系统错误!')
+                },
+            });
+        },
+
+        //点击第一个iframe改变地图
+        changeFirstIframeMap:function changeFirstIframeMapName(mapId){
+           localStorage.setItem("firstMapId",mapId);
+           this.firstIframeSrc(mapId);
+        },
+        //点击第二个iframe改变地图
+        changeSecondIframeMap:function changeSecondIframeMap(mapId){
+            localStorage.setItem("secondMapId",mapId);
+            this.secondIframeSrc(mapId);
+        },
+        //点击第三个iframe改变地图
+        changeThirdIframeMap:function changeThirdIframeMap(mapId){
+            localStorage.setItem("thirdMapId",mapId);
+            this.thirdIframeSrc(mapId);
+        },
+        //点击第四个iframe改变地图
+        changeFourthIframeMap:function changeFourthIframeMap(mapId){
+            localStorage.setItem("fourthMapId",mapId);
+            this.fourthIframeSrc(mapId);
+        },
+
+        //第一个iframe
+        firstIframeSrc:function (mapId){
+         this.firstMapId =  localStorage.getItem("firstMapId");
+           //循环地图列表匹配对应的地图名称
+            for(let i = 0;i<this.mapList.length;i++){
+                if(mapId == null){
+                    if(this.firstMapId == this.mapList[i].id){
+                        this.firstMapName = this.mapList[i].cname;
+                    }
+                }else{
+                    if(mapId == this.mapList[i].id){
+                        this.firstMapName = this.mapList[i].cname;
+                    }
+                }
+            }
+           //给iframe的src赋值
+            if(mapId == null){
+                document.getElementById("iframe1").src = "/map/map2d/svg/single-map.html?map=" + this.firstMapId;
+            }else {
+                document.getElementById("iframe1").src = "/map/map2d/svg/single-map.html?map=" + mapId;
+            }
+        },
+        //第二个iframe
+        secondIframeSrc:function (mapId) {
+            this.secondMapId =  localStorage.getItem("secondMapId");
+            //循环地图列表匹配对应的地图名称
+            for(let i = 0;i<this.mapList.length;i++){
+                if(mapId == null){
+                    if(this.secondMapId == this.mapList[i].id){
+                        this.secondMapName = this.mapList[i].cname;
+                    }
+                }else{
+                    if(mapId == this.mapList[i].id){
+                        this.secondMapName = this.mapList[i].cname;
+                    }
+                }
+            }
+            //给iframe的src赋值
+            if(mapId == null){
+                document.getElementById("iframe2").src = "/map/map2d/svg/single-map.html?map=" + this.secondMapId;
+            }else {
+                document.getElementById("iframe2").src = "/map/map2d/svg/single-map.html?map=" + mapId;
+            }
+        },
+        //第三个iframe
+        thirdIframeSrc:function (mapId) {
+            this.thirdMapId =  localStorage.getItem("thirdMapId");
+            //循环地图列表匹配对应的地图名称
+            for(let i = 0;i<this.mapList.length;i++){
+                if(mapId == null){
+                    if(this.thirdMapId == this.mapList[i].id){
+                        this.thirdMapName = this.mapList[i].cname;
+                    }
+                }else{
+                    if(mapId == this.mapList[i].id){
+                        this.thirdMapName = this.mapList[i].cname;
+                    }
+                }
+            }
+            //给iframe的src赋值
+            if(mapId == null){
+                document.getElementById("iframe3").src = "/map/map2d/svg/single-map.html?map=" + this.thirdMapId;
+            }else {
+                document.getElementById("iframe3").src = "/map/map2d/svg/single-map.html?map=" + mapId;
+            }
+        },
+        //第四个iframe
+        fourthIframeSrc:function (mapId) {
+            this.fourthMapId =  localStorage.getItem("fourthMapId");
+            //循环地图列表匹配对应的地图名称
+            for(let i = 0;i<this.mapList.length;i++){
+                if(mapId == null){
+                    if(this.fourthMapId == this.mapList[i].id){
+                        this.fourthMapName = this.mapList[i].cname;
+                    }
+                }else{
+                    if(mapId == this.mapList[i].id){
+                        this.fourthMapName = this.mapList[i].cname;
+                    }
+                }
+            }
+            //给iframe的src赋值
+            if(mapId == null){
+                document.getElementById("iframe4").src = "/map/map2d/svg/single-map.html?map=" + this.fourthMapId;
+            }else {
+                document.getElementById("iframe4").src = "/map/map2d/svg/single-map.html?map=" + mapId;
+            }
+        }
+    },
+    watch:{
+        //当前第一个iframe选择地图的值
+        currentFirstIframe(val,oldVal){
+            console.log(val);
+        },
+    }
+});

@@ -1,0 +1,248 @@
+#container {
+    width: 100%;
+    background:#fafafa;
+}
+
+[v-clock] { display: none; }
+
+.overview {
+    width:100%;
+}
+.overview_wrap {
+    width: 100%;
+    /* height: 260px; */
+    /* max-height: 260px; */
+    /* height:auto; */
+    display: flex;
+    padding: 10px 32px;
+    /* flex-wrap: nowrap; */
+    /* background: blue; */
+    justify-content: space-between;
+}
+.overview_item {
+    width: 19%;
+    border-radius:8px;
+    height: 100%;
+    /* background: yellow; */
+}
+
+.overview_people {
+    background:#42adfc;
+}
+.overview_chache {
+    background:#dcb079;
+}
+.overview_things {
+    background:#79dc89;
+}
+.overview_sos {
+    background:#f7ba2a;
+}
+.overview_fence {
+    background:#fc4264;
+}
+
+.p_title {
+    margin: 26px 0 32px 0;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+}
+.p_title span {
+    display: block;
+    width: 4px;
+    height: 24px;
+    background:#fff;
+    margin: -5px 12px 0 32px;
+    float: left;
+}
+.p_overview {
+    /* font-size:48px; */
+    font-size:3em; 
+    color: #fff;
+    margin: 0 0 46px 0;
+    white-space:nowrap;
+}
+.p_overview img {
+    /* margin: 0 32px 0 36px; */
+    margin: 0 32px 0 36px;
+}
+.p_overview span {
+    font-size: 16px;
+    margin: 0 12px;
+}
+
+
+/* chart */
+.chart_item_title {
+    height: 36px;
+    line-height: 36px;
+    border-radius: 8px 8px 0 0;
+    background:#f1f1f1;
+    font-size: 15px;
+    font-weight: 700;
+    color: #48567a;
+    padding: 0 0 0 32px;
+}
+.chart_item_title span {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin:15px 32px;
+    float: right;
+    /* background-image: url('../img/reload.png'); */
+    background-size: 100%;
+} 
+
+.chart_item_title span:hover {
+    background-image: url('./img/reoad_click.png');
+    background-size: 100%;
+} 
+.chart_content {
+    height: 150px !important;
+    padding: 0 0 -10px 0 !important;
+}
+.chart_content>div {
+    height: 150px !important;
+}
+.chart_content>div svg.highcharts-root {
+    height: 150px !important;
+}
+.item_materialNum_wrap {
+    height: 150px !important;
+}
+.charts_wrap_abnormal {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 24px 0;
+    padding: 0 32px;
+    /* background:blue;  */
+    height: 484px;
+}
+.abnormal_wrap_content {
+    height:448px;
+    /* overflow: hidden; */
+} 
+.abnormal_wrap_content img {
+    height: 100%;
+    width: 100%;
+    margin: -10px 0 0 0;
+}
+.pointer:hover {
+    cursor: pointer;
+}
+.abnormal_left,.abnormal_right {
+    width: 49.3%;
+}
+.isTableChart {
+    overflow: scroll;
+}
+
+.abnormal_left_top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: 260px;
+    /* background:#666; */
+}
+.abnormal_left_bottom {
+    margin: 24px 0 0 0;
+    /* margin: 22px 0 0 0; */
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    /* background:#88f; */
+}
+.abnormal_right {
+    height: 100%;
+}
+#heartRate {
+    height: 440px;
+    border-radius: 0 0 8px 8px;
+}
+.chart_small {
+    width: 48.6%;
+    height: 100%;
+    border-radius: 8px;
+}
+.charts_wrap_normal {
+    width: 100%;
+    padding: 0 32px;
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+}
+.chart_item_wrap {
+    border-radius: 8px;
+}
+.chart_item {
+    width:32.5%;
+    height: 410px;
+    /* background:#42adfc; */
+    margin: 0 0 24px 0;
+}
+.charts_wrap_normal .chart_item:nth-child(3n-1) {
+    margin: 0 1.25%;
+}
+
+.profile {
+    border: 1px dashed #ccc;
+    background:#fff;
+}
+/* 
+.charts {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+} */
+/* @media screen and (max-width :1024px) {
+    .chart_item {
+        width:100%;
+        margin: 20px 0;
+        background: blue;
+    }
+} */
+/* .chart_item_wrap {
+    width:30%;
+    height:400px;
+    margin: 20px 1.5%;
+    position: relative;
+} */
+/* .chart_item { */
+    /* width: 100%; */
+    /* height: 100%; */
+    /* background: red; */
+/* } */
+/* .chart_item_wrap:hover {
+    border: 1px dashed gray;
+}
+.chart_item>div {
+    width: 100% !important;
+    height: 100% !important;
+}
+.chart_item svg{
+    width: 100% !important;
+    height: 100% !important;
+} */
+/* .chart_item svg rect{
+    width: 100% !important;
+    height: 100% !important;
+} */
+.refresh_btn {
+    position: absolute;
+    top:0;
+    right: 0;
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: #abcdef;
+    background-image: url(./img/refresh.jpeg) ;
+    background-size: 100%;
+    /* background: red; */
+    z-index: 9999;
+}

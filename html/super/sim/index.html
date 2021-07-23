@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>SIM卡管理</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+			addTags:null,
+        };
+		UBIT.initLang('sim');
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="tagtoolbar" >
+			<el-button type="info" size="small"  @click="simAdd" >添加</el-button>
+			<el-button type="warning" size="small" @click="simUpdate" >修改</el-button>
+			<el-button type="danger" size="small"  @click="simDelete" :loading="simDeleteBtnDisable">删除</el-button>
+			<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('sim', true);">导出</el-button>
+		</div>
+
+
+		<table id="sim"></table>
+
+		<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="200px" class="demo-ruleForm">
+
+
+				<el-form-item label="卡号" prop="num"  >
+					<el-input type="text" v-model="form.num" auto-complete="off" :disabled="disable"></el-input>
+				</el-form-item>
+
+
+			  		<!--<el-form-item label="iccid号" prop="iccid" >-->
+			    		<!--<el-input type="text" v-model="form.iccid" :disabled="disable" auto-complete="off"></el-input>-->
+				  	<!--</el-form-item>-->
+				  	
+				  	<!--<el-form-item label="mac地址" prop="mac" v-show="form.action=='update'">-->
+			    		<!--<el-input type="text" v-model="form.mac" auto-complete="off"></el-input>-->
+				  	<!--</el-form-item>-->
+
+				<el-form-item label="所属基站" prop="anchorId">
+					<el-select v-model="form.anchor" placeholder="请选择" filterable>
+						<el-option
+								v-for="item in anchors"
+								:key="item.mac"
+								:label="item.mac"
+								:value="item.mac">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				  	<el-form-item label="运营商" prop="operator">
+			    		<el-select v-model="form.operator" placeholder="请选择">
+						    <el-option
+						      v-for="item in operators"
+							  :key="item"
+						      :label="item"
+						      :value="item">
+						    </el-option>
+						 </el-select>
+				  	</el-form-item>
+					  <el-form-item label="供应商" prop="supplier">
+							<el-select v-model="form.supplier" placeholder="请选择">
+								<el-option
+								  v-for="item in suppliers"
+								  :key="item.cname"
+								  :label="item.cname"
+								  :value="item.cname">
+								  <!--<span style="float: left">{{ item.cname }}</span>-->
+								  <!--<span style="float: right; color: #8492a6; font-size: 13px">{{ item.description }}</span>-->
+								</el-option>
+							 </el-select>
+						  </el-form-item>
+
+				<div style="clear:both;text-align:center;">
+					<el-button type="primary" @click="submitForm('form')" size="small" :loading="simBtnDisable">提交</el-button>
+				</div>
+
+			</el-form>
+
+		</el-dialog>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

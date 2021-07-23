@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title~~</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+
+	<script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+		UBIT.initLang('projTag');
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="projTagtoolbar" >
+			<el-button type="warning" size="small"  @click="projTagUpdate" >~~update~~</el-button>
+			<el-button type="warning" size="small"  @click="projTagUpdateMore" >~~updateMore~~</el-button>
+			<el-button type="info" size="small"  @click="createQrcode">~~qrcode~~</el-button>
+			<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('projTagtable', true);">~~exports~~</el-button>
+		</div>
+
+
+		<table id="projTagtable"></table>
+
+		<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="120px" class="demo-ruleForm">
+					
+					<el-form-item label="~~sourceId~~" prop="sourceId" >
+			    		<el-input type="text" v-model="form.sourceId" :disabled="true" auto-complete="off"></el-input>
+				  	</el-form-item>
+
+			  		<el-form-item label="~~code~~" prop="code" >
+			    		<el-input type="text" v-model="form.code" :disabled="true" auto-complete="off"></el-input>
+				  	</el-form-item>
+
+					<el-form-item label="~~macAddress~~" prop="mac" >
+						<el-input type="text" v-model="form.mac"  :disabled="true"  auto-complete="off"></el-input>
+					</el-form-item>
+				  	
+				  	<el-form-item label="~~alias~~" prop="alias" >
+			    		<el-input type="text" v-model="form.alias" :maxlength="24" auto-complete="off"></el-input>
+				  	</el-form-item>
+
+				  	<el-form-item label="~~catId~~" prop="catId" >
+			    		<!--<el-select v-model="form.catId" @change="changeIcon"  placeholder="~~select~~">-->
+			    		<el-select v-model="form.catId"  filterable placeholder="~~select~~">
+						    <el-option
+						      v-for="item in cats"
+						      :style="{color:item.color}"
+						      :key="item.id"
+						      :label="item.cname"
+						      :value="item.id+''">
+						    </el-option>
+						</el-select>
+				  	</el-form-item>
+
+				  	<el-form-item label="~~typeId~~" prop="typeId" >
+			    		<el-select v-model="form.typeId" filterable @change="changeIcon" placeholder="~~select~~">
+						    <el-option
+						      v-for="item in types"
+						      :key="item.id"
+						      :label="item.cname"
+						      :value="item.id+''">
+						    </el-option>
+						    
+						</el-select>
+
+						<img :src="form.typeIcon" width="40px" v-if="have"/>
+
+				  	</el-form-item>
+
+				  	<el-form-item label="~~sort~~" prop="sort" >
+			    		<el-input-number v-model="form.sort" :step="1" :min="0"></el-input-number>
+				  	</el-form-item>
+					
+
+
+				  	<el-form-item label="~~status~~" prop="status">
+				  	 	<el-select v-model="form.status" filterable placeholder="~~select~~" :disabled="true">
+						    <el-option
+						      v-for="item in status"
+						      :key="item.code"
+						      :label="item.cname"
+						      :value="item.code">
+						    </el-option>
+						</el-select>	
+					</el-form-item>
+
+
+
+				<el-form-item label="~~rxDelaytxDelay~~" prop="rxDelaytxDelay" class="cooll">
+					<!-- <el-input type="text" v-model="form.tel" auto-complete="off" ></el-input> -->
+					<el-input type="number" step='0.0001' v-model="form.rxDelay" placeholder="rx" auto-complete="off"></el-input>
+					<el-input type="number" step='0.0001'  v-model="form.txDelay" placeholder="tx" auto-complete="off"></el-input>
+				</el-form-item>
+
+				  	<el-form-item label="~~wakeFreq~~" prop="wakeFreq">
+			    		<el-input-number v-model="form.wakeFreq" :step="0.01"></el-input-number>
+				  	</el-form-item>
+
+				  	<el-form-item label="~~refreshFreq~~" prop="refreshFreq">
+			    		<el-input-number v-model="form.refreshFreq" :step="1"></el-input-number>
+				  	</el-form-item>
+
+				  	<el-form-item label="~~maxPower~~" prop="maxPower">
+			    		<el-input-number v-model="form.maxPower" :step="100" :max='4200' :min="0"></el-input-number>
+				  	</el-form-item>
+
+					<el-form-item label="最小心率" prop="minHeart">
+						<el-input-number v-model="form.minHeart" controls-position="right" @change="" :min="0" :step='1'></el-input-number>
+				  	</el-form-item>
+
+					<el-form-item label="最大心率" prop="maxHeart">
+						<el-input-number v-model="form.maxHeart" controls-position="right" @change="" :min="0" :step='1'></el-input-number>
+					</el-form-item>  
+
+				  	<el-form-item label="~~manu~~" prop="manu">
+			    		<el-input type="text" v-model="form.manu" :maxlength="20" auto-complete="off" ></el-input>
+				  	</el-form-item>
+
+				  	<el-form-item label="~~swVersion~~" prop="swVersion">
+			    		<el-input type="text" v-model="form.swVersion" :maxlength="32" auto-complete="off" ></el-input>
+				  	</el-form-item>
+
+				  	<el-form-item label="~~hwVersion~~" prop="hwVersion">
+			    		<el-input type="text" v-model="form.hwVersion" :maxlength="32" auto-complete="off" ></el-input>
+				  	</el-form-item>
+
+				<el-form-item label="~~channel~~" prop="channel">
+					<!--<el-radio-group v-model="form.channel">-->
+					<!--<el-radio label="1">1</el-radio>-->
+					<!--<el-radio label="2">2</el-radio>-->
+					<!--<el-radio label="3">3</el-radio>-->
+					<!--<el-radio label="4">4</el-radio>-->
+					<!--<el-radio label="5">5</el-radio>-->
+					<!--<el-radio label="7">7</el-radio>-->
+					<!--</el-radio-group>-->
+					<el-select v-model="form.channel" filterable placeholder="~~select~~">
+						<el-option
+								v-for="item in channelType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~frameType~~" prop="frameType">
+					<!--<el-radio-group v-model="form.frameType">-->
+					<!--<el-radio label="standard">standard</el-radio>-->
+					<!--<el-radio label="extend">extend</el-radio>-->
+					<!--</el-radio-group>-->
+					<el-select v-model="form.frameType" filterable placeholder="~~select~~">
+						<el-option
+								v-for="item in frameTypeType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="crc" prop="crc">
+					<el-input-number v-model="form.crc" :step="1" :min="0"></el-input-number>
+				</el-form-item>
+
+				<el-form-item label="~~dataRate~~" prop="dataRate">
+					<!--<el-input-number v-model="form.dataRate" :step="1" :min="0"></el-input-number>-->
+					<el-select v-model="form.dataRate" filterable placeholder="~~select~~">
+						<el-option
+								v-for="item in dataRateType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~pacSize~~" prop="pacSize" >
+					<el-select v-model="form.pacSize" filterable  placeholder="~~select~~">
+						<el-option
+								v-for="item in pacSizeType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~pulseFrequency~~" prop="pulseFrequency" >
+					<el-select v-model="form.pulseFrequency" placeholder="~~select~~" filterable>
+						<el-option
+								v-for="item in pulseFrequencyType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+
+				<el-form-item label="~~preambleCode~~" prop="preambleCode" >
+					<!--<el-input-number v-model="form.preambleCode" :step="1"  :min="0"></el-input-number>-->
+					<el-select v-model="form.preambleCode" placeholder="~~select~~" filterable>
+						<el-option
+								v-for="item in preambleCodeType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+
+				<el-form-item label="~~preambleLength~~" prop="preambleLength" >
+					<el-select v-model="form.preambleLength" placeholder="~~select~~" filterable>
+						<el-option
+								v-for="item in preambleLengthType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="smartPower" prop="smartPower">
+					<!--<el-input-number v-model="form.smartPower" :step="1" :min="0"></el-input-number>-->
+					<el-select v-model="form.smartPower" placeholder="~~select~~" filterable>
+						<el-option
+								v-for="item in smartPowerType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+
+				<el-form-item label="frameCheck" prop="frameCheck">
+					<el-select v-model="form.frameCheck" placeholder="~~select~~" filterable>
+						<el-option
+								v-for="item in frameCheckType"
+								:key="item.code"
+								:label="item.cname"
+								:value="item.code">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<div style="clear:both;text-align:center;">
+					<el-button type="primary" :loading="projTagBtnDisable" @click="submitForm('form')">~~submit~~</el-button>
+				</div>
+			</el-form>
+
+		</el-dialog>
+
+		<el-dialog :title="updateMoreForm.title" :visible.sync="dialogUpdateMoreFormVisible" class="phone_b">
+			<el-form :model="updateMoreForm"  ref="updateMoreForm" label-width="120px" class="demo-ruleForm">
+
+				<el-form-item label="~~catId~~" prop="catId" >
+					<el-select v-model="updateMoreForm.catId"   placeholder="~~select~~" filterable>
+						<el-option
+								v-for="item in cats"
+								:style="{color:item.color}"
+								:key="item.id"
+								:label="item.cname"
+								:value="item.id+''">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~typeId~~" prop="typeId" >
+					<el-select v-model="updateMoreForm.typeId" filterable @change="changeIcon" placeholder="~~select~~">
+						<el-option
+								v-for="item in types"
+								:key="item.id"
+								:label="item.cname"
+								:value="item.id+''">
+						</el-option>
+
+					</el-select>
+
+					<img :src="updateMoreForm.typeIcon" width="40px" v-if="have"/>
+
+				</el-form-item>
+
+				<el-form-item label="更新心率" prop="isUpdateHeartNum">
+					<el-radio v-model="isUpdateHeartNum" label=1>是</el-radio>
+					<el-radio v-model="isUpdateHeartNum" label=0>否</el-radio>
+				</el-form-item>
+				<div v-if="isUpdateHeartNum>0">
+					<el-form-item label="最小心率" prop="minHeart">
+						<el-input-number v-model="updateMoreForm.minHeart" controls-position="right" @change="" :min="0" :step='1'></el-input-number>
+					</el-form-item>
+					<el-form-item label="最大心率" prop="maxHeart">
+						<el-input-number v-model="updateMoreForm.maxHeart" controls-position="right" @change="" :min="0" :step='1'></el-input-number>
+					</el-form-item> 
+				</div>
+				<el-form-item label="~~codes~~">
+					<el-input type="textarea" v-model="updateMoreForm.codes" readonly :autosize="{ minRows: 2, maxRows: 4}"></el-input>
+				</el-form-item>
+
+
+				<div style="clear:both;text-align:center;">
+					<el-button type="primary" :loading="projTagBtnDisable" @click="submitForm('updateMoreForm')">~~submit~~</el-button>
+				</div>
+			</el-form>
+
+		</el-dialog>
+
+
+		<el-dialog :title="qrcode.title" :visible.sync="qrcode.visible" class="phone_b">
+			<div style="text-align:center;">
+
+				<a :href="qrcode.value_2d" target="_blank">
+					<div>{{qrcode.value_2d}}</div>
+				<qrcode :value="qrcode.value_2d" tag="img" :options="{ size: 200}" style="margin:10px"></qrcode></a>
+
+				<a :href="qrcode.value_3d" target="_blank" v-show="enable3d">
+					<div>{{qrcode.value_3d}}</div>
+					<qrcode :value="qrcode.value_3d" tag="img" :options="{ size: 200}" style="margin:10px"></qrcode></a>
+
+			</div>
+		</el-dialog>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

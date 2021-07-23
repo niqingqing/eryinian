@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv=X-UA-Compatible content='IE=edge,chrome=1'>
+	<meta name='renderer' content='webkit'>
+	<meta name="viewport" content="width=device-width, initial-scale=0.9,maximum-scale=0.9, user-scalable=no"/>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<title>高精度定位系统</title>
+	
+	<!-- Bootstrap 3.3.7 -->
+  	<link rel="stylesheet" href="../../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../common/plugins/jqx/styles/jqx.base.css">
+	<link type="text/css" rel="stylesheet" href="../../../common/plugins/jQuery/jquery.qtip.css">
+	<link type="text/css" rel="stylesheet" href="../../../common/plugins/jQueryUI/jquery-ui.min.css">
+	<link rel="stylesheet" href="../../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+
+	<link rel="stylesheet" type="text/css" href="../index.min.css">
+	<link rel="stylesheet" type="text/css" href="../ui.css">
+	<link rel="shortcut icon" href="../../../common/img/favicon.ico">
+
+</head>
+
+<body>
+		<div class="container"  id="allHandle"   v-cloak>
+			<div v-show="scanActive">
+				<!--<header class="header"></header>-->
+				<div class="header" v-show="!fullScreen"   v-loading.fullscreen.lock="fullscreenLoading"  element-loading-text="奋力加载中">
+					<div class="logo">
+						<img src="../img/images/logo.png" alt="" >
+					</div>
+					<!--地图名称-->
+					<div class="mapName">
+						<div class="currentMap"><b>{{currentMap?currentMap.cname:''}}</b><i class="el-icon-arrow-down el-icon&#45;&#45;right"></i></div>
+						<ul class="map_meanus">
+							<li v-for="item in map.data" @click="changeMap(item.id)">{{item.cname}}</li>
+						</ul>
+					</div>
+
+					<div class="logoIn">
+						<div class="portrait">
+							<img src="../img/user.png" alt="">
+						</div>
+						<div style="margin-right: 12px" id="logoIn_name"></div>
+						<div class="glyphicon glyphicon-triangle-bottom" style="line-height: 55px;"></div>
+
+						<div class="ddd">
+						<div class="logoIn_table">
+							<div @click="qrcode.visible = true">
+								<span class="glyphicon glyphicon-qrcode enter_img"></span>
+								&nbsp二维码
+							</div>
+							<div v-show="enable3d" @click="entry3DMap">
+								<span class="glyphicon glyphicon-inbox enter_img"></span>
+								&nbsp三维地图
+							</div>
+							<div @click="projectManage">
+								<span class="glyphicon glyphicon-log-in enter_img"></span>
+								&nbsp进入后台
+							</div>
+							<div @click="adminManage" v-if="user && user.userType=='super'">
+								<span class="glyphicon glyphicon-log-in enter_img"></span>
+								&nbsp超级管理员
+							</div>
+							<div @click="go2Tplatform" v-if="enableTplatfrom">
+								<span class="glyphicon glyphicon-hourglass"></span>
+								&nbsp实验平台
+							</div>
+							<div @click="adjustAnchor.dialog=true" v-if="isSuper">
+								<span class="glyphicon glyphicon-sound-dolby"></span>
+								&nbsp基站校准
+							</div>
+							<div @click="exit">
+								<span class="glyphicon glyphicon-log-out enter_img"></span>
+								&nbsp退出登录
+							</div>
+						</div>
+						</div>
+					</div>
+
+					<el-tooltip class="item" effect="dark" content="基站总数" placement="left">
+						<div class="total_anchor">
+							<span class="total_anchor_wrap">
+								<img src="../img/images/station_ubi.png" alt="">
+							</span>
+
+								<span class="total_anchor_num">{{anchor.data.length}}</span>
+						</div>
+					</el-tooltip>
+
+					<el-tooltip class="item" effect="dark" content="标签总数" placement="left">
+						<div class="total_tag">
+							<span class="total_tag_wrap">
+								<img src="../img/images/label_ubi.png" alt="">
+							</span>
+
+								<span class="total_tag_num">{{tag.data.length}}</span>
+							<div class="total_tag_table"></div>
+						</div>
+					</el-tooltip>
+				</div>
+
+				<div class="main clearfix">
+					<aside id="right_menus" class="m-right" v-show="!fullScreen">
+						<div class="menu clearfix" @click="disabled = !disabled">
+							<!--<img src="../img/images/menu_click_ubi.png" alt="">-->
+						</div>
+
+						<div id="right_menus_items" >
+							<div class="tag" >
+								<div class="tag_wrap" onclick="togMenus(this);">
+									<div class="tag_coin">
+										<el-tooltip class="item" :disabled="!disabled" effect="dark" content="标签" placement="right">
+											<div class="tag_coin_wrap">
+												<!--<img src="../img/images/label_ubi.png" alt="">-->
+											</div>
+										</el-tooltip>
+
+									</div>
+									<div class="tag_text">标签</div>
+									<div style="float: right;margin-right: 32px;" class="tag_coin_back">
+										<img src="../img/images/side_ubi.png" alt="">
+									</div>
+								</div>
+								<div class="appear table_box">
+                                    <el-checkbox v-model="switchData.isShowActiveTag" style="color:white;" @change="switchFunc('isShowActiveTag', $event)">只显示活动标签</el-checkbox>
+									<template>
+										<el-table
+												ref="tagMultipleTable"
+												:data="tag.data"
+												border
+												max-height="600"
+												tooltip-effect="dark"
+												style="width: 100%"
+												@header-click="tagTableHeaderClick"
+												@row-dblclick="editItem"
+												>
+
+											<el-table-column
+													label="显示"
+													width="80">
+												<template scope="scope">
+													<el-checkbox  v-model="scope.row.isShow" :checkbox="scope.row.isShow" @change="handleCheckChange('tag',scope.row)"></el-checkbox>
+												</template>
+
+											</el-table-column>
+
+											<el-table-column
+													prop="alias"
+													label="名称"
+													sortable
+													width="85">
+											</el-table-column>
+
+											<el-table-column
+													prop="code"
+													label="编号"
+													sortable
+													width="120">
+											</el-table-column>
+
+											<el-table-column
+													prop="type"
+													label="类型"
+													:sort-method="sortGroup"
+													sortable
+													width="85">
+												<template scope="scope">{{ scope.row.type?scope.row.type.cname:'' }}</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="cat"
+													label="分组"
+													sortable
+													:sort-method="catGroup"
+													:formatter="tagCatFormatter"
+													width="85">
+											</el-table-column>
+
+											<el-table-column
+													prop="power"
+													sortable
+													label="电量"
+													:formatter="tagPowerFormatter"
+													width="85"
+											>
+											</el-table-column>
+
+											<el-table-column
+													prop="mapName"
+													label="所处地图"
+													width="220"
+													sortable
+													show-overflow-tooltip>
+											</el-table-column>
+
+											<el-table-column
+													prop="lastPosTime"
+													sortable
+													label="最后在线时间"
+													:formatter="tagLastPosTimeFormatter"
+													width="185"
+											>
+											</el-table-column>
+
+										</el-table>
+									</template>
+
+								</div>
+							</div>
+							<div class="anchor">
+								<div class="anchor_wrap" onclick="togMenus(this);">
+									<div class="anchor_coin">
+										<el-tooltip class="item" :disabled="!disabled" effect="dark" content="基站" placement="right">
+											<div class="anchor_coin_wrap">
+												<!--<img src="../img/images/station_ubi.png" alt="">-->
+											</div>
+										</el-tooltip>
+									</div>
+									<div class="anchor_text">基站</div>
+									<div style="float: right;margin-right: 32px;" class="tag_coin_back">
+										<img src="../img/images/side_ubi.png" alt="">
+									</div>
+								</div>
+								<div class="appear table_box">
+
+									<template>
+										<el-table
+												ref="anchorMultipleTable"
+												:data="anchor.data"
+												border
+												max-height="600"
+												tooltip-effect="dark"
+												style="width: 100%"
+												@header-click="anchorTableHeaderClick"
+												@row-dblclick="editItem"
+										>
+
+											<el-table-column
+													label="显示"
+													width="80">
+												<template scope="scope">
+													<el-checkbox  v-model="scope.row.isShow" @change="handleCheckChange('anchor',scope.row)"></el-checkbox>
+												</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="alias"
+													label="名称"
+													sortable
+													width="90">
+											</el-table-column>
+
+											<el-table-column
+													prop="code"
+													label="编号"
+													sortable
+													width="120">
+											</el-table-column>
+
+											<el-table-column
+													prop="isMaster"
+													label="类型"
+													sortable
+													width="90">
+												<template scope="scope">{{ scope.row.isMaster>0?'主基站':'从基站' }}</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="x"
+													label="X"
+													width="80">
+											</el-table-column>
+
+											<el-table-column
+													prop="y"
+													label="Y" >
+											</el-table-column>
+
+										</el-table>
+									</template>
+
+
+								</div>
+							</div>
+							<div class="fence">
+								<div class="fence_wrap" onclick="togMenus(this);">
+									<div class="fence_coin">
+										<el-tooltip class="item" effect="dark" :disabled="!disabled" content="围栏" placement="right">
+											<div class="fence_coin_wrap">
+											</div>
+										</el-tooltip>
+
+									</div>
+									<div class="fence_text">围栏</div>
+									<div style="float: right;margin-right: 32px;" class="tag_coin_back">
+										<img src="../img/images/side_ubi.png" alt="">
+									</div>
+								</div>
+								<div class="appear table_box">
+									<template>
+										<el-table
+												ref="fenceMultipleTable"
+												:data="fence.data"
+												border
+												max-height="600"
+												tooltip-effect="dark"
+												@row-dblclick="fenceEdit"
+												style="width: 100%"
+										>
+											<el-table-column
+													label="操作"
+													width="125">
+												<template scope="scope">
+													<button class="btn edit-btn table-btn" :disabled="!power"
+															@click="fenceEdit(scope.row,$event)"
+													>编辑</button>
+
+													<button class="btn del-btn table-btn" :disabled="!power"
+															@click="fenceDelete($event, scope.row.id)"
+													>删除</button>
+
+												</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="cname"
+													label="名称"
+													sortable
+													width="85">
+											</el-table-column>
+
+											<el-table-column
+													prop="ftype"
+													label="类型"
+													sortable
+													width="90">
+											</el-table-column>
+
+											<el-table-column
+													prop="trif"
+													label="触发条件"
+													sortable
+													width="90">
+												<template scope="scope">{{ scope.row.trif == 'io'?'进出触发':(scope.row.trif == 'i'?'进入触发':'出去触发' ) }}</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="isRecord"
+													label="是否记录"
+													sortable
+													width="90">
+												<template scope="scope">{{ scope.row.isRecord>0?'是':'否' }}</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="isEmail"
+													label="是否发邮件"
+													sortable
+													width="110">
+												<template scope="scope">{{ scope.row.isEmail>0?'是':'否' }}</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="isSMS"
+													label="是否发短信"
+													sortable
+													width="110">
+												<template scope="scope">{{ scope.row.isSMS>0?'是':'否' }}</template>
+											</el-table-column>
+
+										</el-table>
+									</template>
+									<button @click.prevent="setFence($event)" class="btn draw_fence">绘制围栏</button>
+
+									<div class="fence_from_wrap">
+										<form class="nodes-form form-edit" v-show="fence.visible">
+
+											<dl>
+												<dt class="fence_from_wrap_name">名称</dt>
+												<dd>
+													<input type="text" class="fence_from_wrap_input" :disabled="!power" v-model="fence.edit.cname">
+												</dd>
+											</dl>
+											<dl>
+												<dt class="fence_from_wrap_type">类型</dt>
+												<dd>
+													<select class="form-control fence_from_wrap-select" v-model="fence.edit.ftypeId"
+															>
+														<option v-for="(item,index) in fenceType.data" :value="item.id" :style="{color: item.color}">
+															{{item.cname}}
+														</option>
+													</select>
+												</dd>
+											</dl>
+
+
+											<dl>
+												<dt class="fence_from_wrap_trif">触发条件</dt>
+												<dd>
+													<select class="form-control fence_from_wrap-select_trif" v-model="fence.edit.trif"
+													>
+														<option v-for="(item,index) in fence.trif" :value="item.id">
+															{{item.cname}}
+														</option>
+													</select>
+												</dd>
+											</dl>
+											<dl>
+												<dt class="fence_from_wrap_isRecord">是否记录</dt>
+												<dd>
+													<el-radio-group class="fence_from_wrap_isRecord_rad" v-model="fence.edit.isRecord">
+														<el-radio label="1">是</el-radio>
+														<el-radio label="0">否</el-radio>
+													</el-radio-group>
+												</dd>
+											</dl>
+											<dl>
+												<dt class="fence_from_wrap_isEmail">是否发邮件</dt>
+												<dd>
+													<el-radio-group class="fence_from_wrap_isEmail_rad" v-model="fence.edit.isEmail">
+														<el-radio label="1">是</el-radio>
+														<el-radio label="0">否</el-radio>
+													</el-radio-group>
+												</dd>
+											</dl>
+											<dl>
+												<dt class="fence_from_wrap_isSMS">是否发短信</dt>
+												<dd>
+													<el-radio-group class="fence_from_wrap_isSMS_rad" v-model="fence.edit.isSMS">
+														<el-radio label="1">是</el-radio>
+														<el-radio label="0">否</el-radio>
+													</el-radio-group>
+												</dd>
+											</dl>
+
+
+
+
+											<div class="btn-box" v-show="power">
+												<button class="btn fence_from_wrap_sure"
+														@click="fenceSave($event)"
+												>确定</button>
+												<button class="btn fence_from_wrap_reset"
+														@click="closeBtn($event,'fence')"
+												>取消</button>
+											</div>
+										</form>
+									</div>
+
+								</div>
+							</div>
+							<!--围墙-->
+							<div class="wall" v-if="enableWall">
+								<div class="wall_wrap" onclick="togMenus(this);">
+									<div class="wall_coin">
+										<el-tooltip class="item" effect="dark" :disabled="!disabled" content="围墙" placement="right">
+											<div class="wall_coin_wrap">
+											</div>
+										</el-tooltip>
+
+									</div>
+									<div class="wall_text">围墙</div>
+									<div style="float: right;margin-right: 32px;" class="tag_coin_back">
+										<img src="../img/images/side_ubi.png" alt="">
+									</div>
+								</div>
+								<div class="appear table_box">
+									<template>
+										<el-table
+												ref="wallMultipleTable"
+												:data="wall.data"
+												border
+												max-height="600"
+												tooltip-effect="dark"
+												style="width: 100%"
+										>
+											<el-table-column
+													label="操作"
+													width="125">
+												<template scope="scope">
+													<button class="btn del-btn table-btn" style='margin-left: 28px;' :disabled="!power"
+															@click="wallDelete($event, scope.row.id)"
+													>删除</button>
+												</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="cname"
+													label="名称"
+													sortable
+													width="85">
+											</el-table-column>
+                                            <el-table-column
+                                                    prop="mapCname"
+                                                    label="所属地图"
+                                                    sortable
+                                                    width="90">
+                                            </el-table-column>
+
+											<el-table-column
+													prop="wtype"
+													label="类型"
+													sortable
+													width="120">
+												<template scope="scope">{{ scope.row.wtype == 'solid'?'实墙':(scope.row.wtype == 'dotted'?'虚墙':'轨道' ) }}</template>
+											</el-table-column>
+
+											<el-table-column
+													prop="width"
+													label="宽度"
+													sortable
+													width="120">
+											</el-table-column>
+
+											<el-table-column
+													prop="startX"
+													label="起始X"
+													sortable
+													width="90">
+											</el-table-column>
+											<el-table-column
+													prop="startY"
+													label="起始Y"
+													sortable
+													width="90">
+											</el-table-column>
+											<el-table-column
+													prop="endX"
+													label="结束X"
+													sortable
+													width="90">
+											</el-table-column>
+											<el-table-column
+													prop="endY"
+													label="结束Y"
+													sortable
+													width="90">
+											</el-table-column>
+
+
+										</el-table>
+									</template>
+									<button @click.prevent="setWall($event)" class="btn draw_fence">绘制围墙</button>
+
+									<div class="wall_from_wrap">
+										<form class="nodes-form form-edit" v-show="wall.visible">
+											<dl>
+												<dt class="wall_from_wrap_name">名称</dt>
+												<dd>
+													<input type="text" class="wall_from_wrap_input" :disabled="!power" v-model="wall.floatEdit.data.cname">
+												</dd>
+											</dl>
+											<dl>
+												<dt class="wall_from_wrap_type">类型</dt>
+												<dd>
+													<select class="form-control wall_from_wrap-select" v-model="wall.floatEdit.data.wtype"
+													>
+														<option v-for="(item,index) in wall.wtypes" :value="item.code" >
+															{{item.cname}}
+														</option>
+													</select>
+												</dd>
+											</dl>
+
+											<dl v-show="wall.floatEdit.data.wtype=='rail'">
+												<dt class="wall_from_wrap_width">宽度</dt>
+												<dd>
+													<input type="number" min="0" step="0.1" placeholder="cm" class="wall_from_wrap_input width_input" :disabled="!power" v-model="wall.floatEdit.data.width">
+												</dd>
+											</dl>
+											<dl>
+
+											<div class="btn-box" v-show="power">
+												<button class="btn wall_from_wrap_sure"
+														@click="wallSave($event)"
+												>确定</button>
+												<button class="btn wall_from_wrap_reset"
+														@click="closeBtn($event,'wall')"
+												>取消</button>
+											</div>
+										</form>
+									</div>
+
+								</div>
+							</div>
+							<!--摄像头-->
+							<div class="camera" id="camera_wrap" v-if="isShowCamera">
+								<div class="camera_wrap" onclick="togMenus(this);">
+									<div class="camera_coin">
+										<el-tooltip class="item" :disabled="!disabled" effect="dark" content="摄像头" placement="right">
+											<div class="camera_coin_wrap">
+												<!--<img src="../img/images/label_ubi.png" alt="">-->
+											</div>
+										</el-tooltip>
+
+									</div>
+									<div class="camera_text">摄像头</div>
+									<div style="float: right;margin-right: 32px;" class="camera_coin_back">
+										<img src="../img/images/side_ubi.png" alt="">
+									</div>
+								</div>
+								<div class="appear table_box">
+									<template>
+										<el-table
+												ref="cameraMultipleTable"
+												:data="camera.data"
+												border
+												max-height="400"
+												tooltip-effect="dark"
+												style="width: 100%"
+												@header-click="cameraTableHeaderClick"
+												@row-dblclick="editItem"
+												>
+										<el-table-column
+												label="显示"
+												width="50">
+											<template  scope="scope">
+												<el-checkbox  v-model="scope.row.isShow" @change="handleCheckChange('camera',scope.row)"></el-checkbox>
+											</template>
+										</el-table-column>
+											<el-table-column
+													   label="操作"
+													   width="150">
+												  <template scope="scope">
+													   <button class="btn edit-btn table-btn" :disabled="!power"
+														@click="editItem(scope.row,$event)"
+													   >编辑</button>
+
+													   <button class="btn del-btn table-btn" :disabled="!power"
+														@click="cameraDelete($event, scope.row.id)"
+														>删除</button>
+
+												 </template>
+											</el-table-column>
+											<!--<el-table-column-->
+													<!--prop="id"-->
+													<!--label="ID"-->
+													<!--sortable-->
+													<!--width="60">-->
+											<!--</el-table-column>-->
+
+											<el-table-column
+													prop="ip"
+													label="IP地址"
+													sortable
+													width="120">
+													<template scope="scope">
+															<a href="javascript:void(1);" @click="openVideo(scope.row.id)">{{ scope.row.ip }}</a>
+													  </template>
+											</el-table-column>
+
+											<!--<el-table-column-->
+													<!--prop="mapId"-->
+													<!--label="所属地图"-->
+													<!--sortable-->
+													<!--width="120">-->
+											<!--</el-table-column>-->
+
+											<el-table-column
+													prop="port"
+													label="端口"
+													sortable
+													width="85">
+												<!--<template scope="scope">{{ scope.row.status=='online'?'在线':'离线' }}</template>-->
+											</el-table-column>
+
+											<el-table-column
+													prop="x"
+													label="X"
+													sortable
+													width="85">
+											</el-table-column>
+
+											<el-table-column
+													prop="y"
+													label="Y"
+													sortable
+													width="85">
+											</el-table-column>
+
+											<!--<el-table-column-->
+													<!--prop="z"-->
+													<!--sortable-->
+													<!--label="Z"-->
+													<!--width="85"-->
+													<!--&gt;-->
+											<!--</el-table-column>-->
+
+											<el-table-column
+													prop="interfaceAgreement"
+													label="接口协议"
+													width="100"
+													sortable
+													show-overflow-tooltip>
+											</el-table-column>
+
+											<el-table-column
+											prop="interfacePort"
+											label="接口端口"
+											width="100"
+											sortable
+											show-overflow-tooltip>
+								        	</el-table-column>
+
+											<el-table-column
+													prop="networkAgreement"
+													sortable
+													label="网络协议"
+													width="100"
+													>
+											</el-table-column>
+
+											<el-table-column
+											prop="productModel"
+											sortable
+											label="型号"
+											width="100"
+											>
+											</el-table-column>
+
+											<el-table-column
+											prop="seqNum"
+											sortable
+											label="序列号"
+											width="100"
+											>
+											</el-table-column>
+											<el-table-column
+													prop="initAngleX"
+													sortable
+													label="X轴角度"
+													width="100"
+													>
+											</el-table-column>
+											<el-table-column
+													prop="rotateMax"
+													sortable
+													label="最大角度"
+													width="100"
+													>
+											</el-table-column>
+
+											<el-table-column
+											prop="username"
+											sortable
+											label="所属用户"
+											width="100"
+											>
+											</el-table-column>
+
+											<el-table-column
+													prop="manu"
+													sortable
+													label="生产厂商"
+													width="100"
+													>
+											</el-table-column>
+											<el-table-column
+													prop="addTime"
+													sortable
+													label="添加时间"
+													:formatter="cameraFormatter"
+													width="200"
+													>
+											</el-table-column>
+										</el-table>
+									</template>
+
+									<button @click.prevent="setCamera($event)" class="btn draw_fence">添加摄像头</button>
+
+									<div class="camera_from_wrap">
+										<form class="nodes-form form-edit" v-show="camera.visible">
+
+											<dl>
+												<dt class="camera_from_wrap_ip">IP:Port</dt>
+												<dd>
+													<input type="text" style="width:60%;float:left;" class="camera_from_wrap_input" :disabled="!power" v-model="camera.floatEdit.data.ip">
+													:
+													<input type="number" min='0' step='1' style="width:35%;float:right;" class="camera_from_wrap_input" :disabled="!power" v-model="camera.floatEdit.data.interfacePort">
+												</dd>
+											</dl>
+
+
+											<dl>
+												<dt class="">接口协议</dt>
+												<dd>
+													<select class="form-control statis_from_wrap-select_trif" :disabled="!power"  v-model="camera.floatEdit.data.interfaceAgreement"
+													>
+														<option v-for="(item,index) in camera.interfaceAgreementSource" :value="item">
+															{{item}}
+														</option>
+													</select>
+												</dd>
+											</dl>
+
+											<dl>
+												<dt class="">网络协议</dt>
+												<dd>
+													<select class="form-control statis_from_wrap-select_trif" :disabled="!power"  v-model="camera.floatEdit.data.networkAgreement"
+													>
+														<option v-for="(item,index) in camera.networkAgreementSource" :value="item">
+															{{item}}
+														</option>
+													</select>
+												</dd>
+											</dl>
+											<dl>
+												<dt class="camera_from_wrap_initX">用户名</dt>
+												<dd>
+													<input type="text" class="camera_from_wrap_input" :disabled="!power" v-model="camera.floatEdit.data.username">
+												</dd>
+											</dl>
+											<dl>
+												<dt class="camera_from_wrap_initX">密码</dt>
+												<dd>
+													<input type="text"  class="camera_from_wrap_input" :disabled="!power" v-model="camera.floatEdit.data.password">
+												</dd>
+											</dl>
+											<dl>
+												<dt class="camera_from_wrap_initX">X轴角度</dt>
+												<dd>
+													<input type="number" min='0' max='360' step='1' class="camera_from_wrap_input" :disabled="!power" v-model="camera.floatEdit.data.initAngleX">
+												</dd>
+											</dl>
+											<dl>
+												<dt class="camera_from_wrap_rotateMax">最大角度</dt>
+												<dd>
+													<input type="number" min='0' max='360' step='1' class="camera_from_wrap_input" :disabled="!power" v-model="camera.floatEdit.data.rotateMax">
+												</dd>
+											</dl>
+											<dl class='camera_xyz'>
+												<dt class="camera_from_wrap_xyz">坐标</dt>
+												<dd>
+													<dd class="position-li">
+															<input id="x" disabled="disabled" name="x" placeholder="X" style="background: #000000;
+															opacity: 0.5;width:30%;height:30px;border-radius:2px;line-height:30px;text-indent: 4px;border:1px solid #CCCCCC; float:left" type="number" v-model="camera.floatEdit.data.x"></input>
+															<input name="y" placeholder="Y" disabled="disabled" style="background: #000000;
+															opacity: 0.5;width:30%;height:30px;border-radius:2px;line-height:30px;text-indent: 4px;border:1px solid #CCCCCC;margin:0 4px " type="number" v-model="camera.floatEdit.data.y"></input>
+															<input name="z" placeholder="Z" disabled="disabled" style="background: #000000;
+															opacity: 0.5;width:30%;height:30px;border-radius:2px;line-height:30px;text-indent: 4px;border:1px solid #CCCCCC; float:right" type="number" v-model="camera.floatEdit.data.z"></input>
+													</dd>
+												</dd>
+											</dl>
+											<dl>
+													<dt class="camera_from_wrap_manu">设备厂商</dt>
+													<dd>
+														<input type="text" class="camera_from_wrap_input" :disabled="!power" v-model="camera.floatEdit.data.manu">
+													</dd>
+												</dl>
+											<dl>
+
+											<div class="btn-box" v-show="power">
+											<button @click="cameraSave($event)" class="btn btn-default camera_save" type="button">
+											确定</button>
+											<button @click="cameraFloatEditCancell" class="btn btn-default anchor_del" type="button">
+											取消</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<!--历史轨迹-->
+							<div class="historys">
+								<div class="historys_wrap" onclick="togMenus(this);">
+									<div class="history_coin">
+										<el-tooltip class="item" :disabled="!disabled" effect="dark" content="历史轨迹" placement="right">
+											<div class="history_coin_wrap"></div>
+										</el-tooltip>
+									</div>
+									<div class="history_text">历史轨迹</div>
+									<div class="tag_coin_back tag_coin_back_1">
+										<img src="../img/images/side_ubi.png" alt="" >
+									</div>
+								</div>
+								<div class="appear">
+									<div class="block">
+										<el-date-picker
+												v-model="history.datetimeRange"
+												type="datetimerange"
+												placeholder="选择时间范围"
+												:picker-options="history.pickerOptions2"
+												>
+										</el-date-picker>
+									</div>
+
+									<div class="historySelectPanel">
+										<el-transfer
+												v-model="history.tags"
+												:titles="['请选择标签', '已选择标签']"
+												:data="history.allTags"
+												filterable
+												filter-placeholder="搜索"
+												:filter-method="searchTags"
+												:footer-format="{
+												  noChecked: '${total}',
+												  hasChecked: '${checked}/${total}'
+												}"
+												>
+										</el-transfer>
+										<!--<el-button class="transfer-footer" slot="right-footer" size="small" @click="historyPlay('play')" :loading="history.isLoading">历史回放</el-button>-->
+										<el-button class="transfer-footer" slot="right-footer" size="small" @click="historyBegin" :loading="history.isLoading">历史回放</el-button>
+									</div>
+
+									</div>
+							</div>
+							<!--热图分析-->
+							<div class="heatMap" v-show="enableHeatmap">
+								<div class="heatMap_wrap" onclick="togMenus(this);">
+									<div class="heatMap_coin">
+										<el-tooltip class="item" :disabled="!disabled" effect="dark" content="热力图" placement="right">
+											<div class="heatMap_coin_wrap"></div>
+										</el-tooltip>
+									</div>
+									<div class="heatMap_text">热力图</div>
+									<div class="tag_coin_back tag_coin_back_1">
+										<img src="../img/images/side_ubi.png" alt="" >
+									</div>
+								</div>
+								<div class="appear">
+									<div class="block">
+										<el-date-picker
+												v-model="heatMap.datetimeRange"
+												type="datetimerange"
+												placeholder="选择时间范围"
+												@change="checkTag"
+												:picker-options="heatMap.pickerOptions2"
+										>
+										</el-date-picker>
+									</div>
+
+									<div class="heatMapSelectPanel">
+										<el-transfer
+												v-model="heatMap.tags"
+												:titles="['所有标签', '分析标签']"
+												:data="history.allTags"
+												filterable
+												filter-placeholder="搜索"
+												:filter-method="searchTags"
+												@change="checkTag"
+												:footer-format="{
+												  noChecked: '${total}',
+												  hasChecked: '${checked}/${total}'
+												}"
+										>
+										</el-transfer>
+
+										<el-button class="transfer-footer" slot="right-footer" size="small" @click="analyst" :loading="heatMap.isLoading">热力图分析</el-button>
+									</div>
+
+								</div>
+							</div>
+
+							<!--<div class="statis" style="display:none;">-->
+								<!--<div class="statis_wrap"  onclick="togMenus(this);">-->
+									<!--<div class="statis_coin">-->
+										<!--<el-tooltip class="item" effect="dark" :disabled="!disabled" content="统计" placement="right">-->
+											<!--<div class="statis_coin_wrap">-->
+											<!--</div>-->
+										<!--</el-tooltip>-->
+
+									<!--</div>-->
+									<!--<div class="statis_text">统计</div>-->
+									<!--<div style="float: right;margin-right: 32px;" class="tag_coin_back">-->
+										<!--<img src="../img/images/side_ubi.png" alt="">-->
+									<!--</div>-->
+								<!--</div>-->
+								<!--<div class="appear table_box">-->
+
+								<!--<div class="statis_text">-->
+									<!--<span class=" statis_fence active">围栏</span><span>|</span>-->
+									<!--<span class="statis_system">系统</span><span>|</span>-->
+									<!--<span class="statis_datas">大数据</span>-->
+								<!--</div>-->
+
+								<!--<div class="statis_appear_fence active">-->
+									<!--<div class="total_date">-->
+										<!--<span @click="fenceStChangeTimeSpan(0,30)">过去30天</span><span>|</span>-->
+										<!--<span @click="fenceStChangeTimeSpan(0,7)">过去7天</span><span>|</span>-->
+										<!--<span @click="fenceStChangeTimeSpan(1,2)">昨日</span><span>|</span>-->
+										<!--<span @click="fenceStChangeTimeSpan(0,1)">今日</span>-->
+									<!--</div>-->
+
+									<!--<div style="position: relative">-->
+										<!--<span class="statis_from_wrap_trif">选择围栏</span>-->
+										<!--<span>-->
+											<!--<select class="form-control statis_from_wrap-select_fence" v-model="statistic.fence.fenceId"-->
+											<!--&gt;-->
+												<!--<option v-for="(item,index) in fence.data" :value="item.id">-->
+													<!--{{item.cname}}-->
+												<!--</option>-->
+											<!--</select>-->
+										<!--</span>-->
+									<!--</div>-->
+
+									<!--<div style="position: relative">-->
+										<!--<span class="statis_from_wrap_trif">触发条件</span>-->
+										<!--<span>-->
+											<!--<select class="form-control statis_from_wrap-select_trif" v-model="statistic.fence.trif"-->
+											<!--&gt;-->
+												<!--<option v-for="(item,index) in fence.trif" :value="item.id">-->
+													<!--{{item.cname}}-->
+												<!--</option>-->
+											<!--</select>-->
+										<!--</span>-->
+									<!--</div>-->
+
+									<!--<div class="statis_wrap">-->
+										<!--<div id="statis" style="min-width:300px;height:300px"></div>-->
+									<!--</div>-->
+								<!--</div>-->
+
+								<!--<div class="statis_appear_system">-->
+									<!--<div id="statis_system_one" style="min-width:300px;height:300px"></div>-->
+									<!--<div id="statis_system_two" style="min-width:300px;height:300px"></div>-->
+									<!--<div id="statis_system_three" style="min-width:300px;height:300px"></div>-->
+								<!--</div>-->
+
+								<!--<div class="statis_appear_datas">-->
+
+
+									<!--<div style="margin-left: 18px;text-align: center;-->
+		<!--line-height: 72px;">-->
+										<!--<img src="../img/images/hot.png" alt="">-->
+										<!--<p style="font-size: 12px;color: #bbbbbb;line-height: 2;">热点图</p>-->
+									<!--</div>-->
+									<!--<div style="text-align: center;-->
+		<!--line-height: 72px;">-->
+										<!--<img src="../img/images/spade.png" alt="">-->
+										<!--<p style="font-size: 12px;color: #bbbbbb;line-height: 2;">速度图</p>-->
+									<!--</div>-->
+									<!--<div style="margin-right: 0 !important;text-align: center;-->
+		<!--line-height: 72px;">-->
+										<!--<img src="../img/images/other.png" alt="">-->
+										<!--<p style="font-size: 12px;color: #bbbbbb;line-height: 2;">其他</p>-->
+									<!--</div>-->
+								<!--</div>-->
+
+								<!--</div>-->
+							<!--</div>-->
+						</div>
+
+
+						<div class="line_color"></div>
+						<div class="btn-appear" id="btn-appear"></div>
+						<div class="search">
+							<div class="search_wrap">
+								<input type="text" placeholder="请输入标签名称" id="searchTag" v-model="search.value"  @keyup.enter="searchHandle" @input="searchChange">
+								<div class="search_img" @click="searchHandle"></div>
+							</div>
+						</div>
+					</aside>
+
+					<section class="content-container">
+
+						<div class="fullscreenDiv" v-show="fullScreen"  @click="fullScreenOutHandle" >
+								<span class="glyphicon glyphicon-fullscreen map-red-wrap "></span>&nbsp<span class="full-red"></span>
+						</div>
+
+						<div :class="['panel',tabActive!==0 ? '' :'active']" id="panel"  v-show="!fullScreen" >
+
+							<transition name="slide-fade" >
+							<div class="checkbox clearfix" id="fixNagPanel" v-show="slide_fade_show" >
+								<div class="map_icon" @click="tabActive === 0 ? tabActive='': tabActive=0"
+									 :class="['bar-li', 'li-0', tabActive === 0? 'active': '']" >
+									<span class="glyphicon glyphicon-map-marker map-red-wrap "></span>&nbsp<span class="map-red">地图</span>
+								</div>
+
+								<div class="setting_icon" @click="tabActive === 1 ? tabActive='': tabActive=1"
+									 :class="['bar-li', 'li-1', tabActive === 1? 'active': '']">
+									<span class="glyphicon glyphicon-cog map-red-wrap "></span>&nbsp<span class="setting-red">设置</span>
+								</div>
+
+								<div class="full_icon" @click="fullScreenHandle" :class="['bar-li', 'li-2', fullScreen? 'active': '']">
+									<span class="glyphicon glyphicon-fullscreen map-red-wrap "></span>&nbsp<span class="full-red">全屏</span>
+								</div>
+							</div>
+							</transition>
+
+							<div class="tab-list" v-show="tabActive !== ''">
+								<div :class="['list-item', 'list-0', tabActive === 0? 'active': '']">
+
+									<!-- 地图选择器-->
+									<div >
+										<el-carousel :autoplay=false  type="card" height="100px">
+											<el-carousel-item v-for="item in map.data" :key="item">
+												<img :src="imgHost+'maps_'+item.filePath"  height="100px" :title="item.cname" :alt="item.cname"
+													 @click="changeMap(item.id)"/>
+											</el-carousel-item>
+										</el-carousel>
+									</div>
+
+
+								</div>
+
+
+								<div :class="['list-item', 'list-1', tabActive === 1? 'active': '']">
+									<div class="search-box">
+										<div class="search-box-content">
+											<div class="item" >
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">测量距离</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.distance}]" @click="switchFunc('distance', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+											<div class="item" >
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">地图校准</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.correctMap}]" @click="switchFunc('correctMap', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+											<div class="item">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">标签锁定</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.lockTag}]"  @click="switchFunc('lockTag', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+											<div class="item">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">围栏提示</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.fenceTip}]" @click="switchFunc('fenceTip', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+											<div class="item" v-show="switchData.fenceTip">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">报警声音</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.sound}]" @click="switchFunc('sound', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+											<div class="item">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">显示网格</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.grid}]" @click="switchFunc('grid', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+
+											<div class="item">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">显示围栏</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.fence}]"  @click="switchFunc('fence', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+
+											<div class="item">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">显示电量</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.power}]" @click="switchFunc('power', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+
+											<div class="item" v-show="switchData.power">
+												<div style="line-height: 28px;">
+													<el-tooltip class="item" effect="dark" content="在开启显示电量后有效，只显示电量低于30%的电量条" placement="top">
+													<div style="float: left;font-size: 12px;color: #777777;">
+														电量自动
+													</div></el-tooltip>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.powerAuto}]" @click="switchFunc('powerAuto', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+
+											<!-- 添加 围墙显示-->
+											<div class="item" v-show="enableWall">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">围墙显示</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.wall}]"  @click="switchFunc('wall', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+
+											<!--添加 实时位置-->
+											<div class="item">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">实时位置</div>
+													<div style="float: right;margin-top: 5px;">
+														<div v-bind:class="['switch', {on:switchData.isShowCoordinate}]"  @click="switchFunc('isShowCoordinate', $event)"><i></i></div>
+													</div>
+												</div>
+											</div>
+
+											<div class="item">
+												<div style="line-height: 28px;">
+													<div style="float: left;font-size: 12px;color: #777777;">拖尾</div>
+													<div style="float: right;margin-top: 7px; width: 86px;">
+														<el-slider v-model="rangeData.value"></el-slider>
+													</div>
+												</div>
+											</div>
+											<div class="clear">
+												<div class="clear_wrap">
+													<input type="button" value="清除报警" v-show="!disabled" @click.stop="clearSiren">
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+							<!-- 编辑标签-->
+							<el-popover
+									ref="popover_tag"
+									placement="right-end"
+									width="460"
+									v-model="tag.floatEdit.visible" >
+								<div class="form-horizontal-tag agreementDlg">编辑标签</div>
+								<span class="close-btn form-horizontal-tag-close" @click="tag.floatEdit.visible = false"></span>
+
+
+								<!-- 标签二维码 -->
+								<div style="width: 50%; float: left;text-align: center">
+									<h5>{{tag.qrcode.title}}</h5>
+									<!--<div>2D</div>-->
+									<a :href="tag.qrcode.value_2d" target="_blank">
+										<qrcode :value="tag.qrcode.value_2d" tag="img" :options="{ size: 180}" style="margin:10px;width:200px;"></qrcode>
+									</a>
+									<!--地图跟随标签-->
+									<div class="follow_map" style="display: block" v-show="user && user.userType=='super'">
+										<input type="button" value="地图跟随" @click="follow_map" >
+										<input type="button" value="下行告警" @click="down_alert" >
+										<input type="button" value='相机跟随' @click='followTagVideo' v-show="isShowCamera">
+
+										<!--<button @click='follow_map'>跟随</button>-->
+										<button @click="setCoordinate('tag')">调整</button>
+
+									</div>
+									<!--v-if="userType === 'anony'"-->
+
+									<!--<div v-show="enable3d" >3D</div>-->
+									<!--<a :href="tag.qrcode.value_3d" target="_blank" v-show="enable3d">-->
+										<!--<qrcode :value="tag.qrcode.value_3d" tag="img" :options="{ size: 180}" style="margin:10px;width:200px;"></qrcode>-->
+									<!--</a>-->
+								</div>
+
+
+								<form class="form-horizontal" style="float: right;width: 50%">
+									<div class="form-group">
+										<label for="code"  class="col-sm-3 control-label">编码</label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control"  disabled="true"  v-model="tag.floatEdit.data.code"  placeholder="请输入编码">
+										</div>
+									</div>
+
+								<div class="form-group">
+									<label for="alias"  class="col-sm-3 control-label">别名</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control"  :disabled="!power"  v-model="tag.floatEdit.data.alias"  placeholder="请输入别名">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="catId"  class="col-sm-3 control-label">分组</label>
+									<div class="col-sm-8">
+										<select class="form-control" v-model="tag.floatEdit.data.catId" :disabled="!power">
+											<option v-for="item in tagCat.data" :data="item.cname" :value="item.id" :style="{color: item.color}">{{item.cname}}</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="typeId"  class="col-sm-3 control-label">类型</label>
+									<div class="col-sm-8">
+										<select class="form-control" v-model="tag.floatEdit.data.typeId" :disabled="!power"   @change="tagTypeChangeImg()">
+											<option v-for="item in tagType.data" :data="item.cname" :value="item.id" >{{item.cname}}</option>
+										</select>
+										<img :src="tag.floatEdit.typeIcon" width="40px" v-if="tag.floatEdit.typeIconShow"/>
+									</div>
+								</div>
+
+								<div class="form-group" v-show="power">
+									<div class="col-sm-offset-2 col-sm-10">
+										<button type="button" class="btn btn-default tag_save" @click="tagSave($event)">确定</button>
+										<button type="button" class="btn btn-default tag_del" @click="tag.floatEdit.visible = false;">取消</button>
+									</div>
+								</div>
+
+							</form>
+						</el-popover>
+
+
+							<!-- 编辑基站-->
+							<el-popover
+									ref="popover_anchor"
+									placement="right-end"
+									:width="floatEditWidth"
+									v-model="anchor.floatEdit.visible" >
+
+								<form class="form-horizontal">
+									<div class="form-horizontal-anchor agreementDlg">编辑基站</div>
+									<span class="close-btn form-horizontal-anchor-close" @click="anchorFloatEditCancell"></span>
+
+									<div class="form-group">
+										<label for="code"  class="col-sm-3 control-label">编码</label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control"  disabled="true"  v-model="anchor.floatEdit.data.code"  placeholder="请输入编码">
+										</div>
+									</div>
+                                    <div class="form-group">
+                                        <label for="mac"  class="col-sm-3 control-label">MAC</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control"  disabled="true"  v-model="anchor.floatEdit.data.mac"  placeholder="请输入MAC">
+                                        </div>
+                                    </div>
+									<div class="form-group">
+										<label for="alias"  class="col-sm-3 control-label">别名</label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control"  :disabled="!power"  v-model="anchor.floatEdit.data.alias"  placeholder="请输入别名">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="mapId"  class="col-sm-3 control-label">地图</label>
+										<div class="col-sm-8">
+											<select class="form-control" v-model="anchor.floatEdit.data.mapId" :disabled="!power"   @change="mapChangeImg()">
+												<option v-for="item in map.data" :data="item.cname" :value="item.id" :key="item.id">{{item.cname}}</option>
+											</select>
+											<img :src="anchor.floatEdit.mapImg" width="120px" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="position"  class="col-sm-3 control-label">坐标</label>
+										<div class="col-sm-8">
+											<button class="form-group-set" @click.prevent="setCoordinate('anchor')" class="btn">地图中设置坐标</button>
+											<ul class="position-ul">
+												<li class="position-li">
+													<span>X</span>&nbsp&nbsp&nbsp
+													<input type="number" name="x" placeholder="cm" style="width:60px;text-indent: 4px;border-radius: 4px;"
+															:disabled="!power"
+															v-model="anchor.floatEdit.data.x">
+
+													<span> &nbsp; &nbsp;Y</span>&nbsp&nbsp&nbsp
+													<input  type="number" name="y" placeholder="cm" style="width:60px;text-indent: 4px;border-radius: 4px;"
+															:disabled="!power"
+															v-model="anchor.floatEdit.data.y">
+												</li>
+											</ul>
+											<!-- <span>OR</span> -->
+
+										</div>
+									</div>
+
+									<div class="form-group" v-show="power">
+										<div class="col-sm-offset-2 col-sm-10">
+											<button type="button" class="btn btn-default anchor_save" @click="anchorSave($event)">确定</button>
+											<button type="button" class="btn btn-default anchor_del" @click="anchorFloatEditCancell">取消</button>
+										</div>
+									</div>
+
+								</form>
+							</el-popover>
+
+                            <!-- 编辑摄像头-->
+							<el-popover
+							ref="popover_camera"
+							placement="right-end"
+							width="280"
+							v-model="camera.floatEdit.visible" >
+
+						<form class="form-horizontal">
+							<div class="form-horizontal-tag agreementDlg">编辑摄像头</div>
+							<span class="close-btn form-horizontal-tag-close" @click="cameraFloatEditCancell"></span>
+							<div class="form-group">
+								<label for="ip"  class="col-sm-3 control-label">IP:端口</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control"  v-model="camera.floatEdit.data.ip" style="float:left;width:68%" placeholder="请输入IP">
+									<input type="number" min='0' step='1' class="form-control"  :disabled="!power" style="float:right;width:30%;padding:0" v-model="camera.floatEdit.data.port"  placeholder="端口">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="typeId"  class="col-sm-3 control-label">网络协议</label>
+								<div class="col-sm-8">
+									<select class="form-control" v-model="camera.floatEdit.data.networkAgreement" :disabled="!power"  >
+										<option v-for="item in camera.networkAgreementSource" :data="item" :value="item" >{{item}}</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="interfaceAgreement"  class="col-sm-3 control-label">接口协议:端口</label>
+								<div class="col-sm-8">
+									<select class="form-control" style='float:left;width:68%;' v-model="camera.floatEdit.data.interfaceAgreement" :disabled="!power" >
+										<option v-for="item in camera.interfaceAgreementSource" :data="item.cname" :value="item" >{{item}}</option>
+									</select>
+									<input type="number" min='0' step='1' class="form-control"  :disabled="!power" style="float:right;width:30%;padding:0" v-model="camera.floatEdit.data.interfacePort"  placeholder="端口">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="username"  class="col-sm-3 control-label">用户</label>
+								<div class="col-sm-8">
+									<input type="text"  class="form-control"  :disabled="!power"  v-model="camera.floatEdit.data.username"  placeholder="用户">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="password"  class="col-sm-3 control-label">密码</label>
+								<div class="col-sm-8">
+									<input type="password"  class="form-control"  :disabled="!power"  v-model="camera.floatEdit.data.password"  placeholder="密码">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="productModel"  class="col-sm-3 control-label">型号</label>
+								<div class="col-sm-8">
+									<input type="text"  class="form-control"  :disabled="!power"  v-model="camera.floatEdit.data.productModel"  placeholder="型号">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="seqNum"  class="col-sm-3 control-label">序列号</label>
+								<div class="col-sm-8">
+									<input type="text"  class="form-control"  :disabled="!power"  v-model="camera.floatEdit.data.seqNum"  placeholder="序列号">
+								</div>
+							</div>
+							<div class="form-group">
+									<label for="position"  class="col-sm-3 control-label">坐标</label>
+									<div class="col-sm-8">
+										<button class="form-group-set" id='camera_set' @click.prevent="setCoordinate('camera')" class="btn">地图中设置</button>
+										<ul class="position-ul">
+											<li class="position-li">
+												<input type="number" name="x" placeholder="X" style="width:51px;text-indent: 4px;border-radius: 4px;"
+														:disabled="!power"
+														v-model="camera.floatEdit.data.x">
+												<input  type="number" name="y" placeholder="Y" style="width:51px;text-indent: 4px;border-radius: 4px;"
+														:disabled="!power"
+														v-model="camera.floatEdit.data.y">
+												<input  type="number" name="y" placeholder="Z" style="width:51px;text-indent: 4px;border-radius: 4px;"
+														:disabled="!power"
+														v-model="camera.floatEdit.data.z">
+											</li>
+										</ul>
+										<!-- <span>OR</span> -->
+
+									</div>
+								</div>
+
+							<div class="form-group" v-show="power">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="button" class="btn btn-default tag_save" @click="cameraSave($event)">确定</button>
+									<button type="button" class="btn btn-default tag_del" @click="cameraFloatEditCancell">取消</button>
+								</div>
+							</div>
+
+						</form>
+					</el-popover>
+
+
+					</section>
+				</div>
+
+				<!---history play -->
+				<div class="playHistorys" v-show="history.isShow">
+					<el-slider v-model="history.slider" :format-tooltip="historySliderMsg"
+							   @chang="historySlider" :max="history.max" :min="history.min" :step="history.step">
+					</el-slider>
+					<el-tooltip class="item" effect="dark" content="播放" placement="top-start">
+						<span class="glyphicon glyphicon-play" @click="historyPlay('play')"  aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="暂停" placement="top-start">
+						<span class="glyphicon glyphicon-pause"  @click="historyPlay('pause')" aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="停止" placement="top-start">
+						<span class="glyphicon glyphicon-stop"  @click="historyPlay('stop')" aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="慢放" placement="top-start">
+						<span class="glyphicon glyphicon-backward"  @click="historyPlay('backward')" aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="快放" placement="top-start">
+						<span class="glyphicon glyphicon-forward"  @click="historyPlay('forward')" aria-hidden="true"></span>
+					</el-tooltip>
+				</div>
+
+				<!---show heatmap  -->
+				<div class="playHistorys" v-show="heatMap.isShow">
+
+					<div class="slider">
+						<div style="float:left;width:20%;"><span>半径</span></div>
+						<div style="float:right;width:80%;"><el-slider v-model="heatMap.radius" :min="1" :step="0.1" :max="5" ></el-slider></div>
+						<div style="clear:both;"></div>
+					</div>
+
+					<div style="float:left;width:30%;">
+						<el-tooltip class="item" effect="dark" content="停止" placement="top-start">
+							<span class="glyphicon glyphicon-stop"  @click="cancelAnalyst()" aria-hidden="true"></span>
+						</el-tooltip>
+					</div>
+
+					<div class="slider">
+						<div style="float:left;width:20%;"><span>模糊</span></div>
+						<div style="float:right;width:80%;"><el-slider v-model="heatMap.blur" :min="1"  :max="30" ></el-slider></div>
+						<div style="clear:both;"></div>
+					</div>
+
+					<div style="clear:both;"></div>
+				</div>
+
+				<!-- 地图二维码 -->
+				<el-dialog :title="qrcode.title" :visible.sync="qrcode.visible" custom-class="qrcodeCss">
+					<div style="text-align:center;" >
+						<div>2D</div>
+						<a :href="selfHost+ '/map/map2d/svg/?map='+user.projectCode+'_'+mapId+'&anony=super' " target="_blank">
+						<qrcode :value="selfHost+ '/map/map2d/svg/?map='+user.projectCode+'_'+mapId+'&anony=super' " tag="img" :options="{ size: 180}" style="margin:10px;width:200px;"></qrcode>
+						</a>
+						<!--<div>3D</div>-->
+						<!--<a :href="selfHost+ '/map/map3d/?map='+user.projectCode+'_'+mapId+'&anony=super' ">-->
+						<!--<qrcode :value="selfHost+ '/map/map3d/?map='+user.projectCode+'_'+mapId+'&anony=super' " tag="img" :options="{ size: 180}" style="margin:10px;width:200px;"></qrcode>-->
+						<!--</a>-->
+					</div>
+				</el-dialog>
+				<!-- 搜索标签列表 -->
+				<el-dialog title="您搜索的是否是以下标签？" :visible.sync="search.tag.dialogVisible" >
+
+					<template>
+						<el-table
+								:data="search.tag.markers"
+								:height="240"
+								border
+								style="width: 100%">
+
+							<el-table-column
+									label="别名"
+									width="90">
+
+								<template scope="scope">
+									<el-button
+											@click.native.prevent="searchTagLink(scope.row)"
+											type="text"
+											size="small">
+										{{ scope.row.alias }}
+									</el-button>
+								</template>
+							</el-table-column>
+
+							<el-table-column
+									prop="code"
+									label="编码"
+									width="105">
+							</el-table-column>
+							<el-table-column
+									prop="mac"
+									label="MAC"
+									width="105">
+							</el-table-column>
+							<el-table-column
+									prop="powerLevel"
+									label="电量"
+									width="70">
+							</el-table-column>
+							<el-table-column
+									prop="coord"
+									label="坐标X,Y(m)"
+									width="130">
+							</el-table-column>
+							<el-table-column
+									label="所在地图"
+									width="220">
+
+								<template scope="scope">
+									<el-button
+											@click.native.prevent="searchMapLink(scope.row)"
+											type="text"
+											size="small">
+										{{ scope.row.mapCname }}
+									</el-button>
+								</template>
+
+							</el-table-column>
+							<el-table-column
+									prop="lastPosTime"
+									label="最后定位时间"
+									width="178">
+							</el-table-column>
+						</el-table>
+					</template>
+
+
+					<span slot="footer" class="dialog-footer">
+					<el-button type="primary" @click="search.tag.dialogVisible = false">确 定</el-button>
+				  </span>
+				</el-dialog>
+
+
+
+				<!-- 搜索基站列表 -->
+				<el-dialog title="您搜索的是否是以下基站？" :visible.sync="search.anchor.dialogVisible" >
+
+					<template>
+						<el-table
+								:data="search.anchor.markers"
+								:height="240"
+								border
+								style="width: 100%">
+
+							<el-table-column
+									prop="alias"
+									label="别名"
+									width="90">
+							</el-table-column>
+
+							<el-table-column
+									prop="code"
+									label="编码"
+									width="105">
+							</el-table-column>
+							<el-table-column
+									prop="mac"
+									label="MAC"
+									width="105">
+							</el-table-column>
+							<el-table-column
+									prop="isMaster"
+									label="类型"
+									width="90">
+								<template scope="scope">
+									<span>{{ scope.row.isMaster > 0? "主基站":"从基站" }}</span>
+								</template>
+							</el-table-column>
+							<el-table-column
+									prop="coord"
+									label="坐标X,Y(m)"
+									width="130">
+							</el-table-column>
+							<el-table-column
+									label="所在地图"
+									width="220">
+								<template scope="scope">
+									<el-button
+											@click.native.prevent="searchMapLink(scope.row)"
+											type="text"
+											size="small">
+										{{ scope.row.mapCname }}
+									</el-button>
+								</template>
+
+							</el-table-column>
+						</el-table>
+					</template>
+
+
+					<span slot="footer" class="dialog-footer">
+					<el-button type="primary" @click="search.anchor.dialogVisible = false">确 定</el-button>
+				  </span>
+				</el-dialog>
+			</div>
+
+
+			<!-- 基站坐标校准向导 -->
+			<el-dialog title="基站坐标校准向导" :visible.sync="adjustAnchor.dialog" >
+
+				<el-collapse v-model="adjustAnchor.activeName" accordion>
+					<el-collapse-item title="请选择坐标准确的两个基站作为校准参考基站" name="1">
+						<div style="color:red;">
+							* 双击可修改基站
+						</div>
+						<div>
+							<template>
+								<el-table
+										ref="adjustAnchorMultipleTable"
+										:data="anchor.data"
+										border
+										max-height="240"
+										tooltip-effect="dark"
+										style="width: 100%"
+										@row-dblclick="editItem"
+										@selection-change="adjustAnchorSelectionChange"
+								>
+
+									<el-table-column
+											type="selection"
+											width="55">
+									</el-table-column>
+
+									<el-table-column
+											prop="alias"
+											label="名称"
+											sortable
+											width="90">
+									</el-table-column>
+
+									<el-table-column
+											prop="code"
+											label="编号"
+											sortable
+											width="120">
+									</el-table-column>
+
+
+									<el-table-column
+											prop="x"
+											label="X"
+											sortable
+											width="80">
+									</el-table-column>
+
+									<el-table-column
+											prop="y"
+											sortable
+											label="Y"
+											width="80">
+									</el-table-column>
+
+									<el-table-column
+											prop="isMaster"
+											label="类型"
+											sortable
+											width="90">
+										<template scope="scope">{{ scope.row.isMaster>0?'主基站':'从基站' }}</template>
+									</el-table-column>
+
+								</el-table>
+							</template>
+						</div>
+						<div style="float:right;margin:10px;">
+							<el-button @click="adjustAnchorOperate(1)">下一步</el-button>
+						</div>
+					</el-collapse-item>
+					<el-collapse-item title="参考基站坐标校准" name="2">
+						<div>
+							<el-form inline class="demo-form-inline">
+								<el-form-item>
+									<el-input
+											placeholder=""
+											v-model="adjustAnchor.refCalDistance"
+											disabled>
+										<template slot="prepend">两基站的计算距离(cm)</template>
+									</el-input>
+								</el-form-item>
+								<el-form-item  label="请输入两基站的实际距离（cm）">
+									<el-input-number
+											v-model="adjustAnchor.refRealDistance"
+											:min="0" :step="1"
+											controls-position="right">
+									</el-input-number>
+								</el-form-item>
+							</el-form>
+						</div>
+						<div style="color:red;">
+							* 双击可修改基站
+						</div>
+						<div><template>
+							<el-table
+									ref="adjustAnchorSelectTable"
+									:data="adjustAnchor.selects"
+									border
+									max-height="120"
+									tooltip-effect="dark"
+									style="width: 100%"
+									@row-dblclick="editItem"
+							>
+
+								<el-table-column
+										prop="alias"
+										label="名称"
+										sortable
+										width="90">
+								</el-table-column>
+
+								<el-table-column
+										prop="code"
+										label="编号"
+										sortable
+										width="120">
+								</el-table-column>
+
+
+								<el-table-column
+										prop="x"
+										label="X"
+										sortable
+										width="80">
+								</el-table-column>
+
+								<el-table-column
+										prop="y"
+										sortable
+										label="Y"
+										width="80">
+								</el-table-column>
+
+								<el-table-column
+										prop="isMaster"
+										label="类型"
+										sortable
+										width="90">
+									<template scope="scope">{{ scope.row.isMaster>0?'主基站':'从基站' }}</template>
+								</el-table-column>
+
+							</el-table>
+						</template></div>
+						<div style="float:right;margin:10px;">
+							<el-button @click="adjustAnchorOperate(-1)">上一步</el-button>
+							<el-button @click="adjustAnchorOperate(2)">下一步</el-button>
+						</div>
+					</el-collapse-item>
+					<el-collapse-item title="校准基站" name="3">
+						<div>
+							<el-form inline class="demo-form-inline">
+								<el-form-item label="参考基站1">
+									{{adjustAnchor.selects[0]?adjustAnchor.selects[0].code:''}}
+								</el-form-item>
+								<el-form-item  label="参考基站2">
+									{{adjustAnchor.selects[1]?adjustAnchor.selects[1].code:''}}
+								</el-form-item>
+							</el-form>
+						</div>
+						<div style="color:red;">
+							* 双击可修改与参考基站之间的距离
+						</div>
+						<template>
+							<el-table
+									:data="adjustAnchor.datas"
+									style="width: 100%">
+
+								<el-table-column
+										prop="alias"
+										label="名称"
+										sortable
+										width="90">
+								</el-table-column>
+
+								<el-table-column
+										prop="code"
+										label="编号"
+										sortable
+										width="120">
+								</el-table-column>
+
+
+								<el-table-column
+										prop="xy"
+										label="当前坐标(x,y)"
+										sortable
+										width="120">
+								</el-table-column>
+
+								<el-table-column
+										prop="calcDistance0"
+										label="与参考基站1的距离(cm)"
+										sortable
+										width="120">
+								</el-table-column>
+
+								<el-table-column
+										prop="calcDistance1"
+										sortable
+										label="与参考基站2的距离(cm)"
+										width="120">
+								</el-table-column>
+
+								<el-table-column
+										prop="adjust_xy"
+										label="校准坐标(x,y)">
+								</el-table-column>
+
+							</el-table>
+						</template>
+						<div style="float:right;margin:10px;">
+							<el-button @click="adjustAnchorOperate(-1)">上一步</el-button>
+							<el-button type="primary" @click="adjustAnchorOperate(3)"  :loading="adjustAnchor.submitBtnDisable">提交</el-button>
+						</div>
+					</el-collapse-item>
+				</el-collapse>
+			</el-dialog>
+
+			<!-- 缩放 --->
+			<div class="button_scal">
+				<div class="button_scal_btn button_scal_add" @click="zoomEnlarge">+</div>
+				<div class="button_scal_btn button_scal_sub" @click="zoomReduce">-</div>
+			</div>
+
+
+
+			<div class="company">
+				<!-- 实时坐标 -->
+				<div class="coordinate" v-show="switchData.isShowCoordinate">
+					<p>实际坐标m：(X: &nbsp;<span class="relX">0</span>,Y:&nbsp;<span class="relY">0</span>)&nbsp;&nbsp;</p>
+					<p>屏幕坐标px：(X: &nbsp;<span class="x">0</span>,Y:&nbsp;<span class="y">0</span>)</p><!-- &nbsp;&nbsp;缩放比例:&nbsp;<span class="zoom">1.0</span> -->
+				</div>
+				{{projectDesc}}
+			</div>
+
+		</div>
+
+
+		<div class="wrapper" id="wrapper" >
+			<div class="main" >
+				<div class="paper" id="wrapper_paper">
+					<canvas id="mapSvg" width="2500" height="2200"></canvas>
+				</div>
+			</div>
+		</div>
+
+
+		<!--<div>-->
+			<!--<audio id="audio_danger" src="../../common/audio/danger.mp3" preload="auto"></audio>-->
+			<!--<audio id="audio_warning" src="../../common/audio/warning.mp3" preload="auto"></audio>-->
+			<!--<audio id="audio_error" src="../../common/audio/error.mp3" preload="auto"></audio>-->
+			<!--<audio id="audio_info" src="../../common/audio/info.mp3" preload="auto"></audio>-->
+			<!--<audio id="audio_report" src="../../common/audio/report.mp3" preload="auto"></audio>-->
+		<!--</div>-->
+
+
+		<div id="normal_jqxNotification" >
+			<div id="normal_jqxNotification_tip" ></div>
+		</div>
+
+		<div id="fenceAlert_jqxNotification" >
+			<div id="fenceAlert_jqxNotification_tip" ></div>
+			<input type="hidden" id="fenceAlert_jqxNotification_tag">
+		</div>
+
+		<div id="sos_jqxNotification" >
+			<div id="sos_jqxNotification_tip" ></div>
+			<input type="hidden" id="sos_jqxNotification_tag">
+		</div>
+		<div id="fall_jqxNotification" >
+			<div id="fall_jqxNotification_tip" ></div>
+			<input type="hidden" id="fall_jqxNotification_tag">
+		</div>
+
+		<div id="aggregate_jqxNotification" >
+			<div id="aggregate_jqxNotification_tip" ></div>
+			<input type="hidden" id="aggregate_jqxNotification_tag">
+		</div>
+
+		<div id="heartAlert_jqxNotification" >
+			<div id="heartAlert_jqxNotification_tip" ></div>
+			<input type="hidden" id="heartAlert_jqxNotification_tag">
+		</div>
+
+		<div id="forceRemove_jqxNotification" >
+			<div id="forceRemove_jqxNotification_tip" ></div>
+			<input type="hidden" id="forceRemove_jqxNotification_tag">
+		</div>
+
+		<div id="moreMonitor_jqxNotification" >
+			<div id="moreMonitor_jqxNotification_tip" ></div>
+			<input type="hidden" id="moreMonitor_jqxNotification_tag">
+		</div>
+
+		<div id="distanceAlert_jqxNotification" >
+			<div id="distanceAlert_jqxNotification_tip" ></div>
+			<input type="hidden" id="distanceAlert_jqxNotification_tag">
+		</div>
+
+		<div id="stillness_jqxNotification" >
+			<div id="stillness_jqxNotification_tip" ></div>
+			<input type="hidden" id="stillness_jqxNotification_tag">
+		</div>
+
+		<div id="fenceTimeoutAlert_jqxNotification" >
+			<div id="fenceTimeoutAlert_jqxNotification_tip" ></div>
+			<input type="hidden" id="fenceTimeoutAlert_jqxNotification_tag">
+		</div>
+
+		<footer class="footer">
+
+			<script type="text/javascript" src="../../../common/plugins/jQuery/jquery-3.1.1.min.js" defer></script>
+			<script src="../../../common/js/jquery.mousewheel.min.js" type="text/javascript" defer></script>
+
+
+			<script src="../../../common/js/vue.min.js" type="text/javascript" defer></script>
+			<script src="../../../common/js/vue-resource.js" type="text/javascript" defer></script>
+			<script type="text/javascript" src="../../../common/plugins/element-ui/element-ui/lib/index.js" defer></script>
+
+			<script src="../../../common/js/js.cookie.min.js" type="text/javascript" defer></script>
+			<script src="../../../common/js/lodash.min.js" type="text/javascript" defer></script>
+
+			<script src="../../../common/js/fabric.js" type="text/javascript" defer></script>
+
+			<script type="text/javascript" src="../../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js" defer></script>
+
+			<script type="text/javascript" src="../../../common/plugins/jqx/jqxcore.js" defer></script>
+			<script type="text/javascript" src="../../../common/plugins/jqx/jqxnotification.js" defer></script>
+
+            <!--heatMap库-->
+            <!--<script type="text/javascript" src="../../../common/plugins/heatmap/heatmap.js" defer></script>-->
+			 <script type="text/javascript" src="../../common/simpleheat.js" defer></script>
+
+
+            <script type="text/javascript" src="../../../common/js/comm.js" defer></script>
+			<script type="text/javascript" src="../../../common/js/session-check.js" defer></script>
+			<script type="text/javascript" src="../../../common/js/alert.js" defer></script>
+			<script type="text/javascript" src="../../common/service.js" defer></script>
+			<script type="text/javascript" src="../../common/sysAlert.js" defer></script>
+
+			<script type="text/javascript" src="lib/marker.js?v=2.0" defer></script>
+
+			<script src='./../svg/attendance/attendance.js' ></script>
+
+			<script type="text/javascript" src="../../common/data.js?v=2.1" defer></script>
+			<script type="text/javascript" src="../../common/dataManager.js?v=2.2" defer></script>
+			<script type="text/javascript" src="../../common/privCheck.js" defer></script>
+			<script type="text/javascript" src="../../common/websocket.js?v=2.0" defer></script>
+
+			<script type="text/javascript" src="../css.js" defer></script>
+
+			<script type="text/javascript" src="../public/vsn.js" defer></script>
+			<script type="text/javascript" src="../../../components/tagMessageDialog.js"></script>
+			<script type="text/javascript" src="../public/comVue.js?v=2.2" defer></script>
+			<script type="text/javascript" src="lib/canvasVue.js?v=2.1" defer></script>
+			<script type="text/javascript" src="../public/vue.js?v=2.0" defer></script>
+			<script type="text/javascript" src="lib/eventInit.js" defer></script>
+			<script type="text/javascript" src="lib/canvasInit.js?v=2.0" defer></script>
+			<script type="text/javascript" src="lib/index.js?v=2.0" defer></script>
+			<!--热图分析-->
+			 <script type="text/javascript" src="../../common/heatMapTool.js" defer></script>
+
+			<script type="text/javascript" src="../../../common/plugins/highcharts/highcharts.js" defer></script>
+
+			<!--<script type="text/javascript" src="https://img.hcharts.cn/highcharts/highcharts.js" defer></script>-->
+			<!--<script type="text/javascript" src="https://img.hcharts.cn/highcharts/modules/exporting.js" defer></script>-->
+			<!--<script type="text/javascript" src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js" defer></script>-->
+
+		</footer>
+
+</body>
+</html>
+

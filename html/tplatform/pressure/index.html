@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>压力测试</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script src="../../common/plugins/highcharts/highcharts.js"></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            host: UBIT.host,
+            //请求的服务器地址
+            url: UBIT.host + '/tplatform/statistics/',
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+            master_slave:[],
+			datas:[],
+        };
+
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+
+		<el-row>
+
+			<el-button type="danger" size="small"  @click="clearAll" :loading="clearAllDisable">清库</el-button>
+			<el-button type="info" size="small"  @click="reloadPage" >刷新</el-button>
+
+			<!--选择地图获取数据-->
+			<template>
+				<el-select v-model="currentMap" filterable placeholder="请选择地图" @change="reloadByMap()">
+					<el-option
+							v-for="item in maps"
+							:key="item.cname"
+							:label="item.cname"
+							:value="currentProj+'_'+item.id"
+					>
+					</el-option>
+				</el-select>
+			</template>
+			<label>开启测试</label>
+			<el-switch
+					v-model="debugBuf"
+					on-text=""
+					:disabled="sourceFlagDisable"
+					@change="sourceFlagChange"
+					off-text="">
+			</el-switch>
+
+		</el-row>
+
+		<el-row>
+			<div id="anchorPressureToolbar" >
+				基站压力测试报告
+				<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('anchorPressureTable', true);">导出</el-button>
+				<div>
+					前提说明：在测试之前，<span style="color:red">请关闭计算机上除receiver服务以外的其它服务（定位引擎）和程序</span>，避免计算机处理能力不够的影响<br/>
+					测试逻辑：通过不断提高标签的刷新率（800HZ -- 1200HZ, 每次递增50HZ），用丢包率来衡量基站的抗压能力。<br/>
+					评判标准：<span style="color:red">丢包率在5%以下最大的标签频率值则为基站压力的压力值</span>，表示基站能在1秒内的最大处理能力<br/>
+					<!--注意事项：-->
+					<!--在统计丢包总算时，丢包总数会出现下降，是由于服务器通过UDP接收数据包时，UDP存在乱序，导致数据包并不是按照seq顺序的发送到服务器，当某个时刻，遗漏的数据包被传送到服务器时，其丢包率将会下降。-->
+				</div>
+			</div>
+			<el-col :span="24"><table id="anchorPressureTable"></table></el-col>
+		</el-row>
+
+		<!--<el-row>-->
+			<!--<div id="tdoatoolbar" >-->
+				<!--服务器压力测试报告-->
+				<!--<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('serverTable', true);">导出</el-button>-->
+			<!--</div>-->
+			<!--<el-col :span="24"><table id="serverPressureTable"></table></el-col>-->
+		<!--</el-row>-->
+
+	</div>
+
+
+<footer>
+	<script type="text/javascript" src="../common/commHelper.js" ></script>
+	<script type="text/javascript" src="./../statistics/common.js?v1.1" ></script>
+	<script type="text/javascript" src="index.js?v1.1"></script>
+
+</footer>
+
+</body>
+</html>
+

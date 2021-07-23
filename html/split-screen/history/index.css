@@ -1,0 +1,136 @@
+
+body {
+    margin: 0;
+	
+}
+
+.playback-map {
+    /*border: 1px solid #ebebeb;*/
+    border-radius: 3px;
+    size: 10px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.current-playback-map {
+    border-radius: 3px;
+    /*font-weight: bold;*/
+    size: 10px;
+    /*background: rgba(0,0,0,0.25);*/
+    background: rgba(255, 163, 63, 0.3);
+    /*box-shadow: inset 10px 10px 10px 10px rgba(0,0,0,0.8);*/
+}
+
+.el-button--primary, .el-button--primary {
+    background: #ffa33f;
+    border-color: #ffa33f;
+}
+
+.el-button--primary:hover {
+    background: #ffa33f;
+    border-color: #ffa33f;
+}
+
+.el-button {
+    padding: 9px 14px;
+}
+
+.el-input__inner {
+    height: 34px;
+}
+
+.el-select-dropdown__item.selected.hover {
+    background-color: #ffa33f;
+}
+
+.el-select-dropdown__item.selected {
+    background-color: #ffa33f;
+}
+
+.el-button--primary:focus, .el-button--primary:hover {
+    background: #ffa33f;
+    border-color: #ffa33f;
+}
+
+iframe {
+    border: medium none;
+    /*border: 1px solid yellow;*/
+}
+
+/*修改滚动条样式*/
+.list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.list::-webkit-scrollbar-track {
+
+    background-color: #b9b9b9;
+
+    -webkit-border-radius: 2em;
+
+    -moz-border-radius: 2em;
+
+    border-radius: 2em;
+
+}
+
+.list::-webkit-scrollbar-thumb {
+
+    background-color: #6b6b6b;
+
+    -webkit-border-radius: 2em;
+
+    -moz-border-radius: 2em;
+
+    border-radius: 2em;
+
+}
+
+/*播放按钮*/
+.list .el-button--text {
+    background: #fff;
+    padding: 7px 12px;
+    margin-left: 8px;
+}
+
+
+.play-shade {
+    width: 100%;
+    height: 150px;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+}
+
+/*鼠标移入样式*/
+.mouseover {
+    background: rgba(255, 163, 63, 0.3);
+}
+
+/*鼠标移入时的播放遮罩*/
+.mouseover .play-shade {
+    opacity: 1;
+}
+
+.left-kuang{ background: url(images/left_bg.png) no-repeat center 0;
+width:100%;
+height:821px;
+	background-size:100%;
+	-webkit-background-size:100%;
+	-o-background-size:100%;
+	padding-top:20px;
+	text-align: center;
+	
+}
+.right-kuang{
+	background: url(images/right_bg.png) no-repeat center 0;
+	width:100%;
+	height:821px;
+		background-size:100%;
+		-webkit-background-size:100%;
+		-o-background-size:100%;
+		padding-top:20px;
+		text-align: center;	
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title~~</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<!--<script type="text/javascript" src="../../common/plugins/qrcode/qrcode.js"></script>-->
+	<script src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+		UBIT.initLang('ctag');
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="tagtoolbar" >
+			<el-button type="info" size="small"  @click="tagAdd" >~~add~~</el-button>
+			<el-button type="danger" size="small" @click="tagUpdate" >~~update~~</el-button>
+			<el-button type="warning" size="small"  @click="tagDelete" :loading="tagDeleteBtnDisable">~~delete~~</el-button>
+			<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('tagtable', true);">~~exports~~</el-button>
+		</div>
+
+
+		<table id="tagtable"></table>
+
+		<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="200px" class="demo-ruleForm">
+
+				<el-form-item label="~~selectUser~~" prop="userId">
+					<el-select v-model="form.userId" placeholder="~~select~~">
+						<el-option
+								v-for="item in users"
+								:key="item.id"
+								:label="item.nickname"
+								:value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~cname~~" prop="cname" >
+					<el-input type="text" v-model="form.cname" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~ctype~~" prop="ctype" >
+					<el-select v-model="form.ctype" placeholder="~~select~~">
+						<el-option
+								v-for="item in ctypes"
+								:key="item"
+								:label="item"
+								:value="item">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~mac~~" prop="mac" >
+					<el-input type="text" v-model="form.mac" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~isMaster~~" prop="isMaster">
+					<el-radio-group v-model="form.isMaster">
+						<el-radio label='1' >~~true~~</el-radio>
+						<el-radio label='0'>~~false~~</el-radio>
+					</el-radio-group>
+				</el-form-item>
+
+				<div style="clear:both;text-align:center;">
+					<el-button type="primary" @click="submitForm('form')" size="small" :loading="tagBtnDisable">~~submit~~</el-button>
+				</div>
+
+			</el-form>
+
+		</el-dialog>
+
+	</div>
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

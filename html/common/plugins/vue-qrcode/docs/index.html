@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Qrcode component for Vue.js.">
+  <meta name="keywords" content="HTML, CSS, JS, JavaScript, vue, vuejs, vue.js, vue component, qrcode, component, front-end, frontend, web development">
+  <meta name="author" content="Fengyuan Chen">
+  <title>vue-qrcode</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <header class="navbar navbar-light navbar-toggleable-md">
+    <nav class="container">
+      <a class="navbar-brand" href="./">vue-qrcode</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbar-collapse" role="navigation">
+        <nav class="nav navbar-nav float-xs-right">
+          <a class="nav-link" href="https://github.com/xkeshi/vue-qrcode/blob/master/README.md">Docs</a>
+          <a class="nav-link" href="https://github.com/xkeshi/vue-qrcode/blob/master/LICENSE">License</a>
+          <a class="nav-link" href="https://github.com/xkeshi/vue-qrcode">GitHub</a>
+          <a class="nav-link" href="https://github.com/xkeshi">About</a>
+        </nav>
+      </div>
+    </nav>
+  </header>
+
+  <div class="jumbotron bg-primary">
+    <div class="container">
+      <h1>vue-qrcode <small>v0.2.0</small></h1>
+      <p class="lead">Qrcode component for Vue.js.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <h3>Examples</h3>
+    <hr>
+    <div id="app">
+      <qrcode value="https://xkeshi.github.io/vue-qrcode/"></qrcode>
+      <qrcode value="https://xkeshi.github.io/vue-qrcode/" :options="{ foreground: '#0275d8' }"></qrcode>
+      <qrcode value="https://xkeshi.github.io/vue-qrcode/" tag="img"></qrcode>
+    </div>
+    <br>
+
+    <h6>HTML:</h6>
+    <pre class="prettyprint">&lt;div id=&quot;app&quot;&gt;
+  &lt;qrcode value=&quot;https://xkeshi.github.io/vue-qrcode/&quot;&gt;&lt;/qrcode&gt;
+  &lt;qrcode value=&quot;https://xkeshi.github.io/vue-qrcode/&quot; :options=&quot;{ foreground: &#039;#0275d8&#039; }&quot;&gt;&lt;/qrcode&gt;
+  &lt;qrcode value=&quot;https://xkeshi.github.io/vue-qrcode/&quot; tag=&quot;img&quot;&gt;&lt;/qrcode&gt;
+&lt;/div&gt;</pre>
+
+    <h6>JavaScript:</h6>
+    <pre class="prettyprint">window.addEventListener('DOMContentLoaded', function () {
+  var Vue = window.Vue;
+  var VueQrcode = window.VueQrcode;
+
+  Vue.component('qrcode', VueQrcode);
+
+  new Vue({
+    el: '#app',
+  });
+});</pre>
+  </div>
+
+  <footer></footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/vue@2.3.0/dist/vue.min.js"></script>
+  <script src="js/vue-qrcode.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+
+let a = new Vue({
+    el:"#tagDetail",
+    data: {
+        itemListIsShow: false,  //废弃物列表是否显示
+        tagId: '',
+        alias: '',
+        boxPrevBtnColor: '#bfcbd9',   //上一个箱子信息按钮颜色
+        boxNextBtnColor: '#bfcbd9',   //下一个箱子信息按钮颜色
+        boxIndex: 0,    //箱子下标
+        tagDetail:[{
+            id: '',
+            tagId: '',
+            transportId: '',
+            boxId: '',
+            hospitalName: '',
+            deptName: '',
+            collector: '',
+            weight: '',
+            collectTime: '',
+            itemList:[],
+        }],
+        currentMapName:null,//当前地图名称
+    },
+    created:function (){
+        this.tagId = getQueryVariable('tag');
+        this.getTagDetail();
+        //根据标签获取地图信息
+        this.getMapByTagId(this.tagId);
+    },
+    methods:{
+        //根据标签获取地图信息
+        getMapByTagId:function(tagId){
+            let _this = this;
+            $.ajax({
+                url: UBIT.host + "/map/loadByTagCode",
+                type:"get",
+                data:{
+                    tagCode: tagId
+                },
+                dataType:"json",
+                success:function (response){
+                    _this.currentMapName = response.maps[0].cname;
+                },
+                error: function(errorMessage) {
+                    console.log('系统错误!');
+                },
+            });
+
+        },
+        //获取标签详情
+        getTagDetail:function (){
+            if (!this.tagId) {
+                return;
+            }
+
+            let _this = this;
+            $.ajax({
+                url: extendHostUrl + "/waste/detail",
+                type:"post",
+                data:{
+                    tagId: this.tagId
+                },
+                dataType:"json",
+                success:function (response){
+
+                    if (response.code != 1) {
+                        console.log('错误:' + response.msg);
+                        return;
+                    }
+
+                    _this.tagDetail = response.data.detail;
+
+                    //获取标签别名,因为立即获取或报错,所以这里延时重复获取,直到获取到为止
+                    let interval = setInterval(function(){
+                        try {
+                            _this.alias = ME.currentTags.data[0].alias;
+                            clearInterval(interval);
+                        } catch (e){
+                            console.log(e);
+                        }
+
+                    }, 100)
+
+
+                },
+                error: function(errorMessage) {
+                    console.log('系统错误!');
+                },
+            });
+        },
+        clickMenu:function () {
+            this.itemListIsShow = !this.itemListIsShow;
+        },
+
+        //上一个箱子信息按钮
+        boxPrevBtn: function(){
+            if(this.boxIndex > 0){
+                this.boxIndex --;
+            }
+        },
+
+        //下一个箱子信息按钮
+        boxNextBtn: function(){
+            if(this.boxIndex < (this.tagDetail.length -1)){
+                this.boxIndex ++;
+            }
+        },
+
+        //控制上一个标签和下一个标签的颜色变化
+        controlBoxBtnColor: function(){
+            if(this.boxIndex == 0) {
+                this.boxPrevBtnColor = '#bfcbd9';
+            } else{
+                this.boxPrevBtnColor = 'blue';
+            }
+
+            if(this.boxIndex == this.tagDetail.length - 1) {
+                this.boxNextBtnColor = '#bfcbd9';
+            } else {
+                this.boxNextBtnColor = 'blue';
+            }
+        },
+    },
+
+    watch: {
+        boxIndex: function(val, oldVal){
+            this.controlBoxBtnColor();
+        },
+        tagDetail: function(val, oldVal){
+            this.controlBoxBtnColor();
+        },
+
+    }
+
+});
+
+/**
+ * 获取url地址栏参数
+ * @param variable
+ * @returns {string|boolean}
+ */
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+    return false;
+}

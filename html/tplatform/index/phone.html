@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>后台管理</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            selfHost: UBIT.selfHost,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+
+        if(!UBIT.isPhone()){
+            window.location.href = './index.html'
+        }
+
+	</script>
+
+	<style type="text/css">
+		  .avatar-uploader .el-upload {
+		    border: 1px dashed #d9d9d9;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    position: relative;
+		    overflow: hidden;
+		  }
+		  .avatar-uploader .el-upload:hover {
+		    border-color: #20a0ff;
+		  }
+		  .avatar-uploader-icon {
+		    font-size: 28px;
+		    color: #8c939d;
+		    width: 50px;
+		    height: 50px;
+		    line-height: 50px;
+		    text-align: center;
+		  }
+		  .avatar {
+		    width: 50px;
+		    height: 50px;
+		    display: block;
+		  }
+		  .el-upload__input {
+		  	display: none !important;
+		  }
+
+		  .container {
+			  width: 100%;
+			  position: inherit;
+			  top: 0;
+			  bottom: 0;
+			  padding: 0;
+		  }
+
+	</style>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+
+		<el-row class="container">
+			<el-col :span="24" class="header">
+				<el-row>
+					<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'" >
+						<a  @click="goHome()">{{collapsed?'':sysName}}</a>
+					</el-col>
+					<el-col :span="14" class="userinfo">
+						<el-dropdown trigger="hover">
+							<span class="el-dropdown-link userinfo-inner">
+								<img :src="photoPath" />
+								{{user.cname}} ，欢迎您！
+							</span>
+							<el-dropdown-menu slot="dropdown" class="phone_drop">
+								<el-dropdown-item divided @click.native="projectManage">进入后台</el-dropdown-item>
+								<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
+					</el-col>
+				</el-row>
+			</el-col>
+		</el-row>
+
+
+		<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
+
+			<el-menu :default-active="activeIndex" class="el-menu-vertical-demo"
+					 mode = "vertical" theme="light"  :unique-opened="uniqueOpen"
+					 :default-openeds="openedMenu"
+					 @select="handleselect" v-show="!collapsed">
+
+				<template v-for="(item,index) in menus">
+
+					<el-submenu :index="item.code" v-if="item.children">
+						<template slot="title"><i :class="item.iconCls?item.iconCls:defaultIcon"></i>{{item.cname}}</template>
+						<template v-for="(item,index) in item.children">
+							<el-submenu :index="item.code" v-if="item.children">
+								<template slot="title"><i :class="item.iconCls?item.iconCls:defaultIcon"></i>{{item.cname}}</template>
+								<el-menu-item v-for="child in item.children" :index="child.code" :key="child.id" ><i :class="child.iconCls?child.iconCls:defaultIcon"></i>{{child.cname}}</el-menu-item>
+							</el-submenu>
+							<el-menu-item v-else :index="item.code"><i :class="item.iconCls?item.iconCls:defaultIcon"></i>{{item.cname}}</el-menu-item>
+						</template>
+
+					</el-submenu>
+					<el-menu-item v-else :index="item.code"><i :class="item.iconCls?item.iconCls:defaultIcon"></i>{{item.cname}}</el-menu-item>
+
+				</template>
+
+			</el-menu>
+
+			<ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">
+				<li v-for="(item,index) in menus" class="el-submenu item">
+					<template v-if="item.children">
+						<div class="el-submenu__title" style="padding-left:20px;" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)">
+							<i :class="item.iconCls?item.iconCls:defaultIcon"></i>
+						</div>
+						<ul class="el-menu submenu" :class="'submenu-hook-'+index" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)">
+							<li v-for="child in item.children" :key="child.id" @click="selectMenu(child.code,$event)" class="el-menu-item" style="padding-left: 40px;" class="is-active"><i :class="child.iconCls?child.iconCls:defaultIcon"></i>{{child.cname}}</li>
+						</ul>
+					</template>
+					<template v-else>
+				<li class="el-submenu">
+					<div class="el-submenu__title el-menu-item" @click="selectMenu(item.code,$event)" style="padding-left: 20px;height: 56px;line-height: 56px;padding: 0 20px;" class="is-active"><i :class="item.iconCls?item.iconCls:defaultIcon"></i></div>
+				</li>
+				</template>
+				</li>
+			</ul>
+
+		</aside>
+
+
+
+		<section class="content-container">
+			<div class="grid-content bg-purple-light"  >
+
+				<el-row>
+					<el-col :span="24" class="content-wrapper">
+
+						<el-tabs v-model="defaultNagTab" type="card"
+								 @dblclick.native="nagdbclick(this,$event)"
+								 @tab-click ="nagTabClick"
+								 @tab-remove="removeTab" >
+							<el-tab-pane
+									v-for="(item, index) in nagTabs"
+									:key="item.id"
+									:label="item.cname"
+									:name="item.code"
+									:closable = "item.closable"
+
+							>
+
+								<div style="-webkit-overflow-scrolling:touch; overflow: scroll; ">
+								<iframe :src="item.path" frameborder="0" width="100%" :height="frameHeight"
+										scrolling="auto" :iframeId="item.id" ></iframe></div>
+
+							</el-tab-pane>
+						</el-tabs>
+
+					</el-col>
+				</el-row>
+			</div>
+		</section>
+
+
+
+
+		</el-row>
+		<el-col :span="24" style="text-align: center;">
+			{{footerMsg}}
+		</el-col>
+		</el-row>
+
+
+
+
+
+
+
+	<el-dialog title="修改密码" :visible.sync="dialogFormVisible" class="phone_b">
+	    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="100px" class="demo-ruleForm">
+		  		<el-form-item label="旧的密码" prop="pwd">
+		    		<el-input type="password" v-model="form.pwd" auto-complete="off"></el-input>
+			  	</el-form-item>
+		  		<el-form-item label="新的密码" prop="newPwd">
+		    		<el-input type="password" v-model="form.newPwd" auto-complete="off"></el-input>
+			  	</el-form-item>
+			 	 <el-form-item label="确认密码" prop="checkPwd">
+			    	<el-input type="password" v-model="form.checkPwd" auto-complete="off"></el-input>
+			  	</el-form-item>
+			  	<el-form-item>
+			   		<el-button type="primary" @click="submitForm('form')">提交</el-button>
+			    	<el-button @click="resetForm('form')">重置</el-button>
+				</el-form-item>
+		</el-form>
+
+	</el-dialog>
+
+	<el-dialog title="修改信息" :visible.sync="dialogPersonVisible" class="phone_b">
+	    <el-form :model="form1" :rules="modefiyPreRule" ref="form1" label-width="100px" class="demo-ruleForm">
+	    		<el-form-item label="编号" prop="code">
+		    		<el-input type="text" v-model="form1.code" disabled auto-complete="off"></el-input>
+			  	</el-form-item>
+		  		<el-form-item label="姓名" prop="cname">
+		    		<el-input type="text" v-model="form1.cname" auto-complete="off"></el-input>
+			  	</el-form-item>
+		  		<el-form-item label="电话" prop="cellphone">
+		    		<el-input type="tel" v-model="form1.cellphone" auto-complete="off"></el-input>
+			  	</el-form-item>
+			 	 <el-form-item label="邮箱" prop="email">
+			    	<el-input type="email" v-model="form1.email" auto-complete="off"></el-input>
+			  	</el-form-item>
+				<el-form-item label="出生日期" prop="birthDate">
+				    <el-form-item prop="birthDate">
+				       <el-date-picker type="date" placeholder="选择日期" v-model="form1.birthDate" style="width: 30%;"></el-date-picker>
+				    </el-form-item>
+			  	</el-form-item>
+			  	<el-form-item label="住址" prop="address">
+		    		<el-input type="text" v-model="form1.address" auto-complete="off"></el-input>
+			  	</el-form-item>
+			  	<el-form-item label="头像" prop="img">
+			  		<el-upload
+			  			ref='imgUpload'
+			  			:multiple='imgUpload.multiple'
+			  			name='img'
+			  			:headers='imgUpload.headers'
+			  			:action="imgUpload.url"
+						:disabled = 'imgUpload.disabled'
+			  			:auto-upload="imgUpload.auto"
+			  			:on-success="handleImgUpload"
+						:on-remove="handleRemove"
+			  			list-type="picture-card"
+						:file-list="imgUpload.imgUrl"
+					>
+			  			 <i class="el-icon-plus"></i>
+					</el-upload>
+			  	</el-form-item>
+			  	<el-form-item>
+			   		<el-button type="primary" @click="submitProfileForm('form1')">提交</el-button>
+				</el-form-item>
+		</el-form>
+
+	</el-dialog>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js?V2.0"></script>
+
+</footer>
+
+</body>
+</html>
+

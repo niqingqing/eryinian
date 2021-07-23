@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ws</title>
+
+    <script>
+
+        var ME = {};
+
+        ;(function () {
+
+            //
+            var conter = 100;
+            for(var i=0;i<conter;i++){
+                var socketUrl = "ws://localhost:9083/websocket/xystudy_24_"+Date.now() + conter;///xystudy_63_2D1529392050909zengwentian_15727a6e6b077872ce2e707b7b7923209fdfd6ac_type|powerAlert
+                var socketRequest = new WebSocket(socketUrl);
+            }
+
+//            var socketUrl = "ws://localhost:9083/websocket/xystudy_24_projAdmin_f65de84909400326405d108198dd00254da61a09";///xystudy_63_2D1529392050909zengwentian_15727a6e6b077872ce2e707b7b7923209fdfd6ac_type|powerAlert
+//
+//            ME.socketRequest = new WebSocket(socketUrl);
+//
+//            ME.socketRequest.onopen = function (event) {
+//                if (ME.socketRequest) {
+//                    ME.socketRequest.open && ME.socketRequest.open(event, this);
+//                    ME.socketRequest.closed = false;
+//                    // setInterval(function (){
+//                    //     socketRequest.send('are you ok?');
+//                    //     console.log(socketRequest.readyState);
+//                    // }, 3000);
+//                }
+//            }
+//
+//            ME.socketRequest.onmessage = function (msg) {
+//               // console.log(msg);
+//            };
+
+
+
+        })();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+/*当浏览器尺寸大于1366px*/
+/*@media screen (max-width:1366px) {
+	body {
+		margin-top: 200px;
+	}
+}
+
+!* 当页面宽度大于1200px小于1366px*!
+@media screen and (min-width:1200px) and (max-width:1366px) {
+	body {
+		margin-top: 100px;
+	}
+}*/
+
+html {
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	background: linear-gradient(#1f1f1f, #4a4848, #515151);
+}
+
+:after {
+	content: "";
+	clear: both;
+	display: block;
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+}
+
+.itemstyle {
+	width: 98%;
+	min-height: 400px;
+	height: auto;
+	background: #fff;
+	border-radius: 10px;
+	margin: 5px 0px 10px;
+}
+
+.clearboth {
+	clear: both;
+}
+
+.breadcrumb {
+	margin-bottom: 0px;
+	background: none;
+	font-size: 14px;
+	text-align: left;
+	margin-top: -5px;
+}
+
+/*下拉菜单样式*/
+.dropdown-menu {
+	height: 250px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.dropdown-menu li {
+	text-align: center;
+	line-height: 30px;
+}
+
+.dropdown-menu li:hover {
+	background: #f1f1f1;
+	cursor: pointer;
+}
+
+.col-sm-1,
+.col-sm-10,
+.col-sm-11,
+.col-sm-12,
+.col-sm-2,
+.col-sm-3,
+.col-sm-4,
+.col-sm-5,
+.col-sm-6,
+.col-sm-7,
+.col-sm-8,
+.col-sm-9 {
+	float: none;
+}
+
+.btn-gray {
+	background: #fff;
+	border: 1px solid #ccc;
+	color: #000;
+	border-radius: 0px;
+}
+
+.btn-primary:hover {
+	backgound: #f3f3f3;
+}
+
+.btn-primary:active {
+	background: #f1f1f1;
+}
+
+.head-title {
+	font-size: 24px;
+	font-weight: bold;
+	color: #ffffff;
+	margin: 0 auto;
+	width: 500px;
+	text-align: center;
+	line-height: 100px;
+}
+
+.title-bg {
+	background: #f1f1f1;
+	height: 45px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}

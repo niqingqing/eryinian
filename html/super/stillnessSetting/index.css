@@ -1,0 +1,20 @@
+.header .el-button,.header .el-select{
+    width:100%;
+}
+.el-col > .el-date-editor--time-select{
+    width:100%;
+}
+.header{
+    margin:20px 0;
+}
+.header .el-row{
+    margin-bottom:15px;
+}
+.text{
+    text-align: center;
+    line-height: 36px;
+}
+
+.margin-top{
+    margin-top:40px;
+}

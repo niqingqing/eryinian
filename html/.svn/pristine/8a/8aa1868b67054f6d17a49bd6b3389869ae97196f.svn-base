@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title~~</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+		UBIT.initLang('cache');
+	</script>
+
+	<style type="text/css">
+		 .el-upload__input {
+		  	display: none !important;
+		  }
+		  #maptoolbar a {
+		  		text-decoration: none;list-style-type: none;
+				color: #fff;
+		  }
+		 #maptoolbar  a:focus , #maptoolbar  a:hover{
+		  	outline: none;
+		  	color: #fff;
+		  	text-decoration: none;
+		  }
+
+
+	</style>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="maptoolbar" >
+			<el-button type="info"  @click="reloadCache">~~reloadCache~~</el-button>
+		</div>
+
+		<br/>
+		<label>~~openTestProgram~~</label>
+		<el-switch
+				v-model="globalSwith.debugBuf"
+				on-text=""
+				name="debugBuf"
+				@change="swithChange('debugBuf')"
+				off-text="">
+		</el-switch>
+		<el-input v-model="globalSwith.debugLength" placeholder="debugLength" style="width:220px;"></el-input>
+		<el-button type="primary" @click="setDebugLength">~~set~~</el-button>
+
+
+		<br/>
+		<label>~~storeHistory~~</label>
+		<el-switch
+				v-model="globalSwith.storePosition"
+				on-text=""
+				name="storePosition"
+				@change="swithChange('storePosition')"
+				off-text="">
+		</el-switch>
+
+		<br/>
+		<label>~~shwoTcpLog~~</label>
+		<el-switch
+				v-model="globalSwith.isShowTcpLog"
+				on-text=""
+				name="isShowTcpLog"
+				@change="swithChange('isShowTcpLog')"
+				off-text="">
+		</el-switch>
+
+		<br/>
+		<label>~~showHeartbeatLog~~</label>
+		<el-switch
+				v-model="globalSwith.isShowTcpHeartLog"
+				on-text=""
+				name="isShowTcpHeartLog"
+				@change="swithChange('isShowTcpHeartLog')"
+				off-text="">
+		</el-switch>
+
+		<br/>
+		<label>~~showBroadcastLog~~</label>
+		<el-switch
+				v-model="globalSwith.isShowBroadLog"
+				on-text=""
+				name="isShowBroadLog"
+				@change="swithChange('isShowBroadLog')"
+				off-text="">
+		</el-switch>
+
+		<br/>
+		<label>~~showSQLLog~~</label>
+		<el-switch
+				v-model="globalSwith.isShowSqlLog"
+				on-text=""
+				name="isShowSqlLog"
+				@change="swithChange('isShowSqlLog')"
+				off-text="">
+		</el-switch>
+
+		<br/>
+		<label>调试引擎缓存</label>
+		<el-switch
+				v-model="globalSwith.isDebugCache"
+				on-text=""
+				name="isDebugCache"
+				@change="swithChange('isDebugCache')"
+				off-text="">
+		</el-switch>
+
+		<label>~~trackTagCache~~</label>
+		<el-input v-model="globalSwith.debugCacheTag" placeholder="tag" style="width:220px;"></el-input>
+		<el-button type="primary" @click="setDebugCacheTag">~~set~~</el-button>
+
+
+		<el-row>
+			<el-col :span="24"><div class="grid-content bg-purple-dark">
+			<br>~~timeTool~~<span>{{input_time_show}}</span>,<span>{{output_time_show}}</span><br>
+			<el-input v-model="input_time" placeholder="~~timestamp~~" style="width:220px;"></el-input>
+			<el-button type="primary" @click="timeTransfrom">~~conversion~~</el-button>
+			<el-input v-model="output_time" placeholder="~~time~~" style="width:220px;"></el-input>
+			</div></el-col>
+		</el-row>
+		<el-row>
+			<span>重启本地服务</span>
+		</el-row>
+		<el-row>
+			<el-select project multiple v-model="project">
+				<el-option v-for="(item,index) in projects" :value="item" :key="index" :lable="item"></el-option>
+			</el-select>
+			<el-button size="small" type="primary" @click="restart">重启</el-button>
+		</el-row>
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

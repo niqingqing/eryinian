@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv=X-UA-Compatible content='IE=edge,chrome=1'>
+    <meta name='renderer' content='webkit'>
+    <meta name="viewport" content="width=device-width, initial-scale=0.9,maximum-scale=0.9, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>高精度定位系统</title>
+
+    <link rel="shortcut icon" href="../../../../common/img/favicon.ico">
+    <script type="text/javascript" src="../../../../common/js/comm.js"></script>
+
+    <script>
+
+        /**
+         * Created by zwt on 2017/6/24 0024.
+         * 全局数据配置
+         */
+        var ME = {
+            //访问路径
+            baseUrl: '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            iconPath: UBIT.iconPath,
+            imgHost: UBIT.imgHost,
+            selfHost: UBIT.selfHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            websocketUrl: UBIT.websocketUrl,
+            vm: {},
+            willFollowTag: '',   //记录需要跟随的标签
+            followTagMap: '',    //记录跟随标签的地图
+            lastGoPoint: {},     //标签上一个点的位置
+        };
+
+        /**
+         * 全局变量
+         */
+        var ubiMap = null;
+        var paper = null;
+        var FenceTool = null;
+        var CameraTool = null;
+
+        var socketRequest,
+            sessionId,
+            socketFlag = true;
+
+
+    </script>
+
+    <style>
+        body {
+            position: relative;
+        }
+
+        /*span{
+            display: block;
+        }*/
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .qtip-default {
+            background: rgba(0, 0, 0, 0.5);
+            color: #ebebeb;
+            font-size: 12px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .main {
+            position: relative;
+        }
+
+        .listBox {
+            position: absolute;
+            top: 220px;
+            right: 3.8%;
+            width: 300px;
+            height: 450px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            transform: translate(25%, -50%);
+        }
+
+        ul {
+            height: 399px;
+            list-style: none;
+            padding: 0;
+            margin: 50px 0 0 0;
+            overflow-y: scroll;
+        }
+
+        dl, dd {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .items {
+            position: relative;
+            width: 100%;
+            font-size: 15px;
+            color: #0a73a7;
+            border-bottom: 1px solid #eee;
+            box-sizing: border-box;
+        }
+
+        .items a {
+            display: block;
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 10px;
+            right: 10px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
+        .listBox .listBox_top {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            height: 50px;
+            background: #eee;
+            text-align: center;
+            line-height: 50px;
+            color: #0f74a8;
+        }
+
+        .innerText {
+            display: flex;
+            padding: 12px 10px;
+        }
+
+        .boxText {
+            padding: 12px 10px;
+            display: flex;
+            justify-content: space-around;
+            background: #eee;
+        }
+
+        .innerText span {
+            color: #0c0c0c;
+            margin-right: 5px;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .hide {
+            display: none
+        }
+
+        .listBox #list2 {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .innerBox #list2 .items2 {
+            flex: 50%;
+            box-sizing: border-box;
+            padding: 12px 10px;
+            display: flex;
+            background: #f7f7f7;
+            color: #5e5e5e;
+            font-size: 14px;
+            border: 1px solid #ccc;
+        }
+
+        .items2 span {
+            margin-right: 5px;
+        }
+
+        table {
+            width: auto;
+            white-space: nowrap;
+            border-collapse: collapse;
+        }
+
+        table th {
+            width: 50%;
+            height: 30px;
+            line-height: 36px;
+            color: #555;
+            text-align: center;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            padding: 0 8px;
+        }
+
+        table td {
+            width: 50%;
+            height: 30px;
+            line-height: 36px;
+            color: #555;
+            text-align: center;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            padding: 0 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="mapName" style="position: absolute;top: 0;left: 50%;background: #eee;padding: 10px 20px;border-radius: 4px;box-shadow: 2px 3px 6px 0px rgba(0,0,0,0.2);z-index: 99;
+">当前地图：<span v-text="currentMapName">1-1病房</span></div>
+
+<div class="wrapper" id="wrapper">
+    <div class="main">
+        <div class="paper" id="wrapper_paper">
+            <div id="mapSvg"></div>
+        </div>
+    </div>
+    <div class="bigBox" id="tagDetail" v-if="isShow">
+
+        <div class="listBox">
+            <div class="listBox_top">标签详情展示</div>
+            <!--废弃物列表-->
+            <ul id="list1" v-if="tagType == 'wasteCar'">
+                <li class="items">
+                    <div class="innerText">
+                        <span><b>标签编码：</b></span>
+                        <p v-text="tagId"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span><b>标签别名：</b></span>
+                        <p v-text="alias"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="boxText">
+                        <div style="cursor: pointer;" @click="boxPrevBtn" v-bind:style="{ color: boxPrevBtnColor }"><
+                        </div>
+                        <span>垃圾箱：<span v-text="boxIndex + 1"></span>/<span v-text="tagDetail.length"></span></span>
+                        <div style="cursor: pointer;" @click="boxNextBtn" v-bind:style="{color: boxNextBtnColor}">>
+                        </div>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>运送任务ID：</span>
+                        <p v-text="tagDetail[boxIndex].transportId"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>医废箱ID：</span>
+                        <p v-text="tagDetail[boxIndex].boxId"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>医疗结构名称：</span>
+                        <p v-text="tagDetail[boxIndex].hospitalName"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>科室名称：</span>
+                        <p v-text="tagDetail[boxIndex].deptName"></p>
+                    </div>
+                </li>
+
+                <li class="items">
+                    <div @click="clickMenu">
+                        <a class="menuBtn">
+                            <span v-if="!itemListIsShow">+</span>
+                            <span v-if="itemListIsShow">-</span>
+                        </a>
+                        <div class="innerText">
+                            <span><b>废弃物列表</b></span>
+                        </div>
+                    </div>
+                    <div class="innerBox" v-if="itemListIsShow" style="overflow-x: scroll;">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>类型</th>
+                                <th>采集时间</th>
+                                <th>丢弃时间</th>
+                                <th>采集人</th>
+                                <th>重量</th>
+                            </tr>
+                            </thead>
+                            <tbody v-for="list in tagDetail[boxIndex].itemList">
+
+                            <tr>
+                                <td v-text="list.wasteType"></td>
+                                <td v-text="list.collectTime"></td>
+                                <td v-text="list.dropTime"></td>
+                                <td v-text="list.collector"></td>
+                                <td v-text="list.weight"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>采集人：</span>
+                        <p v-text="tagDetail[boxIndex].collector"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>重量：</span>
+                        <p v-text="tagDetail[boxIndex].weight"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>采集时间：</span>
+                        <p v-text="tagDetail[boxIndex].collectTime"></p>
+                    </div>
+                </li>
+            </ul>
+            <!--标本托盘列表-->
+            <ul id="list2" v-if="tagType == 'specimen'">
+                <li class="items">
+                    <div class="innerText">
+                        <span><b>标签编码：</b></span>
+                        <p v-text="tagId"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span><b>标签别名：</b></span>
+                        <p v-text="alias"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="boxText">
+                        <div style="cursor: pointer;" @click="boxPrevBtn" v-bind:style="{ color: boxPrevBtnColor }"><
+                        </div>
+                        <span>垃圾箱：<span v-text="boxIndex + 1"></span>/<span v-text="tagDetail.length"></span></span>
+                        <div style="cursor: pointer;" @click="boxNextBtn" v-bind:style="{color: boxNextBtnColor}">>
+                        </div>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>患者住院号/门诊号：</span>
+                        <p v-text="tagDetail[boxIndex].inpatient_no"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>医嘱号/门诊可为空：</span>
+                        <p v-text="tagDetail[boxIndex].mo_order"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>医嘱执行档流水号：</span>
+                        <p v-text="tagDetail[boxIndex].exeq_sqn"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>运转车编码：</span>
+                        <p v-text="tagDetail[boxIndex].uwb_code"></p>
+                    </div>
+                </li>
+
+                <li class="items">
+                    <div class="innerText">
+                        <span>科室是否装箱：</span>
+                        <p v-text="tagDetail[boxIndex].encasement_status"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>科室装箱人：</span>
+                        <p v-text="tagDetail[boxIndex].encasement_userId"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>科室装箱时间：</span>
+                        <p v-text="tagDetail[boxIndex].encasement_time"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>运送状态：</span>
+                        <p v-text="tagDetail[boxIndex].transport_status"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>运送人：</span>
+                        <p v-text="tagDetail[boxIndex].transport_userId"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>运送时间：</span>
+                        <p v-text="tagDetail[boxIndex].transport_time"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>是否送达到检验科状态：</span>
+                        <p v-text="tagDetail[boxIndex].served_status"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>送达到检验科的工号：</span>
+                        <p v-text="tagDetail[boxIndex].served_userId"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>送达时间：</span>
+                        <p v-text="tagDetail[boxIndex].served_time"></p>
+                    </div>
+                </li>
+                <li class="items">
+                    <div class="innerText">
+                        <span>检验条码：</span>
+                        <p v-text="tagDetail[boxIndex].barcode"></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+
+    <script type="text/javascript" src="../bin/common.min.js" defer></script>
+    <script type="text/javascript" src="../../../../common/js/raphael.pan-zoom.js" defer></script>
+    <script type="text/javascript" src="../../../../common/js/alert.js" defer></script>
+
+    <script type="text/javascript" src="../lib/marker.js" defer></script>
+    <script type="text/javascript" src="../../../common/websocket.js?v=2.0" defer></script>
+    <script type="text/javascript" src="index.js?v=2.4" defer></script>
+
+</footer>
+
+</body>
+</html>
+<script type="text/javascript" src="../../../../common/js/vue.min.js" defer></script>
+<script type="text/javascript" src="tagDetail.js?v=2.4" defer></script>
+

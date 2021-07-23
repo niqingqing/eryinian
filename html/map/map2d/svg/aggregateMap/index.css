@@ -1,0 +1,26 @@
+*{
+    padding:0;
+    margin:0;
+}
+#container{
+    position:absolute;
+    width:100%;
+    height:100%;
+}
+.row{
+    width:100%;
+    height:50%;
+}
+.col{
+    margin:1px;
+    width:calc(50% - 7px);
+    height:calc(100% - 9px);
+    border:1px solid #ccc;
+    display: inline-block;
+    border-radius: 10px;
+}
+
+.childPage{
+    width:100%;
+    height:100%;
+}

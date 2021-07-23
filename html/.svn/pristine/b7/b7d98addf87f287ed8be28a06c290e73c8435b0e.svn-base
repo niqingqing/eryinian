@@ -1,0 +1,9 @@
+html{overflow-x: hidden;margin:10px;}
+*{margin:0px;padding:0px;}
+.blue14{color:#67aef7;}
+.fl{float:left;}
+.clearboth {
+	clear: both;
+}
+.breadcrumb{margin-bottom:0px; background:#e2f1ff;}
+.gray-bg{ background:#f1f1f1; font-size:12px;margin-bottom:15px;}

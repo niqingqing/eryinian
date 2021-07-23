@@ -1,0 +1,13 @@
+.text{
+    height:40px;
+    line-height: 40px;
+    text-align: center;
+}
+
+.el-upload,.el-upload--text,.el-upload-dragger{
+    width:100%;
+}
+
+.margin-top-30{
+    margin-top:10px;
+}

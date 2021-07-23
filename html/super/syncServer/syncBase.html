@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>远程服务管理</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="../index/index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+
+	</script>
+
+	<style>
+		.container .content-container {
+			overflow: auto;
+		}
+
+	</style>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<el-row  class="container">
+			<el-col :span="24" class="header">
+				<el-row>
+					<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'" >
+						{{collapsed?'':sysName}}
+					</el-col>
+					<el-col :span="10" class="phone_a">
+						<div class="tools" @click.prevent="collapse">
+							<i class="el-icon-menu"></i>
+						</div>
+					</el-col>
+				</el-row>
+			</el-col>
+
+			<el-col :span="24" class="main">
+				<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
+					<el-menu :default-active="activeIndex" class="el-menu-vertical-demo"
+							 mode = "vertical" theme="light"
+							 :default-openeds="openedMenu"  v-show="!collapsed">
+
+						<template v-for="(value,key) in baseTable">
+							<el-menu-item  @click=showTableData(key) :index="key" ><i class="el-icon-circle-check"></i>{{value}}</el-menu-item>
+						</template>
+
+					</el-menu>
+				</aside>
+
+				<section class="content-container">
+
+					<div id="projtablebar" >
+						<el-button type="info" size="small"  @click="remoteSync" :loading="remoteSyncBtnDisable">远程同步到内存</el-button>
+						<el-button type="info" size="small" v-show="table=='projects'" @click="syncProjData" :loading="syncProjDataBtnDisable">项目数据同步</el-button>
+
+						<el-button type="danger" size="small"  @click="dataClean" :loading="dataCleanBtnDisable" >清空</el-button>
+						<el-button type="danger" size="small"  @click="update2Serm" :loading="update2SermBtnDisable">从cliem更新到serm</el-button>
+						<el-button type="danger" size="small"  @click="update2Cliem" :loading="update2CliemBtnDisable">从serm更新到cliem</el-button>
+					</div>
+
+					<table id="projtable"></table>
+
+				</section>
+			</el-col>
+
+			<el-col :span="24" class="footer">
+				{{footerMsg}}
+			</el-col>
+		</el-row>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="basePage.js"></script>
+	<script type="text/javascript" src="syncBase.js"></script>
+
+</footer>
+
+</body>
+</html>
+

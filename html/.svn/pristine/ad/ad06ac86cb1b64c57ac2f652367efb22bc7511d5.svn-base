@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>高精度定位系统</title>
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="./index.css">
+    <script src="./common/config.js"></script>
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script  src='../../common/js/moment.js'></script>
+    <script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+    <script type="text/javascript" src="../../common/js/session-check.js" ></script>
+    <script src="../../common/js/moment.js"></script>
+    <script src="./lib/fengmap.min.js"></script>
+    <script src="index.js" defer></script>
+    <script src="lib/layer.js" defer></script>
+    <script src="lib/tag.js" defer></script>
+    <script src="./lib/anchor.js" defer></script>
+    <script src="./lib/fence.js" defer></script>
+    <script src="./lib/note.js" defer></script>
+    <script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            wsHost:location.host + ":8083",
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+        let _query = location.href.split('?')[1];
+        let query = {};
+        if(!_query){
+            throw new Error("no map id");
+        }
+        _query.split('&').forEach((value) => {
+            console.log(value);
+            let tmp = value.split("=");
+            query[tmp[0]] = tmp[1]
+        });
+        ME.currentMapId = query.map;
+        let myEvents = {
+            listeners:{},
+            emit:function(event,data){
+                if(!this.listeners[event]){
+                    return;
+                }
+                for(let cb of this.listeners[event]){
+                    cb(data);
+                }
+            },
+            on:function(event,cb){
+                if(!this.listeners[event]){
+                    this.listeners[event] = [];
+                }
+                this.listeners[event].push(cb);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="map-container"></div>
+    <div id="app" v-cloak="true">
+        <div class="tip-container">
+            <div class="tag_tip tip" v-show="tips.tag.show">
+                <div class="tip-title">标签信息</div>
+                <div class="tip-row" v-for="(item,key) in tips.tag.data" :key="key">
+                    <div class="tip-label">{{tips.tag.fields[key]}}:</div>
+                    <div class="tip-text">{{key !== "status"?item:item === "online"?"在线":"离线"}}</div>
+                </div>
+            </div>
+            <div class="anchor_tip tip" v-show="tips.anchor.show">
+                <div class="tip-title">基站信息</div>
+                <div class="tip-row" v-for="(item,key) in tips.anchor.data" :key="key">
+                    <div class="tip-label">{{tips.tag.fields[key]}}:</div>
+                    <div class="tip-text">{{key !== "status"?item:item === "online"?"在线":"离线"}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="note-container"></div>
+</body>
+</html>

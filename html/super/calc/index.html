@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>配置计算工具</title>
+
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            vm: null,
+        };
+
+    </script>
+
+</head>
+<body >
+
+<div id="app" >
+
+    <el-tabs v-model="activeName" type="card" >
+        <el-tab-pane label="服务器配置" name="first">
+            <div style="text-align: -webkit-center">
+                <el-form ref="form" label-width="250px" style="width:300px;">
+                    <el-form-item label="标签数量（个）">
+                        <el-input-number v-model="tagNum"  :min="1" ></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="定位频率（Hz）">
+                        <el-input-number v-model="frequency"  :min="0.000001" :max="100" ></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="定位信号覆盖基站数量（个）">
+                        <el-input-number v-model="anchorNum"  :min="1" :max="30"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="CPU主频（GHz）">
+                        <el-input-number v-model="cpuFreq"  :min="1" :step="0.1"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="每天定位时长（小时）">
+                        <el-input-number v-model="workTime"  :min="0.1" :max="24"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="存储时长（天）">
+                        <el-input-number v-model="days"  :min="1" ></el-input-number>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit">计算</el-button>
+                    </el-form-item>
+                </el-form>
+
+
+                <div id="configList" style="color:red;">
+                    服务器配置清单
+                </div>
+            </div>
+            <div class=WordSection1 style='layout-grid:15.6pt'>
+
+                <p class=MsoTitle><span style='font-family:宋体'>服务器配置说明</span></p>
+
+                <h1><span style='font-family:"微软雅黑","sans-serif"'>最低配置</span></h1>
+
+                <p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:宋体'> core i5 7代 4核，内存 8G，硬盘 40GB </span></p>
+
+                <p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:宋体'>
+            最低配置，即服务安装所需的基础配置，低于这个配置，则服务软件将无法安装，或者安装的服务无法正常运行。
+        </span></p>
+
+
+                <h1><span style='font-family:"微软雅黑","sans-serif"'>并发</span></h1>
+
+                <p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:宋体'>并发数是指每秒内服务器收到的请求数量。</span></p>
+
+                <p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:宋体'>换算关系：<span
+                        lang=EN-US>100</span>个标签，每个标签的定位频率为<span lang=EN-US>2hz</span>，定位信号覆盖基站数量为 <span lang=EN-US>10</span>个，则并发为<span
+                        lang=EN-US> 100*2*10 </span>即 每秒<span lang=EN-US>2000</span>次请求/秒</span></p>
+
+                <h1><span lang=EN-US>CPU</span></h1>
+
+                <p class=MsoNormal style='text-indent:21.0pt'><span style='font-family:宋体'>换算关系：一颗<span
+                        lang=EN-US>2.5GHz</span>的<span lang=EN-US>CPU</span>核， 可以支撑住每秒<span lang=EN-US>1000</span>次请求的并发。即一颗1GHz的CPU可以处理400次请求的并发。</span></p>
+
+                <p class=MsoNormal style='text-indent:21.0pt'><span lang=EN-US
+                                                                    style='font-family:宋体'>&nbsp;</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>比如当前的并发为每秒<span
+                        lang=EN-US>2000</span>次请求，这样的并发只需要一台双核服务器就可以搞定（预算<span lang=EN-US> 0.8w</span>）。</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>比如当前的并发为每秒<span
+                        lang=EN-US>10000</span>次请求，此时需要一台<span lang=EN-US>10</span>核服务器才能抗得住（预算<span
+                        lang=EN-US> 2.5w</span>）。</span></p>
+
+                <h1><span style='font-family:"微软雅黑","sans-serif"'>内存</span></h1>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>换算关系：最低配置<span lang=EN-US>8G</span>，可以支撑最多500(标签×基站)。后面每增加<span lang=EN-US>600</span>(标签×基站)需要另外加上<span
+                        lang=EN-US>1G</span>的内存。</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>比如<span lang=EN-US>3000</span>次并发请求，则需要<span lang=EN-US>
+8 +</span>（<span lang=EN-US>2000/600</span>）<span lang=EN-US> = 12G (</span>推荐<span
+                        lang=EN-US>16G)</span></span></p>
+
+                <h1><span style='font-family:"微软雅黑","sans-serif"'>硬盘</span></h1>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>每条定位数据大小为<span lang=EN-US> 240</span>字节，每天定位<span
+                        lang=EN-US>10</span>小时，<span lang=EN-US>1000</span>的并发，保留半年定位数据则需要硬盘大小为：<span
+                        lang=EN-US> 240 * 1000 * 60 * 60* 10 * 183 / (1024*1024*1024*1024) &lt; 1.5T</span></span></p>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>其它基础数据预计在<span lang=EN-US>10g</span>以内。</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>另外：日志每天预计产生<span lang=EN-US>1M</span>的数据，这个可以通过脚本定时清理。</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left'><span lang=EN-US>&nbsp;</span></p>
+
+                <h1><span style='font-family:"微软雅黑","sans-serif"'>带宽</span></h1>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>同步包每条40字节，同步频率 6.7hz (150ms)，则每个基站每秒同步 40 * 6.7 = 268字节</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>定位包每条最大为50字节，若定位频率 2 hz，则每个标签每秒定位 50 * 2 = 100字节</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        style='font-family:宋体'>若1000个标签，100个基站，定位频率2hz, 同步频率6.7hz， 预计定位信号覆盖基站数量为10个，则其带宽为：
+                （40 * 6.7 * 100 + 50 * 2 * 1000 * 10）/ (1024 * 1024) < 1 MB/s
+        </span></p>
+
+                <h1><span style='font-family:"微软雅黑","sans-serif"'>举例</span></h1>
+
+                <p class=MsoNormal align=left style='text-align:left;text-indent:21.0pt'><span
+                        lang=EN-US style='font-family:宋体'>1000</span><span style='font-family:宋体'>个标签<span
+                        lang=EN-US>1hz,定位信号覆盖基站数量为3个 </span>则其并发为<span lang=EN-US>3000</span>次，需要服务器配置<span
+                        lang=EN-US> 2.5Ghz 3</span>个核， <span lang=EN-US>&nbsp;12G </span>内存，<span
+                        lang=EN-US> 4.5T </span>硬盘（半年数据）</span></p>
+
+                <p class=MsoNormal align=left style='text-align:left'><span lang=EN-US>&nbsp;</span></p>
+
+                <p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+            </div>
+        </el-tab-pane>
+
+
+        <el-tab-pane label="标签使用时长" name="second">
+            <div style="text-align: -webkit-center">
+                <el-form ref="form" label-width="200px" style="width:300px;">
+                    <el-form-item label="电池容量(ma)">
+                        <el-input-number v-model="batteryCapacity"  :min="10" :step="10"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="定位频率（Hz）">
+                        <el-input-number v-model="frequency"  :min="0.000001" :max="100" ></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="每天持续工作时长（h）">
+                        <el-input-number v-model="workTime"  :min="0.1" :max="24"></el-input-number>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="calcPowerWaste">计算</el-button>
+                    </el-form-item>
+                </el-form>
+
+                <div id="powerWasteResult" style="color:red;">
+                    标签使用时长计算
+                </div>
+            </div>
+
+        </el-tab-pane>
+        <!--<el-tab-pane label="标签容量计算" name="third">标签容量计算</el-tab-pane>-->
+    </el-tabs>
+
+</div>
+<script type="text/javascript" src="index.js" ></script>
+
+
+</body>
+</html>
+

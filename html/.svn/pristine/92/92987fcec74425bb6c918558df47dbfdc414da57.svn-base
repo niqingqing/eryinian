@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>基站间测距</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+	<script type="text/javascript" src="../common/commHelper.js" ></script>
+	<script type="text/javascript" src="../../common/js/moment.min.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+
+	</script>
+
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="projTagtoolbar" >
+			<el-button type="info" size="small" @click="rangeEachAnchors" :loading="rangeEachLoading">相互测距</el-button>
+			<el-button type="info" size="small" @click="rangeAnchors" :loading="rangeLoading">全部测距</el-button>
+
+			<!--选择地图获取数据-->
+			<template>
+				<el-select v-model="currentMap" filterable placeholder="请选择地图" @change="reloadByMap()">
+					<el-option
+							v-for="item in maps"
+							:key="item.cname"
+							:label="item.cname"
+							:value="currentProj+'_'+item.id"
+					>
+					</el-option>
+				</el-select>
+			</template>
+
+			<!--选择地图获取数据-->
+			<template>
+				<el-select v-model="refAnchor" filterable placeholder="请选择参考基站" @change="reloadByRefAnchor()">
+					<el-option
+							v-for="item in anchors"
+							:key="item.code"
+							:label="item.code"
+							:value="item"
+					>
+					</el-option>
+				</el-select>
+			</template>
+
+			<el-button type="info" size="small" onclick="UBIT.bootstrapTableExportCsv('anchorTable', true);">导出</el-button>
+			<el-button type="warning" size="small" @click="showAnchorForm">修改位置</el-button>
+			<el-button type="success" size="small" @click="reDrawMap">重绘地图</el-button>
+			<el-button type="success" size="small" @click="reDrawDisLine">重绘距离线</el-button>
+
+		</div>
+		<el-dialog title="修改基站位置" :visible.sync="dialogAnchorFormVisible" class="phone_b">
+			<el-form :model="anchorForm" :rules="modefiyRule" ref="anchorForm" label-width="200px" class="demo-ruleForm">
+				<el-form-item label="基站mac" prop="anchorForm" >
+					<el-input type="text" v-model="anchorForm.code" auto-complete="off" :disabled="true"></el-input>
+				</el-form-item>
+
+				<el-form-item label="坐标X(cm)" prop="x" >
+					<el-input type="number"  step="1" placeholder="x" v-model="anchorForm.x" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="坐标Y(cm)" prop="x" >
+					<el-input type="number"  step="1" placeholder="y" v-model="anchorForm.y" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="坐标Z(cm)" prop="x" >
+					<el-input type="number"  step="1" placeholder="z" v-model="anchorForm.z" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item>
+					<el-button type="primary" @click="updateAnchorPos('anchorForm')" :loading="updateBtnDisable">提交</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+		<table id="anchorTable"></table>
+
+		<div id="measureAnchortoolbar">
+			<el-button type="danger" size="small" @click="delMeasure" :loading="distanceDelBtnDisable">删除</el-button>
+		</div>
+		<table id="anchorMeasureTable"></table>
+		<div id="analysisTableToolbar">
+			<el-button type="info" size="small" @click="showOrHide">显示隐藏</el-button>
+            <el-button type="info" size="small" @click="hideAllLine">全部隐藏</el-button>
+			<el-button type="danger" size="small"  :loading="distanceDelBtnDisable" @click="delAnalysis">删除</el-button>
+			<el-button type="info" size="small" @click="addAnchorCfg" :loading="addAnchorCfgBtnDisable">添加配置</el-button>
+			<el-button type="danger" size="small" @click="delAnchorCfg" :loading="delAnchorCfgBtnDisable">删除配置</el-button>
+            <el-button type="info" size="small" @click="forwardDis" :loading="forwardDisBtnDisable">正向测距</el-button>
+            <el-button type="info" size="small" @click="reverseDis" :loading="reverseDisBtnDisable">反向测距</el-button>
+		</div>
+		<table id="analysisTable"></table>
+		
+
+		<el-row style="margin:10px 0;">
+			<el-col :span="24">
+		
+				<el-select v-model="fixedAnchor" filterable placeholder="固定站" @change="selectFixedAnchor">
+					<el-option label="自动" :value="null"></el-option>
+					<el-option v-for="item in adjustAnchors" :key="item.code" :label="item.code" :value="item.code">
+					</el-option>
+				</el-select>
+		
+				<!--<el-button type="success" size="small" @click="preparaDada">测试数据</el-button>-->
+				<el-button type="success" size="small" @click="updateAdjustAnchors">重置数据</el-button>
+				<el-button v-if="onlyCorrectAnchors" type="success" size="small" @click="changeShowAnchors">可校准基站</el-button>
+				<el-button v-if="!onlyCorrectAnchors" type="danger" size="small" @click="changeShowAnchors">所有基站</el-button>
+				<el-button type="success" size="small" @click="calibrateCoord">坐标校准</el-button>
+                <el-button type="success" size="small" @click="showEveryCalc">显示过程</el-button>
+                <el-button type="success" size="small" @click="stopShowEveryCalc">停止显示</el-button>
+				步长<el-slider v-model="adjustStep" style="display:inline-block;vertical-align:top;width:100px;"></el-slider>
+				<el-button size="small" @click="mirrorAnchor">◨</el-button>
+				<el-button size="small" @click="rotateAnchor('ccw')">↪</el-button>
+				<el-button size="small" @click="moveAnchor('up')">↑</el-button>
+				<el-button size="small" @click="moveAnchor('down')">↓</el-button>
+				<el-button size="small" @click="moveAnchor('left')">←</el-button>
+				<el-button size="small" @click="moveAnchor('right')">→</el-button>
+				<el-button size="small" @click="rotateAnchor('cw')">↩</el-button>
+				<el-button type="success" size="small" @click="saveAnchorPos">保存位置</el-button>
+				<!--<el-button v-if="!openSelectRegion" type="success" size="small" @click="drawRegionSelectAn">开启选基站</el-button>-->
+				<!--<el-button v-if="openSelectRegion" type="danger" size="small" @click="drawRegionSelectAn">关闭选基站</el-button>-->
+			</el-col>
+		</el-row>
+		<div>
+			<el-table :data="adjustAnchors"
+			 border
+			 :default-sort = "{prop: 'edgeNum', order: 'descending'}"
+			 @selection-change="handleAdjustAnchorsSelectionChange"
+			 height="350"
+			 style="width: 900px;float:left"
+			ref="adjustAnchorsTable">
+				<el-table-column type="selection" width="55"></el-table-column>
+				<el-table-column prop="code" sortable label="基站" width="110"></el-table-column>
+				<el-table-column prop="edgeNum" sortable label="约束" width="110"></el-table-column>
+				<el-table-column prop="z" sortable label="z" width="110"></el-table-column>
+				<el-table-column prop="ori_x" sortable label="原x" width="110"></el-table-column>
+				<el-table-column prop="ori_y" sortable label="原y" width="110"></el-table-column>
+				<el-table-column prop="x" sortable label="现x" width="110" :formatter="rounding"></el-table-column>
+				<el-table-column prop="y" sortable label="现y" width="110" :formatter="rounding"></el-table-column>
+			</el-table>
+			<el-row style="float: left;margin:40px;">
+				<ul>
+					<li>
+						循环次数：<span style="color:green;">{{result.Cycle}}</span>
+					</li>
+					<li>
+						 梯度(<1e-8)：<span style="color:green;">{{result.Gradient}}</span>
+					</li>
+					<li>
+						均方差：<span style="color:green;">{{result.Deviation}}</span>
+					</li>
+				</ul>
+
+			</el-row>
+		</div>
+		<div style="clear:both;"></div>
+		<div style="text-align: center;margin-top:30px;">
+			<el-button v-if="!errorNoFluctuation" type="success" size="small" @click="errorOrFluctuation">误差大小</el-button>
+			<el-button v-if="errorNoFluctuation" type="primary" size="small" @click="errorOrFluctuation">波动大小</el-button>
+		</div>
+	</div>
+	<div id="mapSvg" style="margin-top:20px;"></div>
+<footer>
+	<!--<script type="text/javascript" src="../../common/js/sylvester.js"></script>-->
+	<script type="text/javascript" src="../../common/js/raphael.js" ></script>
+    <script type="text/javascript" src="../../common/js/raphael.pan-zoom.js"></script>
+    <script type="text/javascript" src="../common/commHelper.js" ></script>
+    <script type="text/javascript" src="../common/paperHelper.js?v=2.0" ></script>
+	<script type="text/javascript" src="index.js?v=2.1"></script>
+
+</footer>
+
+</body>
+</html>
+

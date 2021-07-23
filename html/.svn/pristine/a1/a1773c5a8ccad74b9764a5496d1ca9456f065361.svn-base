@@ -1,0 +1,35 @@
+.menu {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    z-index:999;
+}
+.menu ul li{
+    margin: 8px;
+}
+.menu ul.set li{
+    display: none;
+}
+.ctlShow{
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+}
+.ctlShow ul{
+    width: 80px;
+    display: none;
+}
+.ctlShow ul.toshow{
+    display: block;
+}
+.ctlShow:hover ul{
+    display: block;
+}
+.menu ul.set li.one,
+.menu ul.set li.two,
+.menu ul.set li.three,
+.menu ul.set li.four,
+.menu ul.set li.five{
+    display: block;
+}

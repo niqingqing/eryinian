@@ -1,0 +1,70 @@
+#map-container {
+    /*position: absolute;*/
+    width:100%;
+    height: 100%;
+    /*z-index:99;*/
+    position:absolute;
+    /*border:1px solid blue;*/
+}
+#app{
+    z-index: 9999;
+    position: absolute;
+    top:0;
+}
+
+.tip-container{
+    height:90px;
+    color:#000;
+    font-size:12px;
+}
+.tip{
+    width:120px;
+    float:left;
+    margin:10px;
+    border-radius:5px;
+    background-color:rgba(0,0,0,0.1);
+    opacity: 0.5;
+    display:inline-block;
+}
+.tip-row div{
+    display:inline-block;
+}
+.tip-label{
+    width:40px;
+    text-align: right;
+}
+.tip-title{
+    text-align: center;
+    font-weight:400;
+}
+*{
+    margin:0;
+    padding:0;
+}
+
+.note{
+    position: relative;
+    width:600px;
+    /*height:45px;*/
+    line-height: 45px;
+    padding-left:5px;
+    border-radius:5px;
+    color:white;
+    margin-top:5px;
+    opacity: 0.6;
+    background-color:red;
+}
+#note-container{
+    left:2px;
+    position: absolute;
+}
+
+.note-close-btn{
+    width:7px;
+    height:7px;
+    position: absolute;
+    right:7px;
+    top:7px;
+    text-align: left;
+    line-height:5px;
+}

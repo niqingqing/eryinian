@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name='keywords' content='全迹科技，室内定位，UWB'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>~~title~~</title>
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="index.css">
+
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script  src='../../common/js/moment.js'></script>
+
+    <script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+    <script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+        UBIT.initLang('personnel');
+    </script>
+
+</head>
+<body>
+
+<div id="app" v-cloak>
+    <div id="toolbar" >
+        <el-button type="primary" @click="add">~~add~~</el-button>
+        <el-button type="warning" @click="update">~~update~~</el-button>
+        <el-button type="danger" @click="remove">~~delete~~</el-button>
+    </div>
+    <table id="table"></table>
+    <el-dialog :title="title" :visible.sync="visible" @close="close">
+        <el-row class="top-30">
+            <el-col :span="6" :offset="3">
+                <div class="text">~~selectTag~~</div>
+            </el-col>
+            <el-col :span="12" :offset="0">
+                <el-select placeholder="~~selectTag~~" v-model="mac" filterable>
+                    <el-option v-for="(item,index) in tags" :key="index" :label="item.code" :value="item.code"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <el-row class="top-30">
+            <el-col :span="6" :offset="3">
+                <div class="text">输入姓名</div>
+            </el-col>
+            <el-col :span="12" :offset="0">
+                <el-input placeholder="输入姓名" v-model="name"></el-input>
+            </el-col>
+        </el-row>
+        <el-row class="top-30">
+            <el-col :span="6" :offset="3">
+                <div class="text">~~inputCardId~~</div>
+            </el-col>
+            <el-col :span="12" :offset="0">
+                <el-input placeholder="~~inputCardId~~" v-model="cardId"></el-input>
+            </el-col>
+        </el-row>
+        <el-row class="top-30">
+            <el-col :span="6" :offset="3">
+                <div class="text">~~rfid~~</div>
+            </el-col>
+            <el-col :span="12" :offset="0">
+                <el-input placeholder="~~rfid~~" v-model="rfid"></el-input>
+            </el-col>
+        </el-row>
+        <el-row class="top-30">
+            <el-col :span="6" :offset="4">
+                <el-button class="btn" type="info" @click="cancel">~~cancel~~</el-button>
+            </el-col>
+            <el-col :span="6" :offset="4">
+                <el-button class="btn" type="primary" @click="commit">~~submit~~</el-button>
+            </el-col>
+        </el-row>
+    </el-dialog>
+</div>
+<footer>
+    <script type="text/javascript" src="index.js"></script>
+</footer>
+</body>
+</html>

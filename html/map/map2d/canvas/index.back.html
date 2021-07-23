@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- 公共数据 -->
+    <link rel="stylesheet" href="../public.css">
+    <script src='../../../common/js/moment.min.js'></script>
+    <script src='../../../common/js/comm.js'></script> 
+    <script src='../../../common/plugins/jQuery/jquery-3.1.1.min.js'></script>
+    <script src='../../../common/js/jquery.mousewheel.min.js'></script>
+    <script src='../../../common/js/fabric.min.js'></script>
+    <!-- 用户数据相关 -->
+    <script src='./src/user.js'></script>
+    <!-- 工具相关 -->
+    <script src='./src/util.js'></script>
+    <script src='./index.js'></script>
+    <!-- 菜单相关 -->
+    <script src='./menu/menu.js'></script>
+    <link rel="stylesheet" href="./menu/menu.css">
+
+    <!-- 跟随菜单相关 -->
+    <script src='./follow_menu/follow_menu.js'></script>
+    <link rel="stylesheet" href="./follow_menu/follow_menu.css">
+    <script src='./follow_menu/table.js'></script>
+    <link rel="stylesheet" href="./follow_menu/table.css">
+
+    <!-- 顶部相关 -->
+    <script src='./header/header.js'></script>
+    <link rel="stylesheet" href="./header/header.css">
+
+    <!-- 遮罩层 -->
+    <script src='./mask/mask.js'></script>
+    <link rel="stylesheet" href="./mask/mask.css">
+
+    <!-- 围栏 -->
+    <script src='./fence/fence.js'></script>
+    <link rel="stylesheet" href="./fence/fence.css">
+
+    <!-- 标签 -->
+    <script src='./tag/tag.js'></script>
+
+    <!-- 基站 -->
+    <script src='./anchor/anchor.js'></script>
+
+    <!-- <script src='./main/background.js' defer></script> -->
+    <!-- canvas相关 -->
+    <script src='./main/tag.js' defer></script>
+    <script src='./main/anchor.js' defer></script>
+    <script src='./main/main.js' defer></script>
+    <script src='./main/base.js'></script>
+    <link rel="stylesheet" href="./main/main.css">
+    <title>cavans</title>
+</head>
+<body>
+    <!-- 顶部相关 -->
+    <div id='header'>
+        <ul>
+            <li>
+                <img class='header-logo-img' src="" alt="logo">
+            </li>
+            <li>星云研究院</li>
+        </ul>
+        <ul>
+            <li class='header-tag'>
+                <img src="../img/images/label_ubi.png" alt="tag">
+                <span class='header-tag-number'>tag</span>
+                <label class='header-tag-hover'>标签总数</label>
+            </li>
+            <li class='header-anchor'>
+                <img src="../img/images/station_ubi.png" alt="anchro">
+                <span class='header-anchor-number'>anchor</span>
+                <label class='header-anchor-hover'>基站总数</label>
+            </li>
+            <li class='header-user'>
+                <img src="../img/user.png" alt="user" class='header-user-logo'>
+                <span class='header-username' >username</span>
+                <img src="../img/images/suspend_ubi.png" alt="下拉" class='header-select'>
+            </li>
+        </ul>
+        <div class='header-user-table'></div>
+        <div class='header-tag-list'></div>
+    </div>
+    <!-- 菜单 -->
+    <div id='menu'>
+        <div class='menu-content'></div>
+        <div class='menu-search'>
+            <input type="text" placeholder="请输入标签或基站名称">
+            <div class='menu-search-img' ></div>
+            <div class='menu-search-hide-button'></div>
+        </div>
+        <div class='menu-hide-button'>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <div id='main'>
+        <canvas id='canvas' width='5000' height='5000'></canvas>
+    </div>
+    <!-- 跟随菜单 -->
+    <div id='follow_menu'>
+        <div class="fence-edit">
+            <button class="follow-menu-fence-draw">绘制围栏</button>
+            <div class='follow-menu-fence-edit-area'>
+                <label for="">
+                    名称
+                    <input type="text">
+                </label>
+                <label for="">
+                    类型
+                    <select name="" id="">
+                        <option value="危险区">危险区</option>
+                        <option value="警告区">警告区</option>
+                        <option value="通知区">通知区</option>
+                    </select>
+                </label>
+                <label for="">
+                    <label for="触发条件">
+                        是否记录
+                        <select name="" id="">
+                            <option value="进出触发">进出触发</option>
+                            <option value="出去触发">出去触发</option>
+                            <option value="进去触发">进去触发</option>
+                        </select>
+                    </label>
+                </label>
+                <label for="">
+                    是否记录
+                    <input type="radio" value='是'>
+                    <input type="radio" value='否'>
+                </label>
+                <label for="">
+                    是否发邮件
+                    <input type="radio" value='是'>
+                    <input type="radio" value='否'>
+                </label>
+                <label for="">
+                    是否发短信
+                    <input type="radio" value='是'>
+                    <input type="radio" value='否'>
+                </label>
+
+            </div>
+        </div>
+    </div>
+    <!-- 遮罩 -->
+    <div id='masker'></div>
+
+    <!-- 底部 -->
+    <div id='footer'>版本：1.22 北京全迹科技有限公司 技术支持：support@ubitrap.com</div>
+</body>
+</html>

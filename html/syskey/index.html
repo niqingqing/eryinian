@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv=X-UA-Compatible content='IE=edge,chrome=1'>
+    <meta name='renderer' content='webkit'>
+    <meta name='viewport' content='width=device-width,minimum-scale=0.01,initial-scale=0.6,maximum-scale=5.0,user-scalable=no'>
+    <title>高精度定位系统</title>
+    <link rel="stylesheet" type="text/css" href="../common/css/reset.css">
+    <link rel="stylesheet" href="../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" type="text/css" href="index.min.css">
+    <link rel="shortcut icon" href="../common/img/favicon.ico">
+</head>
+<body>
+    <div id="wrapper" >
+        <div class="bg"></div>
+        <div class="main" v-cloak >
+            <div class="divform">
+                <div class="tipdiv">
+                    <p>您的激活码已过期，请联系供应商重新激活</p>
+                </div>
+                <form class="formstyle">
+                    <div class="textareadiv">
+                        <textarea rows="10" v-model="syskey" class="textareastyle"></textarea>
+                    </div>
+                    <el-button class="activatebtn" @click="activateSys" :disabled="activing">激活</el-button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <script type="text/javascript" src="../common/bin/super.common.min.js"></script>
+      	<script type="text/javascript" src="../common/js/comm.js" ></script>
+        <script type="text/javascript" src="../common/js/session-check.js" ></script>
+        <script type="text/javascript" src="index.js" ></script>
+    </footer>
+</body>
+</html>

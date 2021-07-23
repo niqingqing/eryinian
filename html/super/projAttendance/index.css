@@ -1,0 +1,15 @@
+.btn{
+    width:100%;
+}
+
+.margin-top{
+    margin-top:30px;
+}
+.margin-top-40{
+    margin-top:40px;
+}
+
+.row-label{
+    text-align: right;
+    line-height: 36px;
+}

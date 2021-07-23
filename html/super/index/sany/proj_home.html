@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="../../../common/img/favicon.ico">
+<link rel="stylesheet" href="../../../common/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+<!-- <link rel="stylesheet" href="../../common/plugins/highcharts/highcharts.css"> -->
+<link rel="stylesheet" type="text/css" href="../../../common/css/reset.css">
+<link rel="stylesheet" href="./proj_home.css">
+
+	<title>首页</title>
+
+
+<script type="text/javascript" src="../../../common/bin/super.common.min.js" ></script>
+<script type="text/javascript" src="../../../common/js/comm.js" ></script>
+<script type="text/javascript" src="../../../common/js/session-check.js" ></script>
+<script type='text/javascript' src="../../../common/plugins/highcharts/highcharts_6.js"></script>
+<script type='text/javascript' src="../../../common/plugins/highcharts/highcharts-more.js"></script>
+<script type='text/javascript' src="../../../common/plugins/highcharts/solid-gauge.js"></script>
+<script type='text/javascript' src="../../../common/plugins/highcharts/drilldown.js"></script>
+<!-- <script type='text/javascript' src="../../common/plugins/highcharts/highcharts.js"></script> -->
+<script type='text/javascript' src="http://cdn.hcharts.cn/highcharts/modules/no-data-to-display.js"></script>
+<script>
+
+	/**
+	 * 全局变量
+	 * @type {{vm: null, user: {}, host: string}}
+	 */
+	var ME = {
+		vm: null,
+		user: UBIT.user,
+		// host: '/',
+		baseUrl : '/',
+        selfHost: UBIT.selfHost,
+        //请求的服务器地址
+        host: UBIT.host,
+	};
+
+</script>
+</head>
+<body>
+
+<div id="container" v-cloak>
+<div class="overview">
+	<div class="overview_wrap">
+		<div class="overview_item overview_people pointer" @click="changeMap()">
+				<p class="p_title"><span></span>人员数量</p>
+				<p class="p_overview"><img src="../img/people.png" alt="">{{total.people}}<span>(个)</span></p>
+		</div>
+		<div class="overview_item overview_chache pointer" @click="changeMap()">
+			<p class="p_title"><span></span>叉车数量</p>
+			<p class="p_overview"><img src="../img/chache.png" alt="">{{total.forklift}}<span>(个)</span></p>
+		</div>
+		<div class="overview_item overview_things pointer" @click="changeMap()">
+				<p class="p_title"><span></span>物资数量</p>
+				<p class="p_overview"><img src="../img/things.png" alt="">{{total.material}}<span>(个)</span></p>
+		</div>
+		<div class="overview_item overview_sos pointer" @click="changeMap()">
+			<p class="p_title"><span></span>求救报警</p>
+			<p class="p_overview"><img src="../img/sos.png" alt="">{{total.sos}}<span>(次)</span></p>
+		</div>
+		<div class="overview_item overview_fence pointer" @click="changeMap()">
+			<p class="p_title"><span></span>围栏报警</p>
+			<p class="p_overview"><img src="../img/baojing.png" alt="">{{total.fence}}<span>(次)</span></p>
+		</div>
+	</div>
+	<div class="overview_wrap">
+		<div class="overview_item ">
+				<div class="chart_item_title">{{chartTag_people.itemTitle}}
+					<!-- <span @click='getTagLine'></span> -->
+				</div>
+				<div id="chartTag_people" class='chart_content'></div>
+		</div>
+		<div class="overview_item ">
+				<div class="chart_item_title">{{chartTag_forklift.itemTitle}}
+					<!-- <span @click='getTagLine'></span> -->
+				</div>
+				<div id="chartTag_forklift" class='chart_content'></div>
+		</div>
+		<div class="overview_item" v-show="enableHeartRate">
+			<div class="chart_item_title">{{materialNum.itemTitle}}
+				<!-- <span @click='getHeartRate'></span> -->
+			</div>
+			<div id="materialNum" class="item_materialNum_wrap"></div>
+		</div>
+
+
+
+
+		<div class="overview_item overview_police">
+				<div class="chart_item_title">{{inOutLib.itemTitle}}</div>
+						<!-- <span @click='getHeartRate'></span> -->
+				<div id="inOutLib_chart" class="item_materialNum_wrap"></div>
+		</div>
+		<div class="overview_item">
+			<div class="chart_item_title">{{chartAnchor.itemTitle}}</div>
+			<div id="chartAnchor" class='chart_content'></div>
+	</div>
+	</div>
+</div>
+
+<div class="charts">
+	<div class="charts_wrap_abnormal">
+			<div class="abnormal_right chart_item_wrap " v-show="enableHeartRate">
+				<div class="chart_item_title">日均在线时长(近七天)<span></span></div>
+				<div id="statisticsOnline_chart"></div>
+			</div>
+			<div class="abnormal_right chart_item_wrap pointer" v-show="enableHeartRate">
+				<div class="chart_item_title">实时定位<span></span></div> 
+				<div class="abnormal_wrap_content">
+						<img :src="imgPath" @click="changeMap()" v-show="imgPath"/>
+				</div>
+			</div>
+	</div>
+	<div class="charts_wrap_abnormal">
+		<div class="abnormal_right chart_item_wrap profile isTableChart" v-show="enableHeartRate">
+			<div class="chart_item_title">SOS求救明细(近七天)<span></span></div>
+			<div id="sos_chart"></div>
+		</div>
+		<div class="abnormal_right chart_item_wrap profile isTableChart" v-show="enableHeartRate">
+			<div class="chart_item_title">围栏报警明细(近七天)<span></span></div>
+			<div id="fence_chart"></div>
+		</div>
+	</div>
+
+	
+
+	<!-- 一排三列模块 -->
+	<div class="charts_wrap_normal">
+	
+		<!-- <div class="chart_item chart_item_wrap" v-show="enableAggregate">
+			<div class="chart_item_title">{{aggregateAbnormal.itemTitle}}<span @click='getAggregateAbnormal'></span></div>
+			<div id="aggregateAbnormal"></div>
+		</div> -->
+	</div>
+</div>
+</div>
+
+<div class="text-effect">
+    
+</div>
+
+
+</body>
+<script type='text/javascript' src="./publicSet.js"></script>
+<script type='text/javascript' src="./chartItemData.js"></script>
+<script type='text/javascript' src="./proj_home.js"></script>
+</html>

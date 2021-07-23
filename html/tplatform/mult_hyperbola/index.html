@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>多组定位双曲线</title>
+
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="index.css">
+
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script src="../../common/plugins/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+    <script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+            datas:null,
+        };
+
+    </script>
+
+    <style >
+
+        .menu {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            z-index:999;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+<div id="mapSvg"></div>
+
+<div id="app" >
+    <div class="menu" >
+
+        <el-button type="danger" size="small"  @click="clearAll" :loading="clearAllDisable">清库</el-button>
+
+        <label>开启测试</label>
+        <el-switch
+                v-model="debugBuf"
+                on-text=""
+                :disabled="sourceFlagDisable"
+                @change="sourceFlagChange"
+                off-text="">
+        </el-switch>
+
+        <!--选择地图获取数据-->
+        <template>
+            <el-select v-model="currentMap" filterable placeholder="请选择地图" @change="reloadByMap()">
+                <el-option
+                        v-for="item in maps"
+                        :key="item.cname"
+                        :label="item.cname"
+                        :value="currentProj+'_'+item.id"
+                >
+                </el-option>
+            </el-select>
+        </template>
+
+
+        <el-input placeholder="tagCode" v-model="tag_filter" style="width: 100px" @change="save_tag_filter"></el-input>
+        <el-input-number v-model="point" @change="handleChange" :min="0" :max="max"></el-input-number>
+        <el-button type="danger" size="small" onclick="clearCir()">清除</el-button>
+        <!--<el-button type="primary" size="small" onclick="exportCSV()">导出</el-button>-->
+
+        <el-input placeholder="pointSize" v-model="pointSize" style="width: 80px" @change="save_tag_filter"></el-input>
+        <el-input placeholder="strokeWidth" v-model="strokeWidth" style="width: 80px" ></el-input>
+
+        <br/> <br/>
+
+       所有双曲线 <el-switch
+                v-model="isDrawHyperbola"
+                on-text=""
+                off-text="">
+        </el-switch>
+
+        所有圆 <el-switch
+                v-model="isDrawSourceHyperbola"
+                on-text=""
+                off-text=""></el-switch>
+
+        参考点圆 <el-switch
+            v-model="isDrawRefCircle"
+            on-text=""
+            off-text=""></el-switch>
+
+        定位圆 <el-switch
+            v-model="isDrawCoordCircle"
+            on-text=""
+            off-text=""></el-switch>
+
+        所有定位 <el-switch
+                v-model="isDrawAnchorLine"
+                on-text=""
+                off-text="">
+        </el-switch>
+    </div>
+    <div v-bind:class="{hideAnchorDg:!isAnchorShow}">
+        <template>
+            <el-dialog
+                    id="anchorform"
+                    name="anchorFormIframe"
+                    title=""
+                    size='large'
+                    :visible.sync="centerDialogVisible"
+                    @close='closeAnchorDialog'
+                    @open='openAnchorDialog'
+                    width="80%"
+                    :modal="false"
+                    center>
+                <!--<div style="width:600px;height:800px;margin:-120px 0px 0px -300px;">-->
+                    <iframe id="anchorIframe" name="anchorIframe" :src="iframeSrcUrl" frameborder="0" width="100%" height="800" scrolling="auto"></iframe>
+                <!--</div>-->
+            </el-dialog>
+        </template>
+    </div>
+</div>
+
+
+
+<footer>
+    <script type="text/javascript" src="../../common/js/raphael.js" ></script>
+    <script type="text/javascript" src="../../common/js/raphael.pan-zoom.js"></script>
+    <script type="text/javascript" src="../common/commHelper.js" ></script>
+    <script type="text/javascript" src="../common/paperHelper.js" ></script>
+    <script type="text/javascript" src="tdoa.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+</footer>
+
+</body>
+</html>

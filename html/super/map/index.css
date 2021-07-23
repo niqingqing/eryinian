@@ -1,0 +1,18 @@
+.headbutton{
+    text-align: center;
+    padding-bottom: 20px;
+    margin-top: -45px;
+}
+.innerDialog .el-dialog--small{
+    width:30%;
+}
+
+.saveDialog .el-input{
+    width:80%;
+}
+.center{
+    text-align: left;
+}
+.innerDialog .center button{
+    margin-left: 25%;
+}

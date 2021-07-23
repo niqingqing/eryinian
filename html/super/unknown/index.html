@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name='keywords' content='全迹科技，室内定位，UWB'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>~~title~~</title>
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="index.css">
+
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script  src='../../common/js/moment.js'></script>
+
+    <script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+    <script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+        UBIT.initLang('unknownTagAnchor');
+    </script>
+
+</head>
+<body>
+
+<div id="app" v-cloak>
+    <el-row>
+        <el-col :span="12" :offset="1">
+            <el-select placeholder="指定项目" v-model="project" @change="changeProj">
+                <el-option v-for="(item,index) in projects" :key="index" :lable="item.cname" :value="item.code"></el-option>
+            </el-select>
+            <el-select v-model="map" placeholder="指定地图">
+                <el-option v-for="(item,index) in maps" :key="index" :label="item.cname" :value="item.id"></el-option>
+            </el-select>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="10" :offset="1">
+            <div id='anchorToolbar'>
+                <el-button type="warning" @click="anchorClean">清除所有</el-button>
+                <el-button type="primary" @click="anchorAddTo">添加到</el-button>
+                <el-tag  type="primary" color="white">{{tag}}</el-tag>
+            </div>
+            <table id="anchorTable"></table>
+        </el-col>
+        <el-col :span="11" :offset="1">
+            <div id='tagToolbar'>
+                <el-button type="warning" @click="tagClean">清除所有</el-button>
+                <el-button type="primary" @click="tagAddTo">添加到</el-button>
+                <el-tag type="primary">{{tagtag}}</el-tag>
+            </div>
+            <table id="tagTable"></table>
+        </el-col>
+    </el-row>
+</div>
+<footer>
+    <script type="text/javascript" src="index.js"></script>
+</footer>
+</body>
+</html>

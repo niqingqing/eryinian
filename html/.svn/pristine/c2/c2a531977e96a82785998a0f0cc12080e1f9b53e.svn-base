@@ -1,0 +1,287 @@
+@ground1_color:#685cc7;//头部背景颜色 #9793b3
+@font1_color: #ffffff;//头部字体颜色
+@ground1_hover_color:#3e258c;//头部鼠标hover背景颜色
+@font1_hover_color: #ffffff;//头部鼠标hover字体颜色
+
+@tooltip1_bd_color:#7e74d2;//提示框颜背景色
+@tooltip1_font_color:#ffffff;//提示框字体颜色
+
+@ground1_color_rgba:rgba(104,92,199,0.7);//
+
+@ground1_menu_color:#685cc7;//右边菜单背景
+@font1_menu_color: #ffffff;//菜单字体颜色
+@ground1_menu_hover_color:#3e258c;//菜单鼠标hover背景颜色
+@font1_menu_hover_color: #ffffff;//菜单鼠标hover字体颜色
+
+@ground1_menu_item_bodder_bottom:1px solid #3e558c;//菜单底边样式
+@ground1_menu_item_bodder_top:1px solid #3e258c;//菜单上边样式
+
+@ground1_menu_tbox_color_rgba:rgba(56, 17, 212, 0.4);//菜单tablebox透明背景
+@font1_menu_tbox_table_color:#ffffff;//菜单tablebox的table字体颜色
+@font1_hover_menu_tbox_table_color:#ffffff;//菜单tablebox的table字体hober颜色
+@font1_menu_tbox_table_empty_color:#ffffff;//菜单tablebox的table为空时字体颜色
+
+@ground1_search_bar_bd_color:#20a0ff;//查询菜单背景颜色
+
+//::-webkit-scrollbar滚动条整体样式
+@ground1_menu_scrolbar_width:10px;
+@ground1_menu_scrolbar_height:10px;
+//@ground1_menu_scrolbar_bd_color:#F5F5F5;
+@ground1_menu_scrolbar_bd_color:rgba(245, 245, 245, 0.3);
+//::-webkit-scrollbar滚动条 滑块样式
+//@ground1_menu_scrolbar_thumb_bd_color:#e4a2a2;
+@ground1_menu_scrolbar_thumb_bd_color:rgba(101, 74, 183, 0.8);
+
+//menu下的table中的form的input
+@ground1_menu_tb_form_input_bd_color_rgba:rgba(47,18,150,0.5);
+
+//menu下的table中的form的select_popper的背景颜色
+@ground1_menu_tb_form_select_popper_bd_color:#665fce;
+
+//menu下的table中form下的time_picker 104, 92, 197
+//@ground1_menu_tb_form_time_picker_bd_color_rgba:rgba(54, 77, 95, 0.5);
+@ground1_menu_tb_form_time_picker_bd_color_rgba:rgba(104, 92, 197,0.8);
+//menu下的form中的addbtn背景颜色
+@ground1_menu_tb_form_fence_adbtn_bd_color_rgb:rgb(87, 60, 180);
+
+//menu下的form中确定按钮样式
+@ground1_menu_tb_form_ok_bd_color:#665fce;
+@ground1_menu_tb_form_ok_font_color:#ffffff;
+@ground1_hover_menu_tb_form_ok_bd_color:#ffffff;
+@ground1_hover_menu_tb_form_ok_font_color:#665fce;
+//menu下的form中取消按钮样式
+@ground1_menu_tb_form_cancel_bd_color:#665fce;
+@ground1_menu_tb_form_cancel_font_color:#ffffff;
+@ground1_hover_menu_tb_form_cancel_bd_color:#ffffff;
+@ground1_hover_menu_tb_form_cancel_font_color:#665fce;
+//menu下多人互监搜索人背景颜色
+@ground1_menu_tb_form_tag_search_bd_color_rgba:rgb(104, 92, 197);
+
+//menu下历史轨迹picker_sidebar的颜色 rgba(99, 127, 212, 0.5)
+@ground1_menu_tb_form_picker_sidebar_bd_color_rgba:rgba(99, 127, 212, 0.5);
+@ground1_menu_tb_form_picker_sidebar_font_color:#ffffff;
+//menu下历史轨迹下的picker下的input的背景颜色
+@ground1_menu_tb_form_picker_input_bd_color_rgba:rgba(255, 255, 255, 0.6);
+
+//历史轨迹table下的panel样式 rgba(104, 92, 198, 0.5)
+@ground1_menu_tb_form_history_tb_panel_bd_color_rgba:rgba(104, 92, 198, 0.5);
+@ground1_menu_tb_form_history_tb_panel_font_color:#bfcbd9;
+
+//历史轨迹tag标签栏样式
+@ground1_menu_tb_form_history_label_bd_color_rgba:rgba(89, 73, 216,0.7);
+@ground1_menu_tb_form_history_label_header_font_color:#f5f5f5;
+@ground1_menu_tb_form_history_label_footer_font_color:#bfcbd9;
+
+.undercolor1 .container .header{
+  background:@ground1_color;
+  color:@font1_color;
+}
+.undercolor1 .container .mapName{
+  color:@font1_color;
+}
+.undercolor1 .container .mapName .map_meanus{
+  background:@ground1_color;
+  color:@font1_color;
+}
+.undercolor1 .container .mapName .map_meanus li:hover{
+  background:@ground1_hover_color;
+}
+.undercolor1 .el-tooltip__popper.is-dark{
+  //background:@ground1_color;
+  //color:@font1_color;
+  color:@tooltip1_font_color;
+  background: @tooltip1_bd_color;
+}
+.undercolor1 .el-tooltip__popper[x-placement^=left] .popper__arrow{
+  border-left-color: @tooltip1_bd_color;
+}
+.undercolor1 .el-tooltip__popper[x-placement^=left] .popper__arrow::after{
+  border-left-color: @tooltip1_bd_color;
+}
+.undercolor1 .total_anchor{
+  color:@font1_color;
+}
+.undercolor1 .total_tag{
+  color:@font1_color;
+}
+//右侧菜单
+.undercolor1 .container .main .m-right{
+  background:@ground1_menu_color;
+}
+.undercolor1 .container .main .one_menu_item:hover{
+  background: @ground1_menu_hover_color;
+}
+.undercolor1 .container .main .tag.active,
+.undercolor1 .container .main .anchor.active,
+.undercolor1 .container .main .fence.active,
+.undercolor1 .container .main .attendance.active,
+.undercolor1 .container .main .polling.active,
+.undercolor1 .container .main .dimension.active,
+.undercolor1 .container .main .moreMonitor.active,
+.undercolor1 .container .main .historys.active{
+  background:@ground1_menu_hover_color;
+}
+.undercolor1 .container .main .m-right .tag,
+.undercolor1 .container .main .m-right .anchor,
+.undercolor1 .container .main .m-right .fence,
+.undercolor1 .container .main .m-right .historys,
+.undercolor1 .container .main .m-right .attendance,
+.undercolor1 .container .main .m-right .polling,
+.undercolor1 .container .main .m-right .statis,
+.undercolor1 .container .main .m-right .camera,
+.undercolor1 .container .main .m-right .wall,
+.undercolor1 .container .main .m-right .heatMap,
+.undercolor1 .container .main .m-right .dimension,
+.undercolor1 .container .main .m-right .moreMonitor{
+  border-bottom: @ground1_menu_item_bodder_bottom;
+  border-top: @ground1_menu_item_bodder_top;
+}
+.undercolor1 .m-right .line_color{
+  border-top: @ground1_menu_item_bodder_top;
+}
+.undercolor1 .container .main .m-left .menu:hover,
+.undercolor1 .container .main .m-right .menu:hover{
+  background-color:@ground1_menu_hover_color;
+}
+.undercolor1 .container .main .m-left{
+  background:@ground1_menu_color;
+}
+.undercolor1 .btn-appear{
+  background-color:@ground1_search_bar_bd_color;
+}
+.undercolor1 .container .main .m-right .tag.active .appear,
+.undercolor1 .container .main .m-right .anchor.active .appear,
+.undercolor1 .container .main .m-right .fence.active .appear,
+.undercolor1 .container .main .m-right .historys.active .appear,
+.undercolor1 .container .main .m-right .polling.active .appear,
+.undercolor1 .container .main .m-right .attendance.active .appear,
+.undercolor1 .container .main .m-right .statis.active .appear,
+.undercolor1 .container .main .m-right .camera.active .appear,
+.undercolor1 .container .main .m-right .wall.active .appear,
+.undercolor1 .container .main .m-right .heatMap.active .appear,
+.undercolor1 .container .main .m-right .dimension.active .appear,
+.undercolor1 .container .main .m-right .moreMonitor.active .appear{
+  background: @ground1_menu_tbox_color_rgba;
+}
+.undercolor1 .container .main .m-left .tag.active .appear,
+.undercolor1 .container .main .m-left .anchor.active .appear,
+.undercolor1 .container .main .m-left .fence.active .appear,
+.undercolor1 .container .main .m-left .historys.active .appear,
+.undercolor1 .container .main .m-left .attendance.active .appear,
+.undercolor1 .container .main .m-left .polling.active .appear,
+.undercolor1 .container .main .m-left .statis.active .appear,
+.undercolor1 .container .main .m-left .camera.active .appear,
+.undercolor1 .container .main .m-left .wall.active .appear,
+.undercolor1 .container .main .m-left .heatMap.active .appear,
+.undercolor1 .container .main .m-left .dimension.active .appear,
+.undercolor1 .container .main .m-left .moreMonitor.active .appear {
+  background: @ground1_menu_tbox_color_rgba;
+}
+//menu tbbox table样式
+#right_menus.undermenucolor1 .el-table tr{
+  color:@font1_menu_tbox_table_color;
+}
+#right_menus.undermenucolor1  .el-table--enable-row-hover .el-table__body tr:hover>td{
+  color:@font1_hover_menu_tbox_table_color;
+}
+#right_menus.undermenucolor1  .el-table__footer-wrapper thead div,
+#right_menus.undermenucolor1  .el-table__header-wrapper thead div{
+  color:@font1_menu_tbox_table_color;
+}
+.undercolor1 .el-table__empty-text{
+  color:@font1_menu_tbox_table_empty_color;
+}
+#right_menus.undermenucolor1 ::-webkit-scrollbar-thumb{
+  background: @ground1_menu_scrolbar_thumb_bd_color;
+}
+#right_menus.undermenucolor1 ::-webkit-scrollbar{
+  width: @ground1_menu_scrolbar_width;
+  height: @ground1_menu_scrolbar_height;
+  background-color: @ground1_menu_scrolbar_bd_color;
+}
+.undercolor1 .fence_from_wrap_input,
+.undercolor1 .fence_from_wrap-select,
+.undercolor1 .fence_from_wrap-select_trif,
+.undercolor1 .dimension_from_wrap_input,
+.undercolor1 .moreMonitor_from_wrap-select,
+.undercolor1 .moreMonitor_from_wrap_input,
+.undercolor1 .camera .camera_from_wrap .form-edit .camera_from_wrap_input,
+.undercolor1 .camera .camera_from_wrap .form-edit select,
+#right_menus.undermenucolor1 .el-input__inner{
+  background:@ground1_menu_tb_form_input_bd_color_rgba;
+}
+.undercolor1 .fence_from_wrap-select_tagCat_popper {
+  background:@ground1_menu_tb_form_select_popper_bd_color;
+}
+.undercolor1 .el-picker-panel{
+  background: @ground1_menu_tb_form_time_picker_bd_color_rgba;
+}
+#right_menus.undermenucolor1 .fence_validity_style .addBtn{
+  background: @ground1_menu_tb_form_fence_adbtn_bd_color_rgb;
+}
+.undercolor1 .fence_from_wrap_sure.btn,
+.undercolor1 .dimension_from_wrap .dim_btn-box .dim_from_wrap_btn,
+.undercolor1 .moreMonitor .btn-box button.btn,
+.undermenucolor1 .camera_save{
+  background-color: @ground1_menu_tb_form_ok_bd_color;
+  color: @ground1_menu_tb_form_ok_font_color;
+  opacity: 1;
+
+}
+.undermenucolor1 .camera_save{
+  border:none;
+}
+.undermenucolor1 .anchor_del{
+  border:none;
+}
+.undercolor1 .fence_from_wrap_sure.btn:hover,
+.undercolor1 .dimension_from_wrap .dim_btn-box .dim_from_wrap_btn:hover,
+.undercolor1 .moreMonitor .btn-box button.btn:hover,
+.undermenucolor1 .camera_save:hover{
+  background-color: @ground1_hover_menu_tb_form_ok_bd_color;
+  color: @ground1_hover_menu_tb_form_ok_font_color;
+  opacity: 1;
+}
+.undercolor1 .fence_from_wrap_reset.btn,
+.undermenucolor1 .anchor_del{
+  background-color: @ground1_menu_tb_form_cancel_bd_color;
+  color: @ground1_menu_tb_form_cancel_font_color;
+  opacity: 1;
+}
+.undercolor1 .fence_from_wrap_reset.btn:hover,
+.undermenucolor1 .anchor_del:hover{
+  background-color: @ground1_hover_menu_tb_form_cancel_bd_color;
+  color: @ground1_hover_menu_tb_form_cancel_font_color;
+  opacity: 1;
+}
+.undercolor1 .moreMonitor_from_wrap .form-edit{
+  background: none;
+}
+.undercolor1 .moreMonitor_all_box{
+  background: @ground1_menu_tb_form_tag_search_bd_color_rgba;
+}
+//历史轨迹
+.undercolor1 .el-picker-panel [slot=sidebar],
+.undercolor1 .el-picker-panel__sidebar{
+  background-color: @ground1_menu_tb_form_picker_sidebar_bd_color_rgba;
+}
+.undercolor1 .el-input__inner{
+  background-color: @ground1_menu_tb_form_picker_input_bd_color_rgba;
+}
+.undercolor1 .el-picker-panel__shortcut{
+  color:@ground1_menu_tb_form_picker_sidebar_font_color;
+}
+.undercolor1 .el-transfer-panel{
+  background-color: @ground1_menu_tb_form_history_tb_panel_bd_color_rgba;
+}
+.undercolor1 .el-transfer-panel .el-transfer-panel__header,
+.undercolor1 .el-transfer-panel .el-transfer-panel__footer{
+  background-color: @ground1_menu_tb_form_history_label_bd_color_rgba;
+  color:@ground1_menu_tb_form_history_label_header_font_color;
+}
+.undercolor1 .el-transfer-panel .el-transfer-panel__footer .el-checkbox{
+  color:@ground1_menu_tb_form_history_label_footer_font_color;
+}
+.undercolor1 .el-transfer-panel__item.el-checkbox{
+  color:@ground1_menu_tb_form_history_tb_panel_font_color;
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>速度走势图分析</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script src="../../common/plugins/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+    <script type="text/javascript" src="../../common/js/session-check.js" ></script>
+    <script type="text/javascript" src="../common/commHelper.js" ></script>
+
+
+
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+            datas:null,
+        };
+
+    </script>
+
+    <style>
+        .divChart{
+            height:400px;
+            background-color: #ddd;
+            margin: 50px 4px ;
+            border: 1px solid #cccccc;
+        }
+        .divImg{
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+<div id="app">
+    <!--<el-button type="primary"  size="small" @click="importRemoteAll" :loading="importRemoteAllDisable" v-if="showRemote">远程导入</el-button>-->
+    <el-button type="danger"  size="small" @click="clearAll" :loading="clearAllDisable">清库</el-button>
+
+    <label>开启测试</label>
+    <el-switch
+            v-model="debugBuf"
+            on-text=""
+            :disabled="sourceFlagDisable"
+            @change="sourceFlagChange"
+            off-text="">
+    </el-switch>
+    <el-input placeholder="14000000" v-model="tag_filter" style="width: 100px" @change="save_tag_filter"></el-input>
+    <el-button type="primary" @click="refresh" size="small" >刷新</el-button>
+    <el-button type="primary" @click="exportData" size="small" >导出</el-button>
+</div>
+
+
+<script type="text/javascript" src="index.js"></script>
+
+</body>
+</html>

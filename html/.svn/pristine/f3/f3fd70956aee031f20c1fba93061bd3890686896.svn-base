@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv=X-UA-Compatible content='IE=edge,chrome=1'>
+    <meta name='renderer' content='webkit'>
+    <meta name='viewport' content='width=device-width,minimum-scale=0.01,initial-scale=0.6,maximum-scale=5.0,user-scalable=no'>
+    <title>UbiTraq室内定位SaaS</title>
+    <link rel="shortcut icon" href="common/img/favicon.ico"> 
+    <script type="text/javascript" src="common/js/lib.common.min.js" ></script>
+    <script type="text/javascript" src="common/plugins/jQuery/jquery-3.1.1.min.js" ></script>
+	<script type="text/javascript" src="common/js/comm.js" ></script>
+    <script type="text/javascript" >
+
+    	;(function(){
+            //localStorage userData 不存在，则需要重新登录
+            if(UBIT.enableAutoLogin){
+                console.log("auto login");
+                $.ajax({
+                    url:UBIT.host + "/user/login",
+                    method:"post",
+                    data:{
+                        loginCode:"test",
+                        loginPwd:"test"
+                    },
+                    success:function(res){
+                        console.log(res);
+                        if(res.isOk){
+                            var userData = res.entity;
+                            localStorage.setItem('api_token',userData.api_token);
+                            localStorage.setItem('userData',JSON.stringify(userData));
+                            window.location.href='map/map2d/';
+                        }
+                    }
+                })
+            }else{
+                if(UBIT.checkSession()){
+                    var userData = JSON.parse(localStorage.getItem('userData'));
+                    console.log(userData);
+                    if(userData.userType=='super' && userData.projectId<1){
+                        window.location.href='super/index/';
+                    }else{
+                        if(userData.id === UBIT.fengmap.userId){
+                            window.location.href=UBIT.fengmap.url;
+                        }else{
+                            window.location.href='map/map2d/';
+                        }
+                    }
+                }else {
+                    window.location.href='login/index.html';
+                }
+            }
+    	})();
+    </script>
+    
+</head>
+
+</html>

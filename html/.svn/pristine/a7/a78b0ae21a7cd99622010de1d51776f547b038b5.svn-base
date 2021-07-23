@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name='keywords' content='全迹科技，室内定位，UWB'>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title~~</title>
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script  src='../../common/js/moment.js'></script>
+
+	<script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+		};
+		UBIT.initLang('aggregateSetting');
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+        <el-row>
+            <el-col :span=11>
+                <el-row class='header'>
+                    <el-col :span=23 :offset=1>
+                        <el-row>
+                            <el-col :span=10>
+                                <div class='text'>~~selectMap2~~</div>
+                            </el-col>
+                            <el-col :span=14>
+                                <el-select v-model='map' filterable>
+                                    <el-option v-for='(item,index) in maps' :label='item.cname' :value='item.id'></el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span=10>
+                                <div class='text'>~~enterDuration~~</div>
+                            </el-col>
+                            <el-col :span=14>
+                                <el-input v-model='duration' type='number' placeholder="~~enterDurationPla~~"></el-input>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span=10>
+                                <div class='text'>聚集距离阈值(cm)</div>
+                            </el-col>
+                            <el-col :span=14>
+                                <el-input v-model='distance' type='number' placeholder='请输入距离阈值(cm)'></el-input>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span=10>
+                                <div class='text'>聚集标签类型</div>
+                            </el-col>
+                            <el-col :span=14>
+                                <el-select v-model='aggregateType' filterable>
+                                    <el-option v-for='(item,index) in typeList' :label='item' :value='item' :key='index'></el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span=10>
+                                <div class='text'>起始时间</div>
+                            </el-col>
+                            <el-col :span=14>
+                                <el-time-select placeholder='起始时间' v-model='start' :picker-options="{
+                                    start:'16:00',
+                                    step:'00:01',
+                                    end:'17:00'
+                                }"></el-time-select>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span=10>
+                                <div class='text'>结束时间</div>
+                            </el-col>
+                            <el-col :span=14>
+                                <el-time-select placeholder='结束时间' v-model='end' :picker-options="{
+                                    start:'06:00',
+                                    step:'00:30',
+                                    end:'21:00'
+                                }"></el-time-select>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span=20 :offset=2>
+                                <ul>
+                                    <li>{{periods.join(',') || '无'}}</li>
+                                </ul>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span=8 :offset=1>
+                                <el-button size='small' type='info' @click='addPeriod'>添加时间段</el-button>
+                            </el-col>
+                            <el-col :span=6 :offset=1>
+                                <el-button size="small" type="info" @click='set'>~~setting~~</el-button>
+                            </el-col>
+                            <el-col :span=7 :offset=1>
+                                <el-button size="small" type="danger" @click='setAll'>~~setAll~~</el-button>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+            </el-col>
+        </el-row>
+        <el-row id='toolbar'>
+                <el-button type="danger" size="small"  @click="remove" >~~delete~~</el-button>
+                <el-button type="danger" size="small"  @click="removeAll" >~~deleteAll~~</el-button>
+            </el-row>
+            <table id='table'></table>
+        </el-row>
+        <el-row>
+            <el-row id='typeToolbar'>
+                <el-button type="info" size="small" @click='openSetType'>设置</el-button>
+            </el-row>
+            <table id='aggregateTypeTable'></table>
+        </el-row>
+        <el-dialog title='设置标签聚集类型' :visible.sync='visiable'>
+            <el-row class='margin-top'>
+                <el-col :span=6>
+                    <div class='text'>设置类型</div>
+                </el-col>
+                <el-col :span=14>
+                    <el-input type='text' placeholder='输入聚集类型' v-model='aggregateType'></el-input>
+                </el-col>
+            </el-row>
+            <el-row class='margin-top'>
+                <el-col :span=6 :offset=7>
+                    <el-button @click='setTypeCancel'>取消</el-button>
+                </el-col>
+                <el-col :span=6 :offset=2>
+                    <el-button type='info' @click='setTypeCommit'>提交</el-button>
+                </el-col>
+            </el-row>
+        </el-dialog>
+	</div>
+<footer>
+	<script type="text/javascript" src="index.js"></script>
+</footer>
+</body>
+</html>

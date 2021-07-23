@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>模拟路径</title>
+    <script type="text/javascript" src="../../common/bin/super.common.min.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js"></script>
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="../../common/js/moment.js"></script>
+    <script type="text/javascript" src="../../common/bin/super.common.min.js"></script>
+    <script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+    <script src="./pixi.js"></script>
+    <script src='./tools.js'></script>
+    <script type="text/javascript" src="../../common/js/session-check.js"></script>
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl: "/",
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null
+        };
+        const tools = new Tools()
+        // UBIT.initLang("serverRoute");
+        // console.log(Raphael)
+    </script>
+    <style>
+        html {
+            margin: 0;
+            padding: 0 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div id='content'></div>
+        <div id='slide' class='slide-show' ref='slideRef'>
+            <el-row>
+                <el-col :span=18 :offset=3>
+                    <p style='text-align: center;'>双击结束，退格键回退一步，双击列表更改配置</p>
+                </el-col>
+            </el-row>
+            <el-row class='margin-top-100'>
+                <el-col :span=22 :offset=1>
+                    <el-table :data="list" height="200" border stripe style="width: 100%" @row-dblclick='update'>
+                        <!-- <el-table-column resizable label='行号' width="50">
+                            <template scope='scope'>
+                                <p>{{scope.$index + 1}}</p>
+                            </template>
+                        </el-table-column> -->
+                        <el-table-column resizable label="状态">
+                            <template scope='scope'>
+                                <div :class="scope.row.isActive===1?'running':'stop'">
+                                    {{scope.row.isActive===1?'运行':'停止'}}
+                                </div>
+
+                            </template>
+                        </el-table-column>
+                        <el-table-column resizable label="显示" width=120>
+                            <template scope='scope' style='font-size:10px'>
+                                <!-- <el-button type='primary' size=mini>{{scope.row.name}}</el-button> -->
+                                <el-row>
+                                    <el-col :span=6 :offset=2>
+                                        <button class='btn el-button el-button--primary el-button--mini'
+                                            @click='show(scope.row)'>显示</button>
+                                    </el-col>
+                                    <el-col :span=6 :offset=2>
+                                        <button class='btn el-button el-button--danger el-button--mini'
+                                            @click='remove(scope.row.id)'>删除</button>
+                                    </el-col>
+                                    <el-col :span=6 :offset=2>
+                                        <button v-if='scope.row.isActive'
+                                            class='btn el-button el-button--warning el-button--mini'
+                                            @click='stop(scope.row.id)'>停止</button>
+                                        <button v-if='!scope.row.isActive'
+                                            class='btn el-button el-button--primary el-button--mini'
+                                            @click='run(scope.row.id)'>运行</button>
+                                    </el-col>
+                                </el-row>
+                            </template>
+                        </el-table-column>
+                        <el-table-column resizable prop="projectCode" label="项目">
+                        </el-table-column>
+                        <el-table-column resizable prop="mapCname" label="地图">
+                        </el-table-column>
+                        <el-table-column resizable prop="tag" label="标签" width=100>
+                        </el-table-column>
+                        <el-table-column resizable prop="speed" label="速度">
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+            <el-row class='margin-top-20'>
+                <el-col :span=18 :offset=3>
+                    <el-select popper-class='system' size='mini' v-model='edit.project' placeholder='请选择项目'
+                        @change='projectChangeHandler'>
+                        <el-option v-for='(item,index) in projects' :key='index' :label='item.cname' :value='item.id'>
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row class='margin-top-20'>
+                <el-col :span=18 :offset=3>
+                    <el-select popper-class='system' size='mini' v-model='edit.map' placeholder='请选择地图'
+                        @change='mapChangeHandler'>
+                        <el-option v-for='(item,index) in maps' :key='index' :label='item.cname' :value='item.id'>
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row class='margin-top-20'>
+                <el-col :span=12 :offset=6>
+                    <el-button size='mini' type='primary' @click='add'>添加</el-button>
+                </el-col>
+            </el-row>
+        </div>
+        <div id='dialog'>
+            <el-dialog :visible.sync="edit.addDialogVisible" title='添加模拟路径' @close='closeDialogHandler'>
+                <el-row>
+                    <el-col :span=4>
+                        <div class='input-prepend'>标签</div>
+                    </el-col>
+                    <el-col :span=18>
+                        <el-input type='string' :maxlength=8 placeholder='请输入标签' v-model='edit.tag'></el-input>
+                        <!-- <el-select clearable placeholder='请选择模拟标签' v-model='edit.tag'>
+                            <el-option v-for='(item,index) in tags' :key='index' :label='item.alias' :value='item.mac'>
+                            </el-option>
+                        </el-select> -->
+                    </el-col>
+                </el-row>
+                <el-row class='margin-top-20'>
+                    <el-col :span=4>
+                        <div class='input-prepend'>速度</div>
+                    </el-col>
+                    <el-col :span=18>
+                        <el-input type='number' placeholder='请输入速度' v-model='edit.speed'></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class='margin-top-20'>
+                    <el-col :span=8 :offset=9>
+                        <el-button type='primary' size='mini' @click='addSimulation'>添加</el-button>
+                        <el-button size='mini' @click='closeDialog'>取消</el-button>
+                    </el-col>
+                </el-row>
+            </el-dialog>
+            <el-dialog :visible.sync='edit.updateDialogVisible' title='修改模拟路径'>
+                <el-row>
+                    <el-col :span=4>
+                        <div class='input-prepend'>标签</div>
+                    </el-col>
+                    <el-col :span=18>
+                        <el-input type='string' :maxlength=8 placeholder='请输入标签' v-model='edit.updateTag'></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class='margin-top-20'>
+                    <el-col :span=4>
+                        <div class='input-prepend'>速度</div>
+                    </el-col>
+                    <el-col :span=18>
+                        <el-input type='number' placeholder='请输入速度' v-model='edit.updateSpeed'></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class='margin-top-20'>
+                    <el-col :span=8 :offset=9>
+                        <el-button type='primary' size='mini' @click='updateSimulation'>更新</el-button>
+                        <el-button size='mini' @click='closeUpdateDialog'>取消</el-button>
+                    </el-col>
+                </el-row>
+            </el-dialog>
+        </div>
+    </div>
+    <footer>
+        <script type="text/javascript" src="index.js"></script>
+        <script type="text/javascript" src="map.js"></script>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>标签版本</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+		UBIT.initLang('versions');
+	</script>
+
+	<style type="text/css">
+		 .el-upload__input {
+		  	display: none !important;
+		  }
+		  #versionstoolbar a {
+		  		text-decoration: none;list-style-type: none;
+				color: #fff;
+		  }
+		 #versionstoolbar  a:focus , #versionstoolbar  a:hover{
+		  	outline: none;
+		  	color: #fff;
+		  	text-decoration: none;
+		  }
+
+
+	</style>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div id="versionstoolbar" >
+			<el-button type="info" size="small" @click="versionsAdd" >~~add~~</el-button>
+			<el-button type="warning" size="small" @click="versionsUpdate" >~~update~~</el-button>
+			<el-button type="danger" size="small"  @click="versionsDelete" :loading="versionsDeleteBtnDisable">~~delete~~</el-button>
+			<el-button type="warning" size="small" @click="openDialog" :loading="otaBtnDisable">批量OTA</el-button>
+			<el-button type="info" size="small" onclick="UBIT.bootstrapTableExportCsv('versionstable', true);">~~exports~~</el-button>
+		</div>
+
+
+		<table id="versionstable"></table>
+
+		<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="200px" class="demo-ruleForm">
+
+				<el-form-item label="~~ver_type~~" prop="ver_type" >
+					<el-radio-group v-model="form.ver_type">
+						<el-radio label="app">app</el-radio>
+						<el-radio disabled label="bootloader">bootloader</el-radio>
+						<el-radio disabled label="ble">ble</el-radio>
+					</el-radio-group>
+				</el-form-item>
+
+				<el-form-item label="~~uploadFile~~" prop="filePath" >
+					<el-upload
+							ref='fileUpload'
+							:multiple='fileUpload.multiple'
+							name='version_file'
+							accept="aplication/zip"
+							:headers='fileUpload.headers'
+							:disabled = 'fileUpload.disabled'
+							:action="fileUpload.url"
+							:on-remove="handleRemove"
+							:auto-upload="fileUpload.auto"
+							:on-success="handlefileUpload"
+							:file-list="fileUpload.fileList">
+						<el-button slot="trigger" size="small" type="primary">~~selectFile~~</el-button>
+					</el-upload>
+				</el-form-item>
+
+				<!--<el-form-item label="~~tag_type~~" prop="tag_type" >-->
+					<!--<el-input type="text" v-model="form.tag_type" auto-complete="off"></el-input>-->
+				<!--</el-form-item>-->
+				<el-form-item label="~~tag_type~~" prop="tag_type" >
+					<el-select style="width: 100%" v-model="form.tag_type" disabled placeholder="">
+						<el-option
+								v-for="item in options_tag_category"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="~~function_coding~~" prop="function_coding" >
+					<el-select style="width: 100%" v-model="form.function_coding" disabled placeholder="">
+						<el-option
+								v-for="item in options_tag_function"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="~~soft_version~~" prop="soft_version" >
+					<el-input disabled type="text" v-model="form.soft_version" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~soft_ver_commit~~" prop="soft_ver_commit" >
+					<el-input type="text" v-model="form.soft_ver_commit" disabled auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~hard_version~~" prop="hard_version" >
+					<el-input disabled type="text" v-model="form.hard_version" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<!--<el-form-item label="~~dat_name~~" prop="dat_name" >-->
+				<el-form-item label="zip文件" prop="dat_name" >
+					<el-input type="text" v-model="form.dat_name" auto-complete="off" :disabled="true"></el-input>
+				</el-form-item>
+
+				<!--<el-form-item label="~~bin_name~~" prop="bin_name" >-->
+				<el-form-item label="zip路径" prop="bin_name" >
+					<el-input type="text" v-model="form.bin_name" auto-complete="off" :disabled="true"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~dat_path~~" prop="dat_path" >
+					<el-input type="text" v-model="form.dat_path" auto-complete="off" :disabled="true"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~dat_size~~" prop="dat_size" >
+					<el-input type="text" v-model="form.dat_size" auto-complete="off" :disabled="true"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~bin_path~~" prop="bin_path" >
+					<el-input type="text" v-model="form.bin_path" auto-complete="off" :disabled="true"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~bin_size~~" prop="bin_size" >
+					<el-input type="text" v-model="form.bin_size" auto-complete="off" :disabled="true"></el-input>
+				</el-form-item>
+
+
+				<!--<el-form-item label="~~is_active~~" prop="is_active">-->
+					<!--<el-radio-group v-model="form.is_active">-->
+						<!--<el-radio label="1">~~true~~</el-radio>-->
+						<!--<el-radio label="0">~~false~~</el-radio>-->
+					<!--</el-radio-group>-->
+				<!--</el-form-item>-->
+	
+				  	<el-form-item>
+				   		<el-button type="primary" @click="submitForm('form')" :loading="submitBtnDisable">~~submit~~</el-button>
+					</el-form-item>
+			</el-form>
+
+		</el-dialog>
+
+
+		<el-dialog title="OTA参数" :visible.sync="otaVisible" append-to-body>
+
+			<el-button type="warning" size="small" @click="startOTA" :loading="otaBtnDisable">批量OTA</el-button>
+
+			<el-row :gutter="20" style="margin-bottom: 10px">
+				<el-col :span="12">
+					<el-input type="text" v-model="otaStart" auto-complete="off" placeholder="~~code_start~~"><template slot="prepend">标签mac范围</template></el-input>
+				</el-col>
+				<el-col :span="9"><el-input type="text" v-model="otaEnd" auto-complete="off" placeholder="~~code_end~~"></el-input></el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-bottom: 10px">
+				<el-col :span="12"><el-input type="text" v-model="otaAnchors" auto-complete="off" placeholder="Anchors"><template slot="prepend">指定基站</template></el-input></el-col>
+			</el-row>
+
+			<el-card v-show="otaProgress" style="margin-top:10px;">
+			<div v-for="item in otaProgressAnchors" :key="item.mac">
+			<span>{{item.msg}}</span>
+			<el-progress :percentage='item.ratio' :status="item.status"></el-progress>
+			</div>
+			</el-card>
+
+		</el-dialog>
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~routeConf~~</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            iconPath: UBIT.iconPath,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+		};
+		UBIT.initLang('serverRoute');
+
+	</script>
+
+	<style type="text/css">
+		  #routestoolbar a {
+		  		text-decoration: none;list-style-type: none;
+				color: #fff;
+		  }
+		 #routestoolbar  a:focus , #routestoolbar  a:hover{
+		  	outline: none;
+		  	color: #fff;
+		  	text-decoration: none;
+		  }
+
+	</style>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+
+		<div class="route_one">
+			<div id="routestoolbar" >
+				<el-button type="info" size="small" @click="routesAdd">~~add~~</el-button>
+				<el-button type="warning" size="small" @click="routesUpdate">~~update~~</el-button>
+				<el-button type="danger" size="small"  @click="routesDelete" :loading="routesDeleteBtnDisable">~~delete~~</el-button>
+				<el-button type="info" size="small" onclick="UBIT.bootstrapTableExportCsv('routestable', true);">~~exports~~</el-button>
+			</div>
+
+
+			<table id="routestable">
+
+			</table>
+
+			<el-dialog :title="form.title" :visible.sync="dialogFormVisible" class="phone_b">
+				<el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="15%" class="demo-ruleForm">
+
+					<el-form-item label="~~method~~" prop="method" >
+						<el-select v-model="form.method" filterable placeholder="~~placeSelect~~">
+							<el-option label="get" value="get"></el-option>
+							<el-option label="post" value="post"></el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="~~path~~" prop="path" >
+						<el-input type="text" v-model="form.path" auto-complete="off"></el-input>
+					</el-form-item>
+
+					<el-form-item label="~~pathName~~" prop="pathName" >
+						<el-input type="text" v-model="form.pathName" auto-complete="off"></el-input>
+					</el-form-item>
+
+					<el-form-item label="~~view_user~~" prop="view_user">
+						<el-radio-group v-model="form.view_user">
+							<el-radio label="0">~~false~~</el-radio>
+							<el-radio label="1">~~true~~</el-radio>
+						</el-radio-group>
+					</el-form-item>
+
+					<el-form-item label="~~remarks~~" prop="remarks" >
+						<el-input type="text" v-model="form.remarks" auto-complete="off"></el-input>
+					</el-form-item>
+
+						<el-form-item>
+							<el-button type="primary" @click="submitForm('form')" :loading="routesOneBtnDisable" size="small">~~submit~~</el-button>
+						</el-form-item>
+				</el-form>
+
+			</el-dialog>
+		</div>
+	</div>
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

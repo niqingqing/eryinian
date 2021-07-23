@@ -1,0 +1,22 @@
+.lable{
+    text-align: right;
+    width:100%;
+    height:100%;
+    line-height: 36px;
+}
+
+.dialog-row{
+    margin-top:10px;
+}
+
+.dialog-btn{
+    width:100%;
+}
+
+.dialog-select{
+    width:100%;
+}
+
+.btn-row{
+    margin:15px 0;
+}

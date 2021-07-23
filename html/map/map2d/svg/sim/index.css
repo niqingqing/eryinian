@@ -1,0 +1,165 @@
+a {
+    text-decoration: none;
+    color: #000;
+}
+#menu button {
+    padding: 5px 10px;
+    border: 1px solid rgba(0,255,255,0.75);
+    margin: 0 5px;
+}
+#menu button:hover {
+    background: rgba(0,255,255,0.75);
+}
+#menu>div{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    /* background: red; */
+    display: flex;
+    justify-content: center;
+}
+#menu .topMenu {
+    bottom: 20px;
+}
+#menu .subMenu {
+    bottom: 60px;
+}
+.mapDialogCss h3 {
+    position: absolute;
+    font-size: 24px;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%) !important;
+}
+
+.history_appear .el-date-editor--datetimerange.el-input {
+    width: 100%;
+}
+div.el-picker-panel {
+    width: 48% !important;
+}
+.history_appear .el-transfer {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 0 10px 0;
+}
+.history_appear .el-transfer-panel {
+    width: 50%;
+}
+.history_appear .el-transfer-panel__filter .el-input__inner {
+    height: 30px;
+}
+
+/**
+历史播放tools
+*/
+
+
+/* .playHistorys {
+    width: 100%;
+    height:33px;
+    background: url("../../img/images/bar_ubi.png") 0px -15px no-repeat;
+    background-size: cover;
+    position: absolute;
+    bottom: 0;
+    z-index: 99999;
+    text-align: center;
+    padding: 0 6%;
+} */
+.el-slider__runway {
+    width: 100%;
+    height: 4px;
+    margin: 5px 0;
+    background-color: #fff;
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.el-slider__button {
+    background-color: #ecaf03;
+}
+.playHistorys span {
+    margin-right: 20px;
+    font-size: 16px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.playHistorys span:hover {
+    background: #db1b21;
+}
+
+.playHistorys .slider{
+    float:left;
+    width:35%;
+}
+
+.historySelectPanel .transfer-footer,.heatMapSelectPanel .transfer-footer{
+    background: #ffa33f !important;
+    color: #FFFFFF;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.playHistorys {
+    position: fixed;
+    width: 100%;
+    height:33px;
+    background: url("../../img/images/bar_ubi.png") 0px -15px no-repeat;
+    background-size: cover;
+    bottom: 10px;
+    left: 0;
+    z-index: 99999;
+    text-align: center;
+    padding: 0 6%;
+}
+[v-cloak] {
+    display: none;
+  }
+@media only screen and (max-width: 700px) {
+    .qrcodeCss {
+        width: 300px;
+    }
+
+    .el-carousel__container{
+        height:80px;
+    }
+
+    .mapDialogCss{
+        height:120px;
+    }
+
+    .mapDialogCss img{
+        height:80px;
+        width:120px;
+    }
+
+    .el-dialog {
+        width:90%;
+    }
+
+}
+
+.qtip-default {
+    background: rgba(0,0,0,0.5);
+    color: #ebebeb;
+    font-size: 12px;
+    border-radius: 8px;
+    border: none;
+}

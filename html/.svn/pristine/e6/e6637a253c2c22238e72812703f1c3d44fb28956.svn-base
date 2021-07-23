@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv=X-UA-Compatible content='IE=edge,chrome=1'>
+	<meta name='renderer' content='webkit'>
+	<meta name="viewport" content="width=device-width, initial-scale=0.9,maximum-scale=0.9, user-scalable=no"/>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<title>~~title~~</title>
+
+	<!-- Bootstrap 3.3.7 -->
+	<link rel="stylesheet" href="../../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../../common/plugins/jqx/styles/jqx.base.css">
+	<link type="text/css" rel="stylesheet" href="../../../common/plugins/jQuery/jquery.qtip.css">
+	<link type="text/css" rel="stylesheet" href="../../../common/plugins/jQueryUI/jquery-ui.min.css">
+	<link rel="stylesheet" href="../../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="./attendance/attendance.css">
+	<link rel="stylesheet" type="text/css" href="../index.min.css">
+	<link rel="stylesheet" type="text/css" href="../ui.css?v=1.2">
+	<link rel="stylesheet" type="text/css" href="../change_style.css">
+	<link rel="shortcut icon" href="../../../common/img/favicon.ico">
+
+	<style >
+		/*body{*/
+		/*	position: relative;*/
+		/*}*/
+
+		.listBox{
+			position: absolute;
+			top: 370px;
+			right: 78px;
+			width: 300px;
+			height: 450px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			background: #fff;
+			transform: translate(25%,-50%);
+			z-index: 997;
+		}
+
+		/*.listBox span{*/
+		/*	display: block;*/
+		/*}*/
+
+		.listBox p{
+			margin: 0;
+			padding: 0;
+		}
+		.qtip-default {
+			background: rgba(0,0,0,0.5);
+			color: #ebebeb;
+			font-size: 12px;
+			border-radius: 8px;
+			border: none;
+		}
+		.main{
+			position: relative;
+		}
+
+		.listBox ul{
+			margin-top: 50px;
+			height: 399px;
+			list-style: none;
+			padding: 0;
+			/*margin: 50px 0 0 0;*/
+			overflow-y: scroll;
+		}
+
+		.listBox dl,dd{
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.items{
+			position: relative;
+			width: 100%;
+			font-size: 15px;
+			color: #0a73a7;
+			border-bottom: 1px solid #eee;
+			box-sizing: border-box;
+		}
+
+		.items a{
+			display: block;
+			position: absolute;
+			width: 20px;
+			height: 20px;
+			top: 10px;
+			right: 10px;
+			text-align: center;
+			font-size: 16px;
+			cursor: pointer;
+		}
+
+		.listBox .listBox_top{
+			position: fixed;
+			width: 100%;
+			top: 0;
+			left: 0;
+			height: 50px;
+			background: #eee;
+			text-align: center;
+			line-height: 50px;
+			display: flex;
+			justify-content: space-around;
+		}
+
+		.innerText{
+			display: flex;
+			padding: 12px 10px;
+		}
+
+		.boxText {
+			padding: 12px 10px;
+			display: flex;
+			justify-content: space-around;
+			background: #eee;
+		}
+
+		.innerText span{
+			color: #0c0c0c;
+			margin-right: 5px;
+		}
+
+		.show{
+			display: block;
+		}
+
+		.hide{
+			display: none
+		}
+
+		.listBox #list2{
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.innerBox #list2 .items2{
+			flex: 50%;
+			box-sizing: border-box;
+			padding: 12px 10px;
+			display: flex;
+			background: #f7f7f7;
+			color: #5e5e5e;
+			font-size: 14px;
+			border: 1px solid #ccc;
+		}
+
+		.items2 span{
+			margin-right: 5px;
+		}
+
+		.listBox table{
+			width: auto;
+			white-space:nowrap;
+			border-collapse: collapse;
+		}
+
+		.listBox table th{
+			width: 50%;
+			height: 30px;
+			line-height: 36px;
+			color: #555;
+			text-align: center;
+			border: 1px solid #ccc;
+			font-size: 15px;
+			padding: 0 8px;
+		}
+
+		.listBox table td{
+			width: 50%;
+			height: 30px;
+			line-height: 36px;
+			color: #555;
+			text-align: center;
+			border: 1px solid #ccc;
+			font-size: 15px;
+			padding: 0 8px;
+		}
+
+		.fe_logo{
+			margin-left: 42px;
+			height:56px;
+			/*margin-top:8px;*/
+			line-height: 56px;
+			width:200px;
+			float: left;
+		}
+	</style>
+</head>
+
+<body>
+
+<div class="container"  id="allHandle"   v-cloak>
+	<div v-show="scanActive">
+		<div class="main clearfix">
+			<div class="main clearfix">
+				<!---history play -->
+				<div class="playHistorys" v-show="history.isShow">
+					<div v-text="history.addCurrentTime"></div>
+					<el-slider v-model="history.slider" :format-tooltip="historySliderMsg"
+							   @chang="historySlider" :max="history.max" :min="history.min" :step="history.step">
+					</el-slider>
+					<el-tooltip class="item" effect="dark" content="~~play~~" placement="top-start">
+						<span class="glyphicon glyphicon-play" @click="historyPlay('play')"  aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="~~stop2~~" placement="top-start">
+						<span class="glyphicon glyphicon-pause"  @click="historyPlay('pause')" aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="~~stop~~" placement="top-start">
+						<span class="glyphicon glyphicon-stop"  @click="historyPlay('stop')" aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="~~slowRelease~~" placement="top-start">
+						<span class="glyphicon glyphicon-backward"  @click="historyPlay('backward')" aria-hidden="true"></span>
+					</el-tooltip>
+					<el-tooltip class="item" effect="dark" content="~~quickRelease~~" placement="top-start">
+						<span class="glyphicon glyphicon-forward"  @click="historyPlay('forward')" aria-hidden="true"></span>
+					</el-tooltip>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="wrapper" id="wrapper" >
+	<div class="main" >
+		<div class="paper" id="wrapper_paper">
+			<div id="mapSvg"></div>
+		</div>
+
+	</div>
+</div>
+
+<div id="normal_jqxNotification" >
+	<div id="normal_jqxNotification_tip" ></div>
+</div>
+
+<div id="fenceAlert_jqxNotification" >
+	<div id="fenceAlert_jqxNotification_tip" ></div>
+	<input type="hidden" id="fenceAlert_jqxNotification_tag">
+</div>
+<div id="fenceTimeoutAlert_jqxNotification" >
+	<div id="fenceTimeoutAlert_jqxNotification_tip" ></div>
+	<input type="hidden" id="fenceTimeoutAlert_jqxNotification_tag">
+</div>
+<div id="sos_jqxNotification" >
+	<div id="sos_jqxNotification_tip" ></div>
+	<input type="hidden" id="sos_jqxNotification_tag">
+</div>
+<div id="fall_jqxNotification" >
+	<div id="fall_jqxNotification_tip" ></div>
+	<input type="hidden" id="fall_jqxNotification_tag">
+</div>
+<div id="aggregate_jqxNotification" >
+	<div id="aggregate_jqxNotification_tip" ></div>
+	<input type="hidden" id="aggregate_jqxNotification_tag">
+</div>
+<div id="stillness_jqxNotification" >
+	<div id="stillness_jqxNotification_tip" ></div>
+	<input type="hidden" id="stillness_jqxNotification_tag">
+</div>
+<div id="heartAlert_jqxNotification" >
+	<div id="heartAlert_jqxNotification_tip" ></div>
+	<input type="hidden" id="heartAlert_jqxNotification_tag">
+</div>
+
+<div id="forceRemove_jqxNotification" >
+	<div id="forceRemove_jqxNotification_tip" ></div>
+	<input type="hidden" id="forceRemove_jqxNotification_tag">
+</div>
+
+<div id="moreMonitor_jqxNotification" >
+	<div id="moreMonitor_jqxNotification_tip" ></div>
+	<input type="hidden" id="moreMonitor_jqxNotification_tag">
+</div>
+
+<div id="distanceAlert_jqxNotification" >
+	<div id="distanceAlert_jqxNotification_tip" ></div>
+	<input type="hidden" id="distanceAlert_jqxNotification_tag">
+</div>
+
+
+<footer class="footer">
+	<script src="./lib/spline.js"></script>
+	<script src="./lib/simplify.js"></script>
+	<script src='./attendance/attendance.js' ></script>
+	<script src='../../../common/js/moment.min.js'></script>
+	<script type="text/javascript" src="bin/common.min.js" defer></script>
+	<script type="text/javascript" src="../../../common/js/raphael.pan-zoom.js" defer></script>
+	<script type="text/javascript" src="../../../common/js/raphael-markers.js?v=2.4" defer></script>
+	<script type="text/javascript" src="../../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js" defer></script>
+
+	<script type="text/javascript" src="../../../common/plugins/jqx/jqxcore.js" defer></script>
+	<script type="text/javascript" src="../../../common/plugins/jqx/jqxnotification.js" defer></script>
+
+	<script type="text/javascript" src="../../../common/js/comm.js" defer></script>
+	<script type="text/javascript" src="../../../common/js/alert.js" defer></script>
+
+	<script type="text/javascript" src="../../../common/js/session-check.js" defer></script>
+
+	<script type="text/javascript" src="../../common/service.js" defer></script>
+	<script type="text/javascript" src="lib/marker.js?v=2.2" defer></script>
+
+	<script type="text/javascript" src="../../common/data.js?v=2.4" defer></script>
+	<script type="text/javascript" src="../../common/dataManager.js?v=2.3" defer></script>
+	<script type="text/javascript" src="../../common/privCheck.js" defer></script>
+	<script type="text/javascript" src="../../common/websocket.js?v=2.1" defer></script>
+	<script type="text/javascript" src="../../common/sysAlert.js" defer></script>
+
+	<script type="text/javascript" src="lib/fence.js?v=2.4" defer></script>
+	<script type="text/javascript" src="lib/camera.js" defer></script>
+	<script type="text/javascript" src="../css.js" defer></script>
+
+	<script type="text/javascript" src="lib/eventInit.js" defer></script>
+	<script type="text/javascript" src="../public/vsn.js?v=1.0" defer></script>
+
+	<script type="text/javascript" src="lib/raphaeInit.js?v=2.4" defer></script>
+	<script type="text/javascript" src="../../../components/tagMessageDialog.js"></script>
+	<script type="text/javascript" src="../public/comVue.js?v=2.4" defer></script>
+	<script type="text/javascript" src="lib/svgVue.js?v=2.4" defer></script>
+	<script type="text/javascript" src="../public/vue.js?v=2.4" defer></script>
+
+	<script type="text/javascript" src="lib/index.js?v=2.5" defer></script>
+
+	<!--<script type="text/javascript" src="../../../common/plugins/highcharts/highcharts.js" defer></script>-->
+	<!--<script type="text/javascript" src="https://img.hcharts.cn/highcharts/highcharts.js" defer></script>-->
+	<!--<script type="text/javascript" src="https://img.hcharts.cn/highcharts/modules/exporting.js" defer></script>-->
+	<!--<script type="text/javascript" src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js" defer></script>-->
+
+
+<!--	<script type="text/javascript" src="lib/historyDetails.js" defer></script>-->
+</footer>
+
+</body>
+</html>
+

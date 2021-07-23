@@ -1,0 +1,22 @@
+.table-input{
+    border:none;
+    background:rgba(0,0,0,0);
+    height:100%;
+    width:100%;
+}
+
+.active {
+    border:1px solid #ccc;
+}
+.table-select{
+    height:100%;
+    width:100%;
+}
+
+#selectModules{
+    width:120px;
+}
+
+#newModule{
+    width:100px;
+}

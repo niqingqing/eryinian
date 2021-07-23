@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name='keywords' content='全迹科技，室内定位，UWB'>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title~~</title>
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+	<script  src='../../common/js/moment.js'></script>
+
+	<script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+		};
+		UBIT.initLang('langManage');
+	</script>
+
+</head>
+<body>
+	
+	<div id="app" v-cloak>
+		<div id="langtoolbar" >
+			<el-button type="info" size="small"  @click="add" >~~add~~</el-button>
+			<el-button type="danger" size="small"  @click="remove" :loading="langDeleteBtnDisable">~~delete~~</el-button>
+			<el-button type="info" size="small"  onclick="UBIT.bootstrapTableExportCsv('langTable', true);">~~exports~~</el-button>
+			<el-select id='selectModules' v-model='defaultModule' filterable @change='filterTbaleData' @focus='addModule'>
+				<el-option label='all' value='all'></el-option>
+				<el-option v-for="(item,index) in modules" :key='index' :label='item' :value='item'></el-option>
+			</el-select>
+			<el-input v-model='newModule' id='newModule'></el-input>
+			<el-button type='info' size='small' @click='addModule'>~~addType~~</el-button>
+			<el-button type='info' size='small' @click='syncServer' :loading="syncBtnDisable">同步本地数据</el-button>
+		</div>
+		<table id="langTable"></table>
+	</div>
+<footer>
+	<script type="text/javascript" src="index.js"></script>
+</footer>
+</body>
+</html>
+

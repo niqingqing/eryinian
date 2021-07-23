@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" style="padding: 0px;">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>~~title</title>
+
+	<link rel="shortcut icon" href="../../common/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="index.css">
+
+	<script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+
+	<script type="text/javascript" src="../../common/js/comm.js" ></script>
+	<script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+	<script>
+        /**
+         * 全局变量
+         */
+        var util = UBIT;
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+		UBIT.initLang('cuser');
+	</script>
+
+</head>
+<body>
+	<div id="app" v-cloak>
+
+		<div id="usertoolbar" >
+			<el-button type="info" size="small"  @click="userAdd" >~~add~~</el-button>
+			<el-button type="danger" size="small"  @click="userDelete" :loading="userDeleteBtnDisable">~~delete~~</el-button>
+			<el-button type="warning" size="small"  @click="userUpdate" >~~update~~</el-button>
+			<el-button type="danger" size="small"  @click="resetPwd">~~resetPwd~~</el-button>
+			<el-button type="info" size="small" onclick="UBIT.bootstrapTableExportCsv('usertable', true);">~~exports~~</el-button>
+		</div>
+
+
+		<table id="usertable"></table>
+
+
+		<el-dialog :visible.sync="dialogFormVisible" class="phone_b">
+		    <el-form :model="form" :rules="modefiyPwdRule" ref="form" label-width="100px" class="demo-ruleForm">
+
+				<el-form-item >
+					<span  style="color:red;">~~dialogNote~~</span>
+				</el-form-item>
+
+				<el-form-item label="UNIONID" prop="unionid" >
+					<el-input type="text" v-model="form.unionid" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="OPENID" prop="openid" >
+					<el-input type="text" v-model="form.openid" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~nickname~~" prop="nickname" >
+					<el-input type="text" v-model="form.nickname" auto-complete="off"></el-input>
+				</el-form-item>
+
+				<el-form-item label="~~sex~~" prop="sex">
+					<el-radio-group v-model="form.sex">
+						<el-radio label="1">~~male~~</el-radio>
+						<el-radio label="0">~~female~~</el-radio>
+					</el-radio-group>
+
+				</el-form-item>
+				  	<el-form-item label="~~isActive~~" prop="isActive">
+				  	  <el-radio-group v-model="form.isActive">
+			    		<el-radio label="1">~~true~~</el-radio>
+  						<el-radio label="0">~~false~~</el-radio>
+  					  </el-radio-group>
+				  	</el-form-item>
+				<el-form-item label="~~address~~" prop="address">
+					<el-input type="text" v-model="form.address" auto-complete="off" placeholder="~~addressPla~~"></el-input>
+				</el-form-item>
+
+				  	<el-form-item label="~~phone~~" prop="phone">
+			    		<el-input type="number" min="0" step="1" v-model="form.phone" auto-complete="off" ></el-input>
+				  	</el-form-item>
+				  	<el-form-item label="~~email~~" prop="email">
+			    		<el-input type="email" v-model="form.email" auto-complete="off" ></el-input>
+				  	</el-form-item>
+
+				  	<el-form-item label="~~img~~" prop="img">
+						<el-upload
+								ref='imgUpload'
+								:multiple='imgUpload.multiple'
+								name='img'
+								:headers='imgUpload.headers'
+								:action="imgUpload.url"
+								:disabled = 'imgUpload.disabled'
+								:auto-upload="imgUpload.auto"
+								:on-success="handleImgUpload"
+								:on-remove="handleRemove"
+								list-type="picture-card"
+								:file-list="imgUpload.imgUrl"
+						>
+							<i class="el-icon-plus"></i>
+						</el-upload>
+				  	</el-form-item>
+
+				<div style="clear:both;text-align:center;">
+					<el-button type="primary" size="small" @click="submitForm('form')" :loading="userBtnDisable">~~submit~~</el-button>
+				</div>
+
+			</el-form>
+
+		</el-dialog>
+
+
+	</div>
+
+
+<footer>
+
+	<script type="text/javascript" src="index.js"></script>
+
+</footer>
+
+</body>
+</html>
+

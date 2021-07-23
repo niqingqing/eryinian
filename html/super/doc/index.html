@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" style="padding: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name='keywords' content='全迹科技，室内定位，UWB'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>文档管理</title>
+    <link rel="shortcut icon" href="../../common/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../common/css/reset.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../common/plugins/bootstrap-table/bootstrap-table.min.css">
+    <link rel="stylesheet" href="../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="index.css">
+
+    <script type="text/javascript" src="../../common/bin/super.common.min.js" ></script>
+    <script  src='../../common/js/moment.js'></script>
+
+    <script type="text/javascript" src="../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js"></script>
+    <script type="text/javascript" src="../../common/js/comm.js" ></script>
+    <script type="text/javascript" src="../../common/js/session-check.js" ></script>
+
+    <script>
+        /**
+         * 全局变量
+         */
+        var ME = {
+            //访问路径
+            baseUrl : '/',
+            selfHost: UBIT.selfHost,
+            //请求的服务器地址
+            host: UBIT.host,
+            imgHost: UBIT.imgHost,
+            user: UBIT.user,
+            api_token: UBIT.api_token,
+            vm: null,
+        };
+        UBIT.initLang('doc');
+    </script>
+
+</head>
+<body>
+
+<div id="app" v-cloak>
+    <div id="toolbar"  v-show="isSuper">
+        <el-button type="primary"  @click="add">~~add~~</el-button>
+        <!--<el-button type="warning" @click="update">~~update~~</el-button>-->
+        <el-button type="danger" @click="remove">~~delete~~</el-button>
+    </div>
+    <table id="table"></table>
+    <el-dialog :title="title" :visible.sync="visible" @close="close">
+        <el-row>
+            <el-col :span="18" :offset="3">
+                <el-upload drag :auto-upload="false" ref="upload" :action="uploadUrl" :file-list="fileList"  :on-change="handleChange" :on-success="success">
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                    <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                </el-upload>
+            </el-col>
+        </el-row>
+        <el-row class="margin-top-30">
+            <el-col :span="18" :offset="3">
+                <el-input v-model="name" placeholder="请输入文档名,不输入为默认文件名"></el-input>
+            </el-col>
+        </el-row>
+        <el-row class="margin-top-30">
+            <el-col :span="3" :offset="7">
+                <el-button type="primary" @click="upload">提交</el-button>
+            </el-col>
+            <el-col :span="3" :offset="3">
+                <el-button type="info" @click="cancel">取消</el-button>
+            </el-col>
+        </el-row>
+    </el-dialog>
+</div>
+<footer>
+    <script type="text/javascript" src="index.js"></script>
+</footer>
+</body>
+</html>

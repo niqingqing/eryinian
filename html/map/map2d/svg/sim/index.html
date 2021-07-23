@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv=X-UA-Compatible content='IE=edge,chrome=1'>
+	<meta name='renderer' content='webkit'>
+	<meta name="viewport" content="width=device-width, initial-scale=0.9,maximum-scale=0.9, user-scalable=no"/>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<title>高精度定位系统</title>
+	<link rel="stylesheet" href="../../../../common/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="shortcut icon" href="../../../../common/img/favicon.ico">
+	<link rel="stylesheet" href="../../../../common/plugins/jqx/styles/jqx.base.css">
+	<link rel="stylesheet" href="../../../../common/plugins/element-ui/element-ui/lib/theme-default/index.css">
+	<link rel="stylesheet" href="./index.css">
+
+	<script type="text/javascript" src="../bin/common.min.js" ></script>
+	<script type="text/javascript" src="../../../../common/js/raphael.pan-zoom.js" ></script>
+	<script type="text/javascript" src="../../../../common/js/alert.js" ></script>
+	<!-- <script type="text/javascript" src="../../../../common/plugins/vue-qrcode/docs/js/vue-qrcode.js" ></script> -->
+    <script src="fullScreen.js"></script>
+	<script type="text/javascript" src="../../../../common/js/comm.js" ></script>
+	<script>
+
+        /**
+         * Created by zwt on 2017/6/24 0024.
+         * 全局数据配置
+         */
+        var ME = {
+            //访问路径
+            baseUrl: '/',
+            //请求的服务器地址
+            host: UBIT.host,
+            iconPath: UBIT.iconPath,
+            imgHost: UBIT.imgHost,
+            selfHost: UBIT.selfHost,
+			user: UBIT.user,
+            api_token: UBIT.api_token,
+			websocketUrl: UBIT.websocketUrl,
+            // vm: {
+                
+			// },
+            willFollowTag:'',   //记录需要跟随的标签
+            followTagMap:'',    //记录跟随标签的地图
+            lastGoPoint:{},     //标签上一个点的位置
+			tags:{},
+            sos:{},
+            tagDisappear: 60000,
+
+            distanceAlertHalosHideTime:500,  //距离测量，报警时间
+            distanceAlertHalos:{},  //存在距离报警halo的标签mac
+            sosHalos:{},  //存在sos halo的标签mac
+        };
+
+        /**
+         * 全局变量
+         */
+        var ubiMap = null;
+        var paper = null;
+        var FenceTool = null;
+        var CameraTool = null;
+        var MarkerTool = null;
+
+        var socketRequest,
+            sessionId,
+            socketFlag = true;
+	</script>
+
+</head>
+
+<body>
+		<div class="container" id="allHandle" v-cloak>
+			<div id="menu" v-show="!isHideBtn">
+				<div class="topMenu">
+						<el-button @click="mapDialog.visible=!mapDialog.visible">地图</el-button>
+						<el-button @click="showSubMenu('setBars')" >设置</el-button>
+						<el-button @click="showSubMenu('tools')" >工具</el-button>
+						<el-button @click="search.visible=!search.visible" >搜索</el-button>
+						<el-button @click="fullScreenHandle" v-cloak>{{fullScreen.visible?'取消全屏':'全屏'}}</el-button>
+				</div>
+	
+				<div class="subMenu subSetBars" v-show="setBars.visible">
+					<el-button @click="anchorIsShow" v-cloak>{{anchorBar.isShowAnchor?'隐藏基站':'显示基站'}}</el-button>
+					<el-button @click="rangeData.isShow=!rangeData.isShow" v-cloak>{{rangeData.isShow?'隐藏轨迹':'显示轨迹'}}</el-button>
+				</div>
+
+				<div class="subMenu subTools" v-show="tools.visible">
+						<el-button @click="history.visible=!history.visible">历史轨迹</el-button>
+						<!-- <el-button @click="qrcode.visible=!qrcode.visible" >2D/3D</el-button> -->
+					</div>
+			</div>
+	
+	
+			<el-dialog :title="history.title" :visible.sync="history.visible">
+				<div class="history_appear">
+					<div class="block">
+						<el-date-picker
+								v-model="history.datetimeRange"
+								type="datetimerange"
+								size='large'
+								placeholder="选择时间范围"
+								:picker-options="history.pickerOptions3"
+								>
+						</el-date-picker>
+					</div>
+
+					<div class="historySelectPanel">
+						<el-transfer
+								v-model="history.tags"
+								:titles="['请选择标签', '已选择标签']"
+								:data="history.allTags"
+								filterable
+								filter-placeholder="搜索"
+								:filter-method="searchTags"
+								:footer-format="{
+								  noChecked: '${total}',
+								  hasChecked: '${checked}/${total}'
+								}"
+								>
+						</el-transfer>
+						<!--<el-button class="transfer-footer" slot="right-footer" size="small" @click="historyPlay('play')" :loading="history.isLoading">历史回放</el-button>-->
+						<el-button class="transfer-footer" slot="right-footer" size="small" @click="historyBegin" :loading="history.isLoading">历史回放</el-button>
+					</div>
+
+					</div>
+			</el-dialog>
+	
+			<!-- <el-dialog :title="qrcode.title" :visible.sync="qrcode.visible" custom-class="qrcodeCss">
+				<div style="text-align:center;" >
+					<div>2D</div>
+					<a :href="selfHost+ '/map/map2d/svg/sim/?map='+projectCode+'_'+currentMapId+'&anony=super' "></a>
+					<qrcode :value="selfHost+ '/map/map2d/svg/sim/?map='+projectCode+'_'+currentMapId+'&anony=super' " tag="img" :options="{ size: 180}" style="margin:10px"></qrcode>
+					</a>
+					<div>3D</div>
+					<qrcode :value="selfHost+ '/map/map3d/'" tag="img" :options="{ size: 180}" style="margin:10px"></qrcode>
+				</div>
+			</el-dialog> -->
+	
+	
+			<el-dialog :title="search.title" :visible.sync="search.visible" size="tiny">
+				<div style="text-align:center;"  class="search_wrap">
+					<el-autocomplete
+							v-model="search.input"
+							placeholder="请输入标签名称或编码"
+							size="large"
+							popper-class="searchTag-autocomplete"
+							:fetch-suggestions="querySearch"
+							custom-item="search-tag-option"
+							@select="handleSelect"
+							:on-icon-click="handleSearch"
+					></el-autocomplete>
+					<!-- <el-button type="success" @click="handleSearch">搜索</el-button> -->
+					<el-button type="success" @click="handleSearch" v-cloak>搜索</el-button>
+					<!-- <el-button type="warning" @click="resetCamera">取消</el-button> -->
+				</div>
+			</el-dialog>
+
+	
+
+			<el-dialog :title="mapDialog.title" :visible.sync="mapDialog.visible" >
+				<template>
+				<el-carousel type="card" :autoplay="mapDialog.autoplay"  :interval="4000" class="mapDialogCss">
+					<el-carousel-item v-for="item in map.data" :key="item.cname" >
+						<div style="text-align:center">
+						<h3>{{item.cname}}</h3>
+						<img :src="imgHost+'maps_'+item.filePath"  :alt="item.cname" :title="item.cname" @click="changeMap(item.id)"/>
+						</div>
+					</el-carousel-item>
+				</el-carousel>
+				</template>
+			</el-dialog>
+
+			<!-- 搜索标签列表 -->
+			<el-dialog title="您搜索的是否是以下标签？" :visible.sync="search.tag.dialogVisible" >
+
+				<template>
+					<el-table
+							:data="search.tag.markers"
+							:height="240"
+							border
+							style="width: 100%">
+
+						<el-table-column
+								label="别名"
+								width="90">
+
+							<template scope="scope">
+								<el-button
+										@click.native.prevent="searchTagLink(scope.row)"
+										type="text"
+										size="small">
+									{{ scope.row.alias }}
+								</el-button>
+							</template>
+						</el-table-column>
+
+						<el-table-column
+								prop="code"
+								label="编码"
+								width="105">
+						</el-table-column>
+						<el-table-column
+								prop="mac"
+								label="MAC"
+								width="105">
+						</el-table-column>
+						<el-table-column
+								prop="powerLevel"
+								label="电量"
+								width="70">
+						</el-table-column>
+						<el-table-column
+								prop="coord"
+								label="坐标X,Y(m)"
+								width="130">
+						</el-table-column>
+						<el-table-column
+								label="所在地图"
+								width="220">
+
+							<template scope="scope">
+								<el-button
+										@click.native.prevent="searchMapLink(scope.row)"
+										type="text"
+										size="small">
+									{{ scope.row.mapCname }}
+								</el-button>
+							</template>
+
+						</el-table-column>
+						<el-table-column
+								prop="lastPosTime"
+								label="最后定位时间"
+								width="178">
+						</el-table-column>
+					</el-table>
+				</template>
+
+
+				<span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="search.tag.dialogVisible = false">确 定</el-button>
+				</span>
+			</el-dialog>
+
+			<!-- 搜索基站列表 -->
+			<el-dialog title="您搜索的是否是以下基站？" :visible.sync="search.anchor.dialogVisible" >
+
+				<template>
+					<el-table
+							:data="search.anchor.markers"
+							:height="240"
+							border
+							style="width: 100%">
+
+						<el-table-column
+								prop="alias"
+								label="别名"
+								width="90">
+						</el-table-column>
+
+						<el-table-column
+								prop="code"
+								label="编码"
+								width="105">
+						</el-table-column>
+						<el-table-column
+								prop="mac"
+								label="MAC"
+								width="105">
+						</el-table-column>
+						<el-table-column
+								prop="isMaster"
+								label="类型"
+								width="90">
+							<template scope="scope">
+								<span>{{ scope.row.isMaster > 0? "主基站":"从基站" }}</span>
+							</template>
+						</el-table-column>
+						<el-table-column
+								prop="coord"
+								label="坐标X,Y(m)"
+								width="130">
+						</el-table-column>
+						<el-table-column
+								label="所在地图"
+								width="220">
+							<template scope="scope">
+								<el-button
+										@click.native.prevent="searchMapLink(scope.row)"
+										type="text"
+										size="small">
+									{{ scope.row.mapCname }}
+								</el-button>
+							</template>
+
+						</el-table-column>
+					</el-table>
+				</template>
+
+
+				<span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="search.anchor.dialogVisible = false" v-cloak>确 定</el-button>
+				</span>
+			</el-dialog>
+
+			<!---history play -->
+			<div class="playHistorys" v-show="history.isShow" v-cloak>
+				<el-slider v-model="history.slider" :format-tooltip="historySliderMsg"
+							@chang="historySlider" :max="history.max" :min="history.min" :step="history.step">
+				</el-slider>
+                <span style="float: left">{{history.playCurrentTime}}</span>
+				<el-tooltip class="item" effect="dark" content="播放" placement="top-start">
+					<span class="glyphicon glyphicon-play" @click="historyPlay('play')"  aria-hidden="true"></span>
+				</el-tooltip>
+				<el-tooltip class="item" effect="dark" content="暂停" placement="top-start">
+					<span class="glyphicon glyphicon-pause"  @click="historyPlay('pause')" aria-hidden="true"></span>
+				</el-tooltip>
+				<el-tooltip class="item" effect="dark" content="停止" placement="top-start">
+					<span class="glyphicon glyphicon-stop"  @click="historyPlay('stop')" aria-hidden="true"></span>
+				</el-tooltip>
+				<el-tooltip class="item" effect="dark" content="慢放" placement="top-start">
+					<span class="glyphicon glyphicon-backward"  @click="historyPlay('backward')" aria-hidden="true"></span>
+				</el-tooltip>
+				<el-tooltip class="item" effect="dark" content="快放" placement="top-start">
+					<span class="glyphicon glyphicon-forward"  @click="historyPlay('forward')" aria-hidden="true"></span>
+				</el-tooltip>
+                <span style="float: right;margin-right: 0px;">{{history.playStartTime}} 至 {{history.playEndTime}}</span>
+			</div>
+		</div>
+
+		<div class="wrapper" id="wrapper" >
+			<div class="main" >
+				<div class="paper" id="wrapper_paper">
+					<div id="mapSvg"></div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="normal_jqxNotification" >
+			<div id="normal_jqxNotification_tip" ></div>
+		</div>
+
+		<div id="fenceAlert_jqxNotification" >
+			<div id="fenceAlert_jqxNotification_tip" ></div>
+			<input type="hidden" id="fenceAlert_jqxNotification_tag">
+		</div>
+
+		<div id="sos_jqxNotification" >
+			<div id="sos_jqxNotification_tip" ></div>
+			<input type="hidden" id="sos_jqxNotification_tag">
+		</div>
+
+		<div id="fall_jqxNotification" >
+			<div id="fall_jqxNotification_tip" ></div>
+			<input type="hidden" id="fall_jqxNotification_tag">
+		</div>
+
+		<div id="aggregate_jqxNotification" >
+			<div id="aggregate_jqxNotification_tip" ></div>
+			<input type="hidden" id="aggregate_jqxNotification_tag">
+		</div>
+
+		<div id="heartAlert_jqxNotification" >
+			<div id="heartAlert_jqxNotification_tip" ></div>
+			<input type="hidden" id="heartAlert_jqxNotification_tag">
+		</div>
+
+		<div id="forceRemove_jqxNotification" >
+			<div id="forceRemove_jqxNotification_tip" ></div>
+			<input type="hidden" id="forceRemove_jqxNotification_tag">
+		</div>
+
+		<div id="moreMonitor_jqxNotification" >
+			<div id="moreMonitor_jqxNotification_tip" ></div>
+			<input type="hidden" id="moreMonitor_jqxNotification_tag">
+		</div>
+
+		<div id="distanceAlert_jqxNotification" >
+			<div id="distanceAlert_jqxNotification_tip" ></div>
+			<input type="hidden" id="distanceAlert_jqxNotification_tag">
+		</div>
+
+		<div id="stillness_jqxNotification" >
+			<div id="stillness_jqxNotification_tip" ></div>
+			<input type="hidden" id="stillness_jqxNotification_tag">
+		</div>
+
+
+		<footer class="footer">
+
+			<script type="text/javascript" src="../../../../common/plugins/jqx/jqxcore.js" defer></script>
+			<script type="text/javascript" src="../../../../common/plugins/jqx/jqxnotification.js" defer></script>
+
+			<script type="text/javascript" src="../lib/marker.js" defer></script>
+			<script type="text/javascript" src="../../../common/websocket.js?v=2.1" defer></script>
+			<script type="text/javascript" src="../../../common/dataManager.js?v=2.3" defer></script>
+
+			<script type="text/javascript" src="../../../common/sysAlert.js" defer></script>
+			<script type="text/javascript" src="../../public/vsn.js"></script>
+
+			<script type="text/javascript" src="../lib/fence.js?v=2.4" defer></script>
+			<script type="text/javascript" src="index.js?v=2.7" defer></script>
+
+		</footer>
+
+</body>
+</html>
+
