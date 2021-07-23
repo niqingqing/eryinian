@@ -1,0 +1,14 @@
+.taskName, .planStartTime, .planEndTime, .taskStart, .taskEnd, .planEndTime {
+ margin-bottom: 12px;
+}
+
+.button {
+ width: 60%;
+ display: grid;
+ grid-template-columns: auto auto;
+ grid-column-gap: 2rem;
+ position: fixed;
+ bottom: 16px;
+ left: 50%;
+ transform: translateX(-50%);
+}

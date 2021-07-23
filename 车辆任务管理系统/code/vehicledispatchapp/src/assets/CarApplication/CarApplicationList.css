@@ -1,0 +1,54 @@
+.all{
+    width: 100%;
+    background: #f2f2f2;
+}
+.allList{
+    width: 94%;
+    margin: 0 auto;
+    /*background: #ff4d2d;*/
+}
+/*标题*/
+.aTitle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background: #fff;
+    border-bottom: 1px solid #333;
+}
+.atTitle{
+    font-size: 0.2rem;
+}
+.atstatu{}
+/*end*/
+/*内容*/
+.aContent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    background: #fff;
+}
+.acLeft{}
+.aclName, .aclStarttime, .aclEndtime, .aclStart, .aclEnd{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.aclnTitle, .aclsTitle, .acleTitle, .aclsTitle, .acleTitle{}
+.aclnanswer, .aclsanswer, .acleanswer, .aclsanswer, .acleanswer{}
+.acRight{}
+.acrStart{}
+.acrWait{}
+.acrResult{}
+/*end*/
+/*添加*/
+.add{
+    position: fixed;
+    bottom: 10px;
+    background: red;
+}
+.add img{}
+/*end*/
