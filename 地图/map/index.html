@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script type="text/javascript" src="js/echarts.min.js"></script>
+		<script type="text/javascript" src="js/jquery.js"></script>
+	</head>
+	<body>
+		<div id="echartMap" style="width: 100vw;height:100vh;"></div>
+	</body>
+</html>
+<script type="text/javascript">
+	// 基于准备好的dom，初始化echarts实例
+	$.get("js/qingdao_full.json", function(huaianJson) {
+		echarts.registerMap("huaian", huaianJson);
+		var chart = echarts.init(document.getElementById("echartMap"));
+		chart.setOption({
+			backgroundColor: "#0B2744",
+			visualMap: {
+				type: "continuous",
+				min: 0,
+				max: 100,
+				text: ["High", "Low"],
+				realtime: false,
+				calculable: true,
+				color: ["rgba(0,215,152,0.5)", "#0089FC", "#0057FE"],
+				show: false
+			},
+			geo: [{
+				show: true,
+				map: 'huaian',
+				// layoutCenter: ["50%", "50%"], //地图位置
+				// layoutSize: '100%',
+				aspectScale: 0.75, //长宽比
+				zoom: 1,
+				roam: false,
+				itemStyle: {
+					normal: {
+						areaColor: 'transparent',
+						shadowColor: 'rgba(71,181,204,1)',
+						shadowOffsetX: 3,
+						shadowOffsetY: 6,
+						// areaColor: "#003095",
+						shadowBlur: 4,
+						borderColor: '#83BAFF',
+						borderWidth: 1,
+					},
+				},
+			}],
+			series: [{
+				type: "map",
+				mapType: "huaian",
+				roam: false,
+				label: {
+					normal: {
+						show: true,
+						color: "#fff"  //文字颜色
+					},
+					emphasis: {
+						show: true
+					}
+				},
+				itemStyle: {
+					normal: {
+						areaColor: 'transparent',
+						areaColor: {
+							x: 0,
+							y: 0,
+							x2: 0,
+							y2: 1,
+							colorStops: [{
+								offset: 0,
+								color: 'rgba(0,128,138,0.6)' // 0% 处的颜色  板块颜色
+							}, {
+								offset: 1,
+								color: 'rgba(0,128,138,0.5)' // 100% 处的颜色  板块颜色
+							}],
+						},
+						borderColor: '#c9ffff',
+						borderWidth: 1.5,
+						// shadowBlur: 2
+						// shadowBlur: 0,
+						// shadowColor: 'red',
+						// shadowOffsetX: 0,
+						// shadowOffsetY: 6
+					},
+					emphasis: { //鼠标经过时
+						label: {
+							show: true,
+							color: '#fff'  //文字颜色
+						},
+						areaColor: {
+							x: 0,
+							y: 0,
+							x2: 0,
+							y2: 1,
+							colorStops: [{
+								offset: 0,
+								color: '#073684' // 0% 处的颜色
+							}, {
+								offset: 1,
+								color: '#061E3D' // 100% 处的颜色
+							}],
+						},
+					}
+				},
+				data: [{
+					name: "市北区",
+					value: 80
+				}]
+			}]
+		});
+	});
+</script>
