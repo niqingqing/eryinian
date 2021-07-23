@@ -1,0 +1,146 @@
+<% layout('/layouts/default.html', {title: '追溯详情', libs: ['layui']}){ %>
+<link href="${ctxStatic}/modules/departmentrubbish/traceBackFormMap.css?${_version}" rel="stylesheet" />
+<div class="main-content">
+    <div class="box box-main">
+        <div class="col-xs-6 process" id="app">
+            <div class="box-header with-border">
+                <div class="pro">${text('过程描述')}</div>
+                <div class="jichu">基础信息：</div>
+                <div class="contentText" style="margin-top: 20px">
+                    <div class="con">
+                        <h4 class="textTitle">单位：</h4>
+                        <div class="textCon" v-text="institution">青岛胶州人民医院</div>
+                    </div>
+                    <div class="con">
+                        <h4 class="textTitle">废物类型：</h4>
+                        <div class="textCon" v-text="rubbishType">传播型</div>
+                    </div>
+                    <div class="con">
+                        <h4 class="textTitle">废物重量：</h4>
+                        <div class="textCon" v-text="weight + 'kg'">0.523g</div>
+                    </div>
+                    <div class="con">
+                        <h4 class="textTitle">封口日期：</h4>
+                        <div class="textCon" v-text="produceDate">2020-01-18 15:20:50</div>
+                    </div>
+                </div>
+                <div class="jichu" style="margin-top: 30px">进程：</div>
+                <div style="margin-top: 24px">
+                    <ul class="layui-timeline" v-show="notRecovery">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis"></i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title"><span class="name" >待回收</span></div>
+                                <div class="contentText">
+                                    <div class="con">
+                                        <!--                                        <h4 class="textTitle">在</h4>-->
+                                        <span class="textCon sta" v-text="createByName">倪青青</span>
+                                        <span>在</span>
+                                        <span class="textCon" style="font-weight: 700" v-text="createDate"></span>
+                                        <span class="textCon">将垃圾</span>
+                                        <span class="textCon " style="font-weight: 700">称重采集</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="layui-timeline" v-show="isRecovery">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis"></i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title"><span class="name" >运输中</span></div>
+                                <div class="contentText">
+                                    <div class="con">
+                                        <!--                                        <h4 class="textTitle">在</h4>-->
+                                        <span class="textCon sta" v-text="reclaimPersonName">倪青青</span>
+                                        <span>在</span>
+                                        <span class="textCon" style="font-weight: 700" v-text="reclaimDate"></span>
+                                        <span class="textCon">将垃圾</span>
+                                        <span class="textCon " style="font-weight: 700">运输</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="layui-timeline" v-show="isTransfer">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis"></i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title"><span class="name" >已中转</span></div>
+                                <div class="contentText">
+                                    <div class="con">
+                                        <!--                                        <h4 class="textTitle">在</h4>-->
+                                        <span class="textCon sta" v-text="inPutPersonName">倪青青</span>
+                                        <span>在</span>
+                                        <span class="textCon" style="font-weight: 700" v-text="inPutDate"></span>
+                                        <span class="textCon">将垃圾</span>
+                                        <span class="textCon " style="font-weight: 700">已中转</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="layui-timeline" v-show="isClean">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis"></i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title"><span class="name" >已清运</span></div>
+                                <div class="contentText">
+                                    <div class="con">
+                                        <!--                                        <h4 class="textTitle">在</h4>-->
+                                        <span class="textCon sta" v-text="inCleanPersonName">倪青青</span>
+                                        <span>在</span>
+                                        <span class="textCon" style="font-weight: 700" v-text="inCleanDate"></span>
+                                        <span class="textCon">将垃圾</span>
+                                        <span class="textCon " style="font-weight: 700">已清运</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                    <!--<ul>
+                        <li>
+                            <div class="tishiPic"><img src="${ctxStatic}/images/gallery/emp.png"></div>
+                            <div class="tishiText">暂无相关内容</div>
+                        </li>
+                    </ul>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 add">
+
+            <div class="box-body">
+                <div class="pro">${text('轨迹查询')}</div>
+                <div class="map-box">
+                    <div class="map-tools">
+                        <input placeholder="播放总时长(秒)" type="number" id="mapPlayTime" class="map-input">
+                        <button type="submit" id="mapPlayRestart" class="btn btn-primary btn-sm">播放</button>
+                        <button type="submit" id="mapPlayPause" class="btn btn-danger btn-sm">暂停</button>
+                        <button type="submit" id="mapPlayContinue" class="btn btn-success btn-sm">继续</button>
+                    </div>
+                    <div id="allmap" style="width: 800px;height: 600px;overflow: hidden;margin:0;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+<script>
+    var url = "${ctx}";
+</script>
+<link rel="stylesheet" href="${ctxStatic}/libs/layui/css/layui.css">
+<script src="${ctxStatic}/libs/vue-2.6.11/vue.min.js"></script>
+<script src="${ctxStatic}/modules/departmentrubbish/traceBackForm.js?${_version}"></script>
+<script src="${ctxStatic}/libs/layui/layui.js"></script>
+
+<script src="${ctxStatic}/libs/gcoord.js"></script>
+<script type="text/javascript" src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=04y9V6p6bBRV9gcwTPoUZaZCW9NhxBSc"></script>
+<script type="text/javascript" src="//api.map.baidu.com/library/TrackAnimation/src/TrackAnimation_min.js"></script>
+<script type="text/javascript" src="//mapopen.bj.bcebos.com/github/BMapGLLib/TrackAnimation/src/TrackAnimation.min.js"></script>
+<script src="${ctxStatic}/modules/departmentrubbish/traceBackFormMap.js?${_version}"></script>

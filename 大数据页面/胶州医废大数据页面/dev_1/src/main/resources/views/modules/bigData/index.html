@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" http-equiv="refresh" content="60">
+    <title>胶州医疗废弃物大数据监控</title>
+    <link rel="stylesheet" href="${ctxStatic}/bigData/css/index.css" type="text/css">
+    <!--jquery-->
+    <script type="text/javascript" src="${ctxStatic}/bigData/js/jquery-1.12.0.min.js"></script>
+    <!--表格无缝滚动-->
+    <script src="https://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="${ctxStatic}/bigData/css/table_scroll1.css">
+    <!--事件总数-->
+    <link type="text/css" rel="stylesheet" href="${ctxStatic}/bigData/css/control.css">
+    <!--引入echarts-->
+    <script type="text/javascript" src="${ctxStatic}/bigData/js/echarts.min.js"></script>
+</head>
+<body>
+
+<!--标头-->
+<div class="header">
+    <div class="headerText">胶州医疗废弃物大数据监控</div>
+    <img src="${ctxStatic}/bigData/images/head.png">
+</div>
+<!--内容-->
+<div class="content" id="app">
+
+    <!--左边-->
+    <div class="leftCon">
+        <!--上部分-->
+        <div class="leftConTop">
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="${ctxStatic}/bigData/images/circle.png">
+                    <img class="picTu" src="${ctxStatic}/bigData/images/pack.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">已打包(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="dayNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="mouthNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="yearNum"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="sanjiao"></div>
+
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="${ctxStatic}/bigData/images/circle.png">
+                    <img class="picTu" src="${ctxStatic}/bigData/images/bale.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">已打包(袋数)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="daiDayNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="daiMouthNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="daiYearNum"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="${ctxStatic}/bigData/images/circle.png">
+                    <img class="picTu" src="${ctxStatic}/bigData/images/transport.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">已运送(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="yunDayNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="yunMouthNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="yunYearNum"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="${ctxStatic}/bigData/images/circle.png">
+                    <img class="picTu" src="${ctxStatic}/bigData/images/transit.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">中转站(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="zhongDayNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="zhongMouthNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="zhongYearNum"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="${ctxStatic}/bigData/images/circle.png">
+                    <img class="picTu" src="${ctxStatic}/bigData/images/pickup.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">清运(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="qingDayNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="qingMouthNum"></div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="qingYearNum"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--下部分-->
+        <div class="leftConBottom">
+            <!--左边-->
+            <div class="bottomLeft">
+                <div class="blTitle">
+                    <div class="blTitleName">医废运输同步上传数据</div>
+                    <div class="blTitlePic"><img src="${ctxStatic}/bigData/images/line-tongbu.png"></div>
+                </div>
+                <div class="tablebox">
+
+                    <div class="tbl-header">
+                        <table border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                            <tr>
+                                <th>单位名称</th>
+                                <th>时间</th>
+                                <th>重量(Kg)</th>
+                            </tr>
+                            </thead>
+                            <tbody style="opacity:0;"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="tbl-body">
+                        <table border="0" cellspacing="0" cellpadding="0">
+                            <thead style="display: none;">
+                            <tr>
+                                <th>单位名称</th>
+                                <th>时间</th>
+                                <th>重量(Kg)</th>
+                            </tr>
+                            </thead>
+                            <tbody class="aa"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <!--右边-->
+            <div class="bottomRight">
+                <div class="leixing">
+                    <div class="blTitle">
+                        <div class="blTitleName">医疗废物类型分析</div>
+                        <div class="blTitlePic"><img src="${ctxStatic}/bigData/images/line-tongbu.png"></div>
+                    </div>
+                    <div class="chart">
+                        <div class="chartGan">
+                            <div class="gan" id="gan"></div>
+                            <div class="ganTitle">感染性</div>
+                        </div>
+                        <div class="chartHua">
+                            <div class="hua" id="hua"></div>
+                            <div class="huaTitle">化学性</div>
+                        </div>
+                        <div class="chartBing">
+                            <div class="bing" id="bing"></div>
+                            <div class="bingTitle">病理性</div>
+                        </div>
+                        <div class="chartSun">
+                            <div class="sun" id="sun"></div>
+                            <div class="sunTitle">损伤性</div>
+                        </div>
+                        <div class="chartYao">
+                            <div class="yao" id="yao"></div>
+                            <div class="yaoTitle">药物性</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="yearTop">
+                    <div class="blTitle">
+                        <div class="blTitleName">年度总览</div>
+                        <div class="blTitlePic"><img src="${ctxStatic}/bigData/images/line-tongbu.png"></div>
+                    </div>
+                    <div class="yearData">
+                        <div class="shang">
+                            <div class="shangTu">
+                                <div class="shangTuBiao"><img src="${ctxStatic}/bigData/images/shangbao.png"></div>
+                                <div class="shangTuText">
+                                    <div class="shangTuNum" id="shangTuNum"></div>
+                                    <div class="shangTuTitle">上报总数(Kg)</div>
+                                </div>
+                            </div>
+                            <div class="shangPic"><img src="${ctxStatic}/bigData/images/pic2.png"></div>
+                        </div>
+                        <div class="qing">
+                            <div class="qingTu">
+                                <div class="qingTuBiao"><img src="${ctxStatic}/bigData/images/pic3.png"></div>
+                                <div class="qingTuText">
+                                    <div class="qingTuNum" id="qingTuNum"></div>
+                                    <div class="qingTuTitle">清运总数(Kg)</div>
+                                </div>
+                            </div>
+                            <div class="qingPic"><img src="${ctxStatic}/bigData/images/pic2.png"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="yearBottom">
+                    <div class="blTitle">
+                        <div class="blTitleName">月度上报分析/万(Kg)</div>
+                        <div class="blTitlePic"><img src="${ctxStatic}/bigData/images/line-tongbu.png"></div>
+                    </div>
+                    <div class="all">
+                        <div id="stepBarBox">
+                            <div id="stepBar" class="ui-stepBar-wrap">
+                                <div class="ui-stepBar">
+                                    <div class="ui-stepProcess"></div>
+                                </div>
+                                <div class="ui-stepInfo-wrap">
+                                    <table class="ui-stepLayout" border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{one}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">1月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{two}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">2月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{three}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">3月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{four}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">4月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{five}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">5月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{six}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">6月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{seven}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">7月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{eight}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">8月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{nine}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">9月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{ten}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">10月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{eleven}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">11月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">{{twelve}}</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">12月</p>
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--右边-->
+    <div class="rightCon">
+
+        <!--标题部分-->
+        <div class="bottomTittle">
+            <div class="bottomTab">
+                <div id="tabDay" class="tabDay active" onclick="staticsClickFun(3)">本日统计</div>
+                <div id="tabMouth" class="tabMouth" onclick="staticsClickFun(2)">月度统计</div>
+                <div id="tabYear" class="tabYear" onclick="staticsClickFun(1)">年度统计</div>
+            </div>
+            <div class="bottomBorder"><img src="${ctxStatic}/bigData/images/line-tongbu.png"></div>
+        </div>
+        <!--表格部分-->
+        <div class="bottomCon">
+
+            <div class="bottomConT">
+                <div class="bottomConTittle">
+                    <img src="${ctxStatic}/bigData/images/pic3.png" class="tittleImg">
+                    <div class="conTittleText">医疗废物上报统计</div>
+                </div>
+                <!--表格内容-->
+                <div class="conTable">
+                    <!--表头信息-->
+                    <div class="conTableTittle">
+                        <div class="tittleText">名称</div>
+                        <div class="tittleText">总袋数</div>
+                        <div class="tittleText">总重量(Kg)</div>
+                    </div>
+                    <!--表格详细内容-->
+                    <div class="tableCon" v-for="list in zzzstatiscsWeightList">
+                        <p class="tableConText" v-text="list.institutionName"></p>
+                        <p class="tableConText" v-text="list.num" v-if="list.num != '0'"></p>
+                        <p class="tableConText activeLing" v-text="list.num" v-if="list.num == '0'"></p>
+                        <p class="tableConText" v-text="list.weight" v-if="list.weight != '0'"></p>
+                        <p class="tableConText activeLing" v-text="list.weight" v-if="list.weight == '0'"></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+
+<script>
+    var url = "${ctx}";
+</script>
+<!--事件总数-->
+<script type="text/javascript" src="${ctxStatic}/bigData/js/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="${ctxStatic}/bigData/js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="${ctxStatic}/bigData/js/stepBar.js"></script>
+<script type="text/javascript" src="${ctxStatic}/libs/vue-2.6.11/vue.js"></script>
+<script type="text/javascript" src="${ctxStatic}/bigData/vueJs/bigDataStatiscs.js"></script>
+<!--数字滚动-->
+<script type="text/javascript">
+    $(function () {
+        overviewScreenYear();
+        overviewScreenMouth();
+        overviewScreenDay();
+    })
+
+    /**
+     * 数字滚动
+     */
+    function numJump(elem, num) {
+        let currNum = 0;
+        let interval, timeoutEle;
+
+        let stepNum = num > 50 ? parseInt(num / 50) : 1;
+
+        jump();
+
+        function jump() {
+            clearTimeout(timeoutEle);
+            interval = setInterval(function () {
+                currNum += stepNum;
+                $(elem).html(currNum > num ? num : currNum);
+
+                if (currNum >= num) {
+                    currNum = 0;
+                    clearInterval(interval);
+                    timeOut();
+                }
+            }, 50)
+        }
+
+        function timeOut() {
+            timeoutEle = setTimeout(jump, 4000);
+        }
+
+    }
+
+    /**
+     * 数字滚动，年
+     * 包含年度上报总量和年度清运总量
+     */
+    function overviewScreenYear() {
+        $.ajax({
+            url: url + "/statiscs/overviewScreen",
+            method: "post",
+            data: {
+                'type': '1'
+            },
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                //
+                numJump("#yearNum", data.weight);//打包重量
+                numJump("#daiYearNum", data.num);//上报数量
+                numJump("#yunYearNum", data.huishouWeight);//运输重量
+                numJump("#zhongYearNum", data.rukuWeight);//入库重量
+                numJump("#qingYearNum", data.qingyunWeight);//清运重量
+
+                numJump("#shangTuNum", data.weight);//年上报总数
+                numJump("#qingTuNum", data.qingyunWeight);//年清运总数
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+    /**
+     * 数字滚动，月
+     */
+    function overviewScreenMouth() {
+        $.ajax({
+            url: url + "/statiscs/overviewScreen",
+            method: "post",
+            data: {
+                'type': '2'
+            },
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                //
+                numJump("#mouthNum", data.weight);//打包重量
+                numJump("#daiMouthNum", data.num);//上报数量
+                numJump("#yunMouthNum", data.huishouWeight);//运输重量
+                numJump("#zhongMouthNum", data.rukuWeight);//入库重量
+                numJump("#qingMouthNum", data.qingyunWeight);//清运重量
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+    /**
+     * 数字滚动，日
+     */
+    function overviewScreenDay() {
+        $.ajax({
+            url: url + "/statiscs/overviewScreen",
+            method: "post",
+            data: {
+                'type': '3'
+            },
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                //
+                numJump("#dayNum", data.weight);//打包重量
+                numJump("#daiDayNum", data.num);//上报数量
+                numJump("#yunDayNum", data.huishouWeight);//运输重量
+                numJump("#zhongDayNum", data.rukuWeight);//入库重量
+                numJump("#qingDayNum", data.qingyunWeight);//清运重量
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+
+</script>
+<!--告警事件 表格无缝滚动-->
+<script>
+    $(function () {
+        listData(null);
+    })
+
+    function listData(type) {
+        $.ajax({
+            url: url + "/statiscs/listData",
+            method: "post",
+            data: {
+                'transportStatus': 1,
+                'type': type,
+            },
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+
+                let satticsList = data.list;
+
+                var MyMarhq = '';
+                clearInterval(MyMarhq);
+                $('.tbl-body tbody').empty();
+                $('.tbl-header tbody').empty();
+                var str = '';
+
+
+                var Items = []
+                for (var i = 0; i < satticsList.length; i++) {
+                    var item = {
+                        "name": "",
+                        "time": "",
+                        "weight": ""
+                    }
+
+                    item.name = satticsList[i].institution;
+                    item.time = satticsList[i].produceDate.slice(0, 10);
+                    item.time = item.time.replace(/-/g, '/')
+                    item.weight = satticsList[i].weight;
+                    Items.push(item)
+                }
+
+                $.each(Items, function (i, item) {
+                    let color;
+                    // switch (item.SaleIncome) {
+                    //     case "低":
+                    //         color = "#f0cd03";
+                    //         break;
+                    //     case "中":
+                    //         color = "#ff9b29";
+                    //         break;
+                    //     case "高":
+                    //         color = "#df0024";
+                    //         break;
+                    // }
+
+                    str = '<tr>' +
+                        '<td>' + item.name + '</td>' +
+                        '<td>' + item.time + '</td>' +
+                        '<td >' + '<div style="background-color: ' + color + '">' + item.weight + '</div>' + '</td>' +
+                        '</tr>'
+
+                    $('.tbl-body tbody').append(str);
+                    $('.tbl-header tbody').append(str);
+                });
+
+                if (Items.length > 10) {
+                    $('.tbl-body tbody').html($('.tbl-body tbody').html() + $('.tbl-body tbody').html());
+                    $('.tbl-body').css('top', '0');
+                    var tblTop = 0;
+                    var speedhq = 50; // 数值越大越慢
+                    var outerHeight = $('.tbl-body tbody').find("tr").outerHeight();
+
+                    function Marqueehq() {
+                        if (tblTop <= -outerHeight * Items.length) {
+                            tblTop = 0;
+                        } else {
+                            tblTop -= 1;
+                        }
+                        $('.tbl-body').css('top', tblTop + 'px');
+                    }
+
+                    MyMarhq = setInterval(Marqueehq, speedhq);
+
+                    // 鼠标移上去取消事件
+                    $(".tbl-header tbody").hover(function () {
+                        clearInterval(MyMarhq);
+                    }, function () {
+                        clearInterval(MyMarhq);
+                        MyMarhq = setInterval(Marqueehq, speedhq);
+                    })
+
+                }
+
+                let bg = document.getElementsByClassName("tableCon");
+                let bg1 = $(".aa tr");
+                console.log(bg1.length);
+                for (let i = 0; i < bg.length; i++) {
+                    if (i / 2 == 0) {
+                        console.log('tableCon');
+                        bg[i].className = 'tableCon'
+                    } else {
+                        console.log('tab');
+                        bg[i].className = 'tab'
+                    }
+                }
+
+                for (let j = 0; j < bg1.length; j++) {
+                    if (j % 2 == 0) {
+                        $(bg1).eq(j).addClass('tableCon');
+                    } else {
+                        $(bg1).eq(j).addClass('tab');
+                    }
+                }
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+        initStepBar();
+    });
+
+    function initStepBar() {
+        stepBar.init("stepBar", {
+            step: 12,
+            change: true,
+            animation: true,
+        });
+    }
+
+
+</script>
+<!--感染性-->
+<script type="text/javascript">
+    $(function () {
+        typePercentage();
+        typePercentage2();
+        typePercentage3();
+        typePercentage4();
+        typePercentage5();
+    })
+
+    function typePercentage() {
+        $.ajax({
+            url: url + "/statiscs/typePercentage",
+            method: "post",
+            data: {},
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                var myChart = echarts.init(document.getElementById('gan'));
+
+                var chartData = Number((data.infectedWeight / data.weight) * 100).toFixed(2);
+                var getvalue = 1123;
+                var gradient = new echarts.graphic.LinearGradient(
+                    0, 0, 1, 0, [{
+                        offset: 0,
+                        color: "#3eebff",
+                    },
+                        {
+                            offset: 1,
+                            color: "#3eebff",
+                        }
+                    ]
+                );
+
+                option = {
+                    // backgroundColor: '#fff',
+                    legend: {
+                        show: false
+                    },
+                    title: [{
+                        text: chartData + '%',
+                        x: '46%',
+                        y: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '16',
+                            fontWeight: '400',
+                            color: '#fff',
+                            textAlign: 'center',
+                        },
+                    }, {
+                        // text: '宿舍检查优秀率',
+                        left: '40%',
+                        top: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '12',
+                            fontWeight: '400',
+                            color: '#666666',
+                            textAlign: 'center',
+                        },
+                    }],
+                    series: [{
+                        type: 'pie',
+                        clockwise: false,
+                        radius: ['78%', '80%'],
+                        center: ['50%', '50%'],
+                        zlevel: 3,
+                        hoverAnimation: false,
+                        label: {
+                            show: false,
+                        },
+                        data: [{
+                            value: 100 - chartData,
+                            itemStyle: {
+                                color: 'transparent',
+                            }
+                        }, {
+                            value: chartData,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 10,
+                                    borderColor: gradient,
+                                    color: gradient
+                                }
+                            },
+                        },]
+                    },
+                        {
+                            type: 'pie',
+                            clockwise: false,
+                            radius: ['78%', '80%'],
+                            center: ['50%', '50%'],
+                            hoverAnimation: false,
+                            zlevel: 2,
+                            label: {
+                                show: false,
+                            },
+                            itemStyle: {
+                                color: '#DBE9F6',
+                                borderWidth: 10,
+                                borderColor: '#DBE9F6'
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: '#DBE9F6',
+                                    borderWidth: 10,
+                                    borderColor: '#DBE9F6'
+                                }
+                            },
+                            data: [100]
+                        }
+                    ]
+
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+
+</script>
+<!--化学性-->
+<script type="text/javascript">
+
+    function typePercentage2() {
+        $.ajax({
+            url: url + "/statiscs/typePercentage",
+            method: "post",
+            data: {},
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                var myChart = echarts.init(document.getElementById('hua'));
+
+                var chartData = Number((data.contagionWeight / data.weight) * 100).toFixed(2);
+                var getvalue = 1123;
+                var gradient = new echarts.graphic.LinearGradient(
+                    0, 0, 1, 0, [{
+                        offset: 0,
+                        color: "#ffa67d",
+                    },
+                        {
+                            offset: 1,
+                            color: "#ffa67d",
+                        }
+                    ]
+                );
+
+                option = {
+                    // backgroundColor: '#fff',
+                    legend: {
+                        show: false
+                    },
+                    title: [{
+                        text: chartData + '%',
+                        x: '46%',
+                        y: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '16',
+                            fontWeight: '400',
+                            color: '#fff',
+                            textAlign: 'center',
+                        },
+                    }, {
+                        // text: '宿舍检查优秀率',
+                        left: '40%',
+                        top: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '12',
+                            fontWeight: '400',
+                            color: '#666666',
+                            textAlign: 'center',
+                        },
+                    }],
+                    series: [{
+                        type: 'pie',
+                        clockwise: false,
+                        radius: ['78%', '80%'],
+                        center: ['50%', '50%'],
+                        zlevel: 3,
+                        hoverAnimation: false,
+                        label: {
+                            show: false,
+                        },
+                        data: [{
+                            value: 100 - chartData,
+                            itemStyle: {
+                                color: 'transparent',
+                            }
+                        }, {
+                            value: chartData,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 10,
+                                    borderColor: gradient,
+                                    color: gradient
+                                }
+                            },
+                        },]
+                    },
+                        {
+                            type: 'pie',
+                            clockwise: false,
+                            radius: ['78%', '80%'],
+                            center: ['50%', '50%'],
+                            hoverAnimation: false,
+                            zlevel: 2,
+                            label: {
+                                show: false,
+                            },
+                            itemStyle: {
+                                color: '#DBE9F6',
+                                borderWidth: 10,
+                                borderColor: '#DBE9F6'
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: '#DBE9F6',
+                                    borderWidth: 10,
+                                    borderColor: '#DBE9F6'
+                                }
+                            },
+                            data: [100]
+                        }
+                    ]
+
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+</script>
+<!--病理性-->
+<script type="text/javascript">
+    function typePercentage3() {
+        $.ajax({
+            url: url + "/statiscs/typePercentage",
+            method: "post",
+            data: {},
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                var myChart = echarts.init(document.getElementById('bing'));
+
+                var chartData = Number((data.pathologyWeight / data.weight) * 100).toFixed(2);
+                var getvalue = 1123;
+                var gradient = new echarts.graphic.LinearGradient(
+                    0, 0, 1, 0, [{
+                        offset: 0,
+                        color: "#438eff",
+                    },
+                        {
+                            offset: 1,
+                            color: "#438eff",
+                        }
+                    ]
+                );
+
+                option = {
+                    // backgroundColor: '#fff',
+                    legend: {
+                        show: false
+                    },
+                    title: [{
+                        text: chartData + '%',
+                        x: '46%',
+                        y: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '16',
+                            fontWeight: '400',
+                            color: '#fff',
+                            textAlign: 'center',
+                        },
+                    }, {
+                        // text: '宿舍检查优秀率',
+                        left: '40%',
+                        top: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '12',
+                            fontWeight: '400',
+                            color: '#666666',
+                            textAlign: 'center',
+                        },
+                    }],
+                    series: [{
+                        type: 'pie',
+                        clockwise: false,
+                        radius: ['78%', '80%'],
+                        center: ['50%', '50%'],
+                        zlevel: 3,
+                        hoverAnimation: false,
+                        label: {
+                            show: false,
+                        },
+                        data: [{
+                            value: 100 - chartData,
+                            itemStyle: {
+                                color: 'transparent',
+                            }
+                        }, {
+                            value: chartData,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 10,
+                                    borderColor: gradient,
+                                    color: gradient
+                                }
+                            },
+                        },]
+                    },
+                        {
+                            type: 'pie',
+                            clockwise: false,
+                            radius: ['78%', '80%'],
+                            center: ['50%', '50%'],
+                            hoverAnimation: false,
+                            zlevel: 2,
+                            label: {
+                                show: false,
+                            },
+                            itemStyle: {
+                                color: '#DBE9F6',
+                                borderWidth: 10,
+                                borderColor: '#DBE9F6'
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: '#DBE9F6',
+                                    borderWidth: 10,
+                                    borderColor: '#DBE9F6'
+                                }
+                            },
+                            data: [100]
+                        }
+                    ]
+
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+</script>
+<!--损伤性-->
+<script type="text/javascript">
+    function typePercentage4() {
+        $.ajax({
+            url: url + "/statiscs/typePercentage",
+            method: "post",
+            data: {},
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                var myChart = echarts.init(document.getElementById('sun'));
+
+                var chartData = Number((data.damageWeight / data.weight) * 100).toFixed(2);
+                var getvalue = 1123;
+                var gradient = new echarts.graphic.LinearGradient(
+                    0, 0, 1, 0, [{
+                        offset: 0,
+                        color: "#fcc040",
+                    },
+                        {
+                            offset: 1,
+                            color: "#fcc040",
+                        }
+                    ]
+                );
+
+                option = {
+                    // backgroundColor: '#fff',
+                    legend: {
+                        show: false
+                    },
+                    title: [{
+                        text: chartData + '%',
+                        x: '46%',
+                        y: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '16',
+                            fontWeight: '400',
+                            color: '#fff',
+                            textAlign: 'center',
+                        },
+                    }, {
+                        // text: '宿舍检查优秀率',
+                        left: '40%',
+                        top: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '12',
+                            fontWeight: '400',
+                            color: '#666666',
+                            textAlign: 'center',
+                        },
+                    }],
+                    series: [{
+                        type: 'pie',
+                        clockwise: false,
+                        radius: ['78%', '80%'],
+                        center: ['50%', '50%'],
+                        zlevel: 3,
+                        hoverAnimation: false,
+                        label: {
+                            show: false,
+                        },
+                        data: [{
+                            value: 100 - chartData,
+                            itemStyle: {
+                                color: 'transparent',
+                            }
+                        }, {
+                            value: chartData,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 10,
+                                    borderColor: gradient,
+                                    color: gradient
+                                }
+                            },
+                        },]
+                    },
+                        {
+                            type: 'pie',
+                            clockwise: false,
+                            radius: ['78%', '80%'],
+                            center: ['50%', '50%'],
+                            hoverAnimation: false,
+                            zlevel: 2,
+                            label: {
+                                show: false,
+                            },
+                            itemStyle: {
+                                color: '#DBE9F6',
+                                borderWidth: 10,
+                                borderColor: '#DBE9F6'
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: '#DBE9F6',
+                                    borderWidth: 10,
+                                    borderColor: '#DBE9F6'
+                                }
+                            },
+                            data: [100]
+                        }
+                    ]
+
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+</script>
+<!--药物性-->
+<script type="text/javascript">
+    function typePercentage5() {
+        $.ajax({
+            url: url + "/statiscs/typePercentage",
+            method: "post",
+            data: {},
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (data) {
+                var myChart = echarts.init(document.getElementById('yao'));
+
+                var chartData = Number((data.medicineWeight / data.weight) * 100).toFixed(2);
+                var getvalue = 1123;
+                var gradient = new echarts.graphic.LinearGradient(
+                    0, 0, 1, 0, [{
+                        offset: 0,
+                        color: "#77ff9d",
+                    },
+                        {
+                            offset: 1,
+                            color: "#77ff9d",
+                        }
+                    ]
+                );
+
+                option = {
+                    // backgroundColor: '#fff',
+                    legend: {
+                        show: false
+                    },
+                    title: [{
+                        text: chartData + '%',
+                        x: '46%',
+                        y: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '16',
+                            fontWeight: '400',
+                            color: '#fff',
+                            textAlign: 'center',
+                        },
+                    }, {
+                        // text: '宿舍检查优秀率',
+                        left: '40%',
+                        top: '46%',
+                        textAlign: 'center',
+                        textStyle: {
+                            fontSize: '12',
+                            fontWeight: '400',
+                            color: '#666666',
+                            textAlign: 'center',
+                        },
+                    }],
+                    series: [{
+                        type: 'pie',
+                        clockwise: false,
+                        radius: ['78%', '80%'],
+                        center: ['50%', '50%'],
+                        zlevel: 3,
+                        hoverAnimation: false,
+                        label: {
+                            show: false,
+                        },
+                        data: [{
+                            value: 100 - chartData,
+                            itemStyle: {
+                                color: 'transparent',
+                            }
+                        }, {
+                            value: chartData,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 10,
+                                    borderColor: gradient,
+                                    color: gradient
+                                }
+                            },
+                        },]
+                    },
+                        {
+                            type: 'pie',
+                            clockwise: false,
+                            radius: ['78%', '80%'],
+                            center: ['50%', '50%'],
+                            hoverAnimation: false,
+                            zlevel: 2,
+                            label: {
+                                show: false,
+                            },
+                            itemStyle: {
+                                color: '#DBE9F6',
+                                borderWidth: 10,
+                                borderColor: '#DBE9F6'
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: '#DBE9F6',
+                                    borderWidth: 10,
+                                    borderColor: '#DBE9F6'
+                                }
+                            },
+                            data: [100]
+                        }
+                    ]
+
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            },
+            error: function () {
+
+            }
+        })
+    }
+
+</script>
+<!--给表格每隔一条数据就添加一个背景色-->
+<script type="text/javascript">
+    /**
+     * 给表格每隔一条数据就添加一个背景色
+     */
+    let bg1 = $(".aa tr");
+    console.log(bg1.length);
+
+    for (let j = 0; j < bg1.length; j++) {
+        if (j % 2 == 0) {
+            $(bg1).eq(j).addClass('tableCon');
+        } else {
+            $(bg1).eq(j).addClass('tab');
+        }
+    }
+
+</script>
+<script>
+    function staticsClickFun(type) {
+        app.setType(type);
+        app.getzzzstatiscsWeightList(type);
+        if(type=='3'){
+            var classVal1 = document.getElementById('tabDay');
+            classVal1.setAttribute("class", classVal1.getAttribute("class").concat('active'));
+            var classVal2 = document.getElementById('tabMouth');
+            classVal2.setAttribute("class", classVal1.getAttribute("class").replace('active', ''));
+            var classVal3 = document.getElementById('tabYear');
+            classVal3.setAttribute("class", classVal1.getAttribute("class").replace('active', ''));
+
+        }else if(type=='2'){
+            var classVal1 = document.getElementById('tabDay');
+            classVal1.setAttribute("class", classVal1.getAttribute("class").replace('active', ''));
+            var classVal2 = document.getElementById('tabMouth');
+            classVal2.setAttribute("class", classVal1.getAttribute("class").concat('active'));
+            var classVal3 = document.getElementById('tabYear');
+            classVal3.setAttribute("class", classVal1.getAttribute("class").replace('active', ''));
+        }else if(type=='1'){
+            var classVal1 = document.getElementById('tabDay');
+            classVal1.setAttribute("class", classVal1.getAttribute("class").replace('active', ''));
+            var classVal2 = document.getElementById('tabMouth');
+            classVal2.setAttribute("class", classVal1.getAttribute("class").replace('active', ''));
+            var classVal3 = document.getElementById('tabYear');
+            classVal3.setAttribute("class", classVal1.getAttribute("class").concat('active'));
+        }
+
+    }
+</script>
+
+<!--定数刷新数据-->
+<script>
+   /* window.setInterval(function () {
+        overviewScreenYear();
+        overviewScreenMouth();
+        overviewScreenDay();
+        listData(null);
+        typePercentage();
+        typePercentage2();
+        typePercentage3();
+        typePercentage4();
+        typePercentage5();
+        app.getzzzstatiscsWeightList();
+        app.annualSummary();
+    }, 60 * 1000);*/
+</script>
+</html>

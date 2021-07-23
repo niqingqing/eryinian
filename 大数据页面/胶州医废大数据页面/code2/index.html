@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>胶州医疗废弃物大数据监控</title>
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+    <!--jquery-->
+    <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
+</head>
+<body>
+
+<!--标头-->
+<div class="header">
+    <div class="headerText">胶州医疗废弃物大数据监控</div>
+    <img src="images/head.png">
+</div>
+<!--内容-->
+<div class="content">
+
+    <!--top-->
+    <div class="contentTop">
+        <div class="topLeft">
+            <!--第一个-->
+            <div class="leftTop">
+
+                <img src="images/border.png" class="leftBg">
+                <div class="pic">
+                    <div class="picImg"><img src="images/pic.png"></div>
+                    <div class="picText">已打包(Kg)</div>
+                </div>
+                <div class="con">
+                    <div class="conBox">
+
+                        <div class="conDay">
+                            <div class="dayTittle">本日累计</div>
+                            <div class="dayData" id="dayData">403.8</div>
+                        </div>
+                        <div class="conMouth">
+                            <div class="mouthTittle">本月累计</div>
+                            <div class="mouthData" id="mouthData">2299.2</div>
+                        </div>
+                        <div class="conYear">
+                            <div class="yearTittle">本年累计</div>
+                            <div class="yearData" id="yearData">2299.2</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!--第二个-->
+            <div class="leftCenter">
+
+                <img src="images/border.png" class="leftBg">
+                <div class="pic">
+                    <div class="picImg"><img src="images/pic.png"></div>
+                    <div class="picText">已打包(袋数)</div>
+                </div>
+                <div class="con">
+                    <div class="conBox">
+
+                        <div class="conDay">
+                            <div class="dayTittle">本日累计</div>
+                            <div class="dayData" id="dayDataDai">403.8</div>
+                        </div>
+                        <div class="conMouth">
+                            <div class="mouthTittle">本月累计</div>
+                            <div class="mouthData" id="mouthDataDai">2299.2</div>
+                        </div>
+                        <div class="conYear">
+                            <div class="yearTittle">本年累计</div>
+                            <div class="yearData" id="yearDataDai">2299.2</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!--第三个-->
+            <div class="leftBottom">
+
+                <img src="images/border.png" class="leftBg">
+                <div class="pic">
+                    <div class="picImg"><img src="images/pic.png"></div>
+                    <div class="picText">已运送</div>
+                </div>
+                <div class="con">
+                    <div class="conBox">
+
+                        <div class="conDay">
+                            <div class="dayTittle">本日累计</div>
+                            <div class="dayData" id="dayDataYun">403.8</div>
+                        </div>
+                        <div class="conMouth">
+                            <div class="mouthTittle">本月累计</div>
+                            <div class="mouthData" id="mouthDataYun">2299.2</div>
+                        </div>
+                        <div class="conYear">
+                            <div class="yearTittle">本年累计</div>
+                            <div class="yearData" id="yearDataYun">2299.2</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="topCenter"></div>
+        <div class="topRight">
+            <!--第一个-->
+            <div class="leftTop">
+
+                <img src="images/border.png" class="leftBg">
+                <div class="pic">
+                    <div class="picImg"><img src="images/pic.png"></div>
+                    <div class="picText">中转站(Kg)</div>
+                </div>
+                <div class="con">
+                    <div class="conBox">
+
+                        <div class="conDay">
+                            <div class="dayTittle">本日累计</div>
+                            <div class="dayData" id="dayDataZhong">403.8</div>
+                        </div>
+                        <div class="conMouth">
+                            <div class="mouthTittle">本月累计</div>
+                            <div class="mouthData" id="mouthDataZhong">2299.2</div>
+                        </div>
+                        <div class="conYear">
+                            <div class="yearTittle">本年累计</div>
+                            <div class="yearData" id="yearDataZhong">2299.2</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!--第二个-->
+            <div class="leftCenter">
+
+                <img src="images/border.png" class="leftBg">
+                <div class="pic">
+                    <div class="picImg"><img src="images/pic.png"></div>
+                    <div class="picText">清运(Kg)</div>
+                </div>
+                <div class="con">
+                    <div class="conBox">
+
+                        <div class="conDay">
+                            <div class="dayTittle">本日累计</div>
+                            <div class="dayData" id="dayDataQing">403.8</div>
+                        </div>
+                        <div class="conMouth">
+                            <div class="mouthTittle">本月累计</div>
+                            <div class="mouthData" id="mouthDataQing">2299.2</div>
+                        </div>
+                        <div class="conYear">
+                            <div class="yearTittle">本年累计</div>
+                            <div class="yearData" id="yearDataQing">2299.2</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!--第三个-->
+            <div class="leftBottom">
+
+                <img src="images/border2.png" class="leftBg">
+                <div class="pic">
+                    <div class="picImg"><img src="images/pic.png"></div>
+                    <div class="picText">已运送</div>
+                </div>
+                <div class="con">
+                    <div class="conBox">
+
+                        <div class="conDay">
+                            <div class="dayTittle">本日累计</div>
+                            <div class="dayData" id="dayDataYun">403.8</div>
+                        </div>
+                        <div class="conMouth">
+                            <div class="mouthTittle">本月累计</div>
+                            <div class="mouthData" id="mouthDataYun">2299.2</div>
+                        </div>
+                        <div class="conYear">
+                            <div class="yearTittle">本年累计</div>
+                            <div class="yearData" id="yearDataYun">2299.2</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--bottom-->
+    <div class="contentBottom">
+
+        <img src="images/border1.png" class="leftBg">
+        <!--标题部分-->
+        <div class="bottomTittle">
+            <div class="bottomTab">
+                <div class="tabDay active">本日统计</div>
+                <div class="tabMouth">月度统计</div>
+                <div class="tabYear">年度统计</div>
+            </div>
+            <div class="bottomBorder"><img src="images/line1.png"></div>
+        </div>
+        <!--表格部分-->
+        <div class="bottomCon">
+
+            <div class="bottomConT">
+                <div class="bottomConTittle">
+                    <img src="images/pic1.png" class="tittleImg">
+                    <div class="conTittleText">单位医疗废物运输状态(1-7)</div>f
+                </div>
+                <!--表格内容-->
+                <div class="conTable">
+                    <!--表头信息-->
+                    <div class="conTableTittle">
+                        <div class="tittleText">名称</div>
+                        <div class="tittleText">总袋数</div>
+                        <div class="tittleText">总重量(Kg)</div>
+                    </div>
+                    <!--表格详细内容-->
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText activeLing">0</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="bottomConT">
+                <div class="bottomConTittle">
+                    <img src="images/pic1.png" class="tittleImg">
+                    <div class="conTittleText">单位医疗废物运输状态(1-7)</div>
+                </div>
+                <!--表格内容-->
+                <div class="conTable">
+                    <!--表头信息-->
+                    <div class="conTableTittle">
+                        <div class="tittleText">名称</div>
+                        <div class="tittleText">总袋数</div>
+                        <div class="tittleText">总重量(Kg)</div>
+                    </div>
+                    <!--表格详细内容-->
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText activeLing">0</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="bottomConT">
+                <div class="bottomConTittle">
+                    <img src="images/pic1.png" class="tittleImg">
+                    <div class="conTittleText">单位医疗废物运输状态(1-7)</div>
+                </div>
+                <!--表格内容-->
+                <div class="conTable">
+                    <!--表头信息-->
+                    <div class="conTableTittle">
+                        <div class="tittleText">名称</div>
+                        <div class="tittleText">总袋数</div>
+                        <div class="tittleText">总重量(Kg)</div>
+                    </div>
+                    <!--表格详细内容-->
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText activeLing">0</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    /**
+     * 数字滚动
+     */
+    function numJump(elem, num) {
+        let currNum = 0;
+        let interval, timeoutEle;
+
+        let stepNum = num > 50 ? parseInt(num / 50) : 1;
+
+        jump();
+
+        function jump() {
+            clearTimeout(timeoutEle);
+            interval = setInterval(function () {
+
+                currNum += stepNum;
+                $(elem).html(currNum > num ? num : currNum);
+
+                if (currNum >= num) {
+                    currNum = 0;
+                    clearInterval(interval);
+                    timeOut();
+                }
+            }, 1)
+        }
+
+        function timeOut() {
+            timeoutEle = setTimeout(jump, 3000);
+        }
+
+    }
+
+    numJump("#dayData", 403.8);
+    numJump("#mouthData", 2299.2);
+    numJump("#yearData", 2299.2);
+
+    numJump("#dayDataDai", 403.8);
+    numJump("#mouthDataDai", 2299.2);
+    numJump("#yearDataDai", 2299.2);
+
+    numJump("#dayDataYun", 403.8);
+    numJump("#mouthDataYun", 2299.2);
+    numJump("#yearDataYun", 2299.2);
+
+    numJump("#dayDataZhong", 403.8);
+    numJump("#mouthDataZhong", 2292129.2);
+    numJump("#yearDataZhong", 2299.2);
+
+    numJump("#dayDataQing", 403.8);
+    numJump("#mouthDataQing", 2299.2);
+    numJump("#yearDataQing", 2299.2);
+
+</script>
+<script type="text/javascript">
+    /**
+     * 给表格每隔一条数据就添加一个背景色
+     */
+    let bg = document.getElementsByClassName("tableCon");
+    console.log(bg);
+    for (let i = 0; i <= bg.length; i++) {
+        if(i/2 == 0){
+            bg[i].className = 'tableCon'
+        }else {
+            bg[i].className = 'tab'
+        }
+    }
+</script>
+</html>

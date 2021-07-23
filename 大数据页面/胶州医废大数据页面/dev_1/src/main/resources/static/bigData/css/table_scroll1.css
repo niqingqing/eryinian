@@ -1,0 +1,78 @@
+.tablebox {
+    width: 94%;
+    height: calc(66.5vh - 154px);
+    overflow: hidden;
+    position: relative;
+    margin: 10px auto;
+    /*background-color: rgba(6,26,103,1);*/
+}
+
+.tbl-header {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: calc(66.5vh - 154px);
+}
+
+.tbl-body {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.tablebox table {
+    width: 100%;
+}
+
+.tablebox table th,
+.tablebox table td {
+    font-size: 1rem;
+    color: #fff;
+
+    text-align: center;
+}
+
+.tablebox table td{
+    color: #7afffd;
+    height: 3.5vh;
+}
+
+.tablebox table td:nth-child(3){
+    color: #7afffd;
+}
+
+.tablebox table tr th {
+    background-color: #2f468b;
+    cursor: pointer;
+    line-height: 4vh;
+}
+
+.tablebox .tbl-header table tr{
+    color: #fff;
+    /*background-image: linear-gradient(to right, #132360 , #0b40a1);*/
+}
+
+.tablebox table tr td {
+    background-color: transparent;
+    width: 5vw;
+}
+.tablebox table tr td:nth-child(1){
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 10vw !important;
+    min-width: 10vw !important;
+    max-width: 10vw !important;
+    text-align: left;
+    color: #7afffd;
+}
+.tbl-body tr:nth-child(even) td,.tbl-body1 tr:nth-child(even) td {
+    /*background-color:red;*/
+}
+
+.tablebox table tr td span,
+.tablebox table tr td span {
+    font-size: 24px;
+}

@@ -1,0 +1,86 @@
+<% layout('/layouts/default.html', {title: '垃圾中转站管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('垃圾中转站管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('rubbishinput:wasteTransfer:edit')){ %>
+					<a href="${ctx}/rubbishinput/wasteTransfer/form" class="btn btn-default btnTool" title="${text('新增垃圾中转站')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${wasteTransfer}" action="${ctx}/rubbishinput/wasteTransfer/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('科室垃圾编码')}：</label>
+					<div class="control-inline">
+						<#form:input path="departmentRubbishId" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('垃圾回收编码')}：</label>
+					<div class="control-inline">
+						<#form:input path="rubbishReclaimId" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('垃圾入库负责人')}：</label>
+					<div class="control-inline">
+						<#form:input path="inPutPerson" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('垃圾入库日期')}：</label>
+					<div class="control-inline">
+						<#form:input path="inPutDate" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('垃圾入库方式')}：</label>
+					<div class="control-inline">
+						<#form:input path="inPutMode" maxlength="11" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text('科室垃圾编码')}', name:'departmentRubbishId', index:'a.department_rubbish_id', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/rubbishinput/wasteTransfer/form?id='+row.id+'" class="btnList" data-title="${text('编辑垃圾中转站')}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text('垃圾回收编码')}', name:'rubbishReclaimId', index:'a.rubbish_reclaim_id', width:150, align:"left"},
+		{header:'${text('垃圾入库负责人')}', name:'inPutPerson', index:'a.in_put_person', width:150, align:"left"},
+		{header:'${text('垃圾入库日期')}', name:'inPutDate', index:'a.in_put_date', width:150, align:"center"},
+		{header:'${text('垃圾入库方式')}', name:'inPutMode', index:'a.in_put_mode', width:150, align:"left"},
+		{header:'${text('创建时间')}', name:'createDate', index:'a.create_date', width:150, align:"center"},
+		{header:'${text('操作')}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('rubbishinput:wasteTransfer:edit')){ %>
+				actions.push('<a href="${ctx}/rubbishinput/wasteTransfer/form?id='+row.id+'" class="btnList" title="${text('编辑垃圾中转站')}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/rubbishinput/wasteTransfer/delete?id='+row.id+'" class="btnList" title="${text('删除垃圾中转站')}" data-confirm="${text('确认要删除该垃圾中转站吗？')}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

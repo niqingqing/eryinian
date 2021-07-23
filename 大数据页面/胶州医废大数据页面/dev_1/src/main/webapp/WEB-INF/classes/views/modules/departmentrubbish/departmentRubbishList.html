@@ -1,0 +1,240 @@
+<% layout('/layouts/default.html', {title: '废弃物追溯', libs: ['dataGrid']}){ %>
+<link rel="stylesheet" href="${ctxStatic}/libs/layui/css/layui.css?${_version}">
+<link rel="stylesheet" href="${ctxStatic}/fonts/iconfont1.css?${_version}">
+<link rel="stylesheet" href="${ctxStatic}/modules/statiscs/statiscs.css?${_version}">
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> 废弃物追溯 (点击单行查看追溯过程)
+			</div>
+			<div class="row">
+				<section class="col-md-12 ui-sortable">
+					<div class="box box-widget">
+						<div class="box-body box-body-date">
+							<div id="adm" style="clear: both;">
+								<div class="col-md-3 col-sm-6 col-xs-12 bott">
+									<div class="info-box info-C">
+                <span class="info-box-icon bg-red bg2">
+                    <i class="icon iconfont icon-qianshou fa-icon fa-qian"></i>
+                </span>
+										<div class="info-box-content">
+											<span class="info-box-number" id="shangbao"></span>
+											<span class="info-box-text">待回收</span>
+
+										</div>
+									</div>
+								</div>
+								<div class="col-md-3 col-sm-6 col-xs-12 bott">
+									<div class="info-box info-Q">
+                         <span class="info-box-icon bg-aqua">
+                             <i class="icon iconfont icon-zhipai fa-icon"></i>
+                         </span>
+										<div class="info-box-content">
+											<span class="info-box-number" id="yunshu"></span>
+											<span class="info-box-text">运输中</span>
+										</div>
+									</div>
+								</div>
+
+								<div class="clearfix visible-sm-block"></div>
+								<div class="col-md-3 col-sm-6 col-xs-12 bott">
+									<div class="info-box info-Wo">
+                <span class="info-box-icon bg-yellow bg4">
+                  <i class="icon iconfont icon-chuangjian fa-icon fa-chuang"></i>
+                </span>
+
+										<div class="info-box-content">
+											<span class="info-box-number" id="ruku"></span>
+											<span class="info-box-text">已中转</span>
+
+										</div>
+									</div>
+								</div>
+								<div class="col-md-3 col-sm-6 col-xs-12 bott">
+									<div class="info-box info-W">
+                <span class="info-box-icon bg-yellow bg-y">
+                   <i class="icon iconfont icon-yiwancheng fa-icon fa-wan"></i>
+                </span>
+
+										<div class="info-box-content">
+											<span class="info-box-number" id="qingyun"></span>
+											<span class="info-box-text">已清运</span>
+
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${departmentRubbish}" action="${ctx}/departmentRubbish/overwriteListData" method="post" class="form-inline "
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+
+				<div class="form-group">
+					<label class="control-label">${text('垃圾类型')}：</label>
+					<div class="control-inline width-120">
+						<select id="rubbishType" name="rubbishType" class="form-control ">
+							<option value="">请选择</option>
+							<option value="感染性">感染性</option>
+							<option value="化学性">化学性</option>
+							<option value="病理性">病理性</option>
+							<option value="损伤性">损伤性</option>
+							<option value="药物性">药物性</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('所属机构')}：</label>
+					<div class="control-inline">
+						<!--<#form:input path="institution" maxlength="64" class="form-control width-120"/>-->
+						<#form:treeselect id="testOffice" title="机构选择"
+						path="" labelPath="institution" canSelectParent="true" canSelectRoot="true"
+						url="${ctx}/sys/office/treeData?dataType=1" class="" allowClear="true"/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+					<div class="control-inline width-120">
+						<select id="transportStatus" name="transportStatus" class="form-control ">
+							<option value="">请选择</option>
+							<option value="1">待回收</option>
+							<option value="2">运输中</option>
+							<option value="3">已中转</option>
+							<option value="4">已清运</option>
+						</select>
+					</div>
+				</div>
+
+			<div class="form-group">
+				<label class="control-label">${text('封口日期选择')}：</label>
+				<div class="control-inline">
+					<#form:input path="startTime" readonly="true" maxlength="22" class="form-control Wdate-datetime" defaultValue="${date()}"
+					dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false,onpicked:function(){datetime_lte.click()}});"/>
+					&nbsp;--&nbsp;
+					<#form:input path="endTime" readonly="true" maxlength="22" class="form-control Wdate-datetime"
+					dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				</div>
+			</div>
+				<!--<div class="form-group">
+					<label class="control-label">${text('生产产生日期')}：</label>
+					<div class="control-inline">
+						<#form:input path="produceDate" class="form-control width-120"/>
+					</div>
+				</div>-->
+				<div class="form-group">
+					<button type="submit" id="btn" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button id="reset" type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+					<button type="button" class="btn btn-sm" id="daochu"> ${text('导 出')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+	$("#reset").on("click",function () {
+		setTimeout(function () {
+			$("#btn").click();
+		},150);
+	})
+</script>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("所属机构")}', name:'institution', index:'', width:150, align:"center", sortable:false},
+		{header:'${text("垃圾类型")}', name:'rubbishType', index:'', width:150, align:"center", frozen:true, sortable:false,},
+
+		{header:'${text("重量")}', name:'weight', index:'', width:150, align:"center", sortable:false, formatter: function(val, obj, row, act){
+
+			//return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
+			return row.weight + "kg";
+		}},
+		{header:'${text("状态")}', name:'transportStatus', index:'', width:150, sortable:false, align:"center", formatter: function(val, obj, row, act){
+			let status = "";
+			if(row.transportStatus == "1"){
+				status = '<span style="color: #f31d1d">待回收</span>';
+			}else if(row.transportStatus == "2"){
+				status = '<span style="color: #4dc2e0">运输中</span>';
+			}else if(row.transportStatus == "3"){
+				status = '<span style="color: #50d709">已中转</span>';
+			}else if(row.transportStatus == "4"){
+				status = '<span style="color: #FF8000">已清运</span>';
+			}
+
+			return status;
+		}},
+		{header:'${text("封口日期")}', name:'produceDate', index:'', width:150, align:"center", sortable:false},
+		{header:'${text("创建人")}', name:'userName', index:'', width:100, align:"center", sortable:false},
+		{header:'${text("创建日期")}', name:'createDate', index:'', width:150, align:"center", sortable:false},
+		/*{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			return actions.join('');
+		}}*/
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		getRubbishStatis();
+	},
+	// 选择行后调用（id:行id，isSelect：是否是选中，event：事件）
+	onSelectRow: function(id, isSelect, event) {
+		js.addTabPage(null, "<i class='' title='' style='margin-right: 4px; font-size: 10px'>&nbsp;追溯详情</i>", '${ctx}/departmentRubbish/traceBackForm?id=' + id, true);
+	},
+
+});
+
+$('#daochu').click(function () {
+	console.log($("#startTime").val());
+	console.log($("#endTime").val())
+	js.ajaxSubmitForm($('#searchForm'), {
+		url: '${ctx}/departmentRubbish/exportRubbish',
+		downloadFile: true
+	})
+})
+
+	$(function () {
+		getRubbishStatis();
+	})
+	//用户获取个人概况数据
+	$("#Search").click(function () {
+
+		getRubbishStatis();
+	})
+	function getRubbishStatis(){
+		$.ajax({
+			type: 'POST',
+			//数据加载地址
+			url: "../statiscs/overwriteListDataStatiscs",
+			//传递参数
+			data: {
+				'rubbishType':$('#rubbishType').val(),
+				'transportStatus':$('#transportStatus').val(),
+				'institution':$('#testOfficeName').val(),
+				'startTime':$('#startTime').val(),
+				'endTime':$('#endTime').val(),
+			},
+			dataType: 'json',
+			async: false,
+			error: function (data) {
+				js.showErrorMessage(data.responseText);
+			},
+			success: function (data, status, xhr) {
+				$("#shangbao").text(data.shangbaoWeight+' kg');//待回收
+				$("#yunshu").text(data.huishouWeight+' kg');//运输中
+				$("#ruku").text(data.rukuWeight+' kg');//已中转
+				$("#qingyun").text(data.qingyunWeight+' kg');//已清运
+			}
+		})
+	}
+
+</script>

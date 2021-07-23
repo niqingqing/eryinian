@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.rubbishinput.dao.WasteTransferDao">
+	
+	<!-- 查询数据
+	<select id="findList" resultType="WasteTransfer">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			${sqlMap.where.toSql()}
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select> -->
+
+	<select id="getPage" resultType="com.jeesite.modules.rubbishinput.entity.WasteTransfer">
+		SELECT
+		a.id,
+		a.in_put_date,
+		a.in_put_person,
+		b.rubbish_type as rubbishType,
+		b.institution as institution,
+		b.serial_number as rubbishReclaimId,
+		b.weight as weight,
+		c.user_name  as inPutPersonName,
+		b.produce_date as produceDate
+		FROM
+		tb_waste_transfer a
+		LEFT JOIN tb_department_rubbish b ON a.department_rubbish_id = b.serial_number
+		LEFT JOIN js_sys_user c on a.in_put_person = c.user_code
+		WHERE
+		a.create_by = #{userCode}
+		AND a.status = 0 AND b.status = 0
+		AND b.transport_status = #{status}
+		<if test="page != null and page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+		ORDER BY a.in_put_date DESC
+	</select>
+
+	<select id="getTotal" resultType="java.lang.String">
+		SELECT
+		IFNULL(SUM(b.weight),0)
+		FROM
+		tb_waste_transfer a
+		LEFT JOIN tb_department_rubbish b ON a.department_rubbish_id = b.serial_number
+		WHERE
+		a.create_by = #{userCode}
+		AND a.status = 0 AND b.status = 0
+		<if test="institution!=null and institution!=''">
+			AND b.institution = #{institution}
+		</if>
+		AND b.transport_status = #{status}
+	</select>
+
+    <select id="getOneByDepartmentRubbishId"
+            resultType="com.jeesite.modules.rubbishinput.entity.WasteTransfer">
+		SELECT * FROM tb_waste_transfer WHERE department_rubbish_id=#{departmentRubbishId}
+	</select>
+	<update id="remove">
+		UPDATE
+		tb_waste_transfer
+		SET
+		status = '1'
+		WHERE id = #{id}
+		<if test="createBy == null and createBy != ''">
+			AND create_by=#{createBy}
+		</if>
+	</update>
+
+	<select id="listExistBySerialNumbers" resultType="java.lang.String">
+		SELECT department_rubbish_id FROM tb_waste_transfer
+		WHERE
+		department_rubbish_id IN
+		<foreach collection="serialNumbers" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND status=0
+	</select>
+
+</mapper>

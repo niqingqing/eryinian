@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.statiscs.dao.StaticsDao">
+
+    <!-- 查询数据
+    <select id="findList" resultType="WasteTransport">
+        SELECT ${sqlMap.column.toSql()}
+        FROM ${sqlMap.table.toSql()}
+        <where>
+            ${sqlMap.where.toSql()}
+        </where>
+        ORDER BY ${sqlMap.order.toSql()}
+    </select> -->
+
+    <select id="institutionStatiscs" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+            count(a.id) AS num,
+            IFNULL(sum(a.weight), 0) AS weight,
+            IFNULL(b.office_name,'未知') AS institutionName,
+            IFNULL(sum(case a.rubbish_type when '感染性' then a.weight else 0 end),0) AS InfectedWeight,
+            IFNULL(sum(case a.rubbish_type when '化学性' then a.weight else 0 end),0) AS contagionWeight,
+            IFNULL(sum(case a.rubbish_type when '病理性' then a.weight else 0 end),0) AS PathologyWeight,
+            IFNULL(sum(case a.rubbish_type when '损伤性' then a.weight else 0 end),0) AS damageWeight,
+            IFNULL(sum(case a.rubbish_type when '药物性' then a.weight else 0 end),0) AS medicineWeight,
+            IFNULL(sum(case a.rubbish_type when '感染性' then 1 else 0 end),0) AS InfectedCount,
+            IFNULL(sum(case a.rubbish_type when '化学性' then 1 else 0 end),0) AS contagionCount,
+            IFNULL(sum(case a.rubbish_type when '病理性' then 1 else 0 end),0) AS PathologyCount,
+            IFNULL(sum(case a.rubbish_type when '损伤性' then 1 else 0 end),0) AS damageCount,
+            IFNULL(sum(case a.rubbish_type when '药物性' then 1 else 0 end),0) AS medicineCount
+        FROM
+            tb_department_rubbish a
+        RIGHT JOIN js_sys_office b ON a.institution_code = b.office_code
+        LEFT JOIN (SELECT office.office_code,office.office_name FROM js_sys_office AS office where office.parent_codes like '%${officeParentCode}%') AS office1
+        ON office1.office_code = a.institution_code
+        WHERE a.institution_code in (SELECT
+        office_code from js_sys_office where office_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode},parent_codes))
+        AND
+        a.status!=1
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+
+            AND a.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        GROUP BY
+            b.office_code
+    </select>
+
+    <select id="rubbishTypeStatiscs" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+            count(rubbish.id) AS num,
+            sum(rubbish.weight) AS weight,
+        rubbish.rubbish_type AS rubbishType
+        FROM
+            tb_department_rubbish AS rubbish
+        LEFT JOIN (SELECT office.office_code,office.office_name FROM js_sys_office AS office where office.parent_codes like '%${officeParentCode}%') AS office1
+        ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish.status = '0'
+            <if test="keshi">
+            AND
+                rubbish.create_by = #{userCode}
+            </if>
+            <if test="!keshi">
+            AND
+                rubbish.institution_code in (SELECT
+                office_code from js_sys_office where office_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode},parent_codes))
+            </if>
+            <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+                AND
+                rubbish.produce_date BETWEEN #{startTime}
+                AND #{endTime}
+            </if>
+        GROUP BY
+        rubbish.rubbish_type
+    </select>
+
+    <select id="rubbishTypeStatiscsBroken" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+        IFNULL(sum(case rubbish.rubbish_type when '感染性' then rubbish.weight else 0 end),0.00) AS InfectedWeight,
+        IFNULL(sum(case rubbish.rubbish_type when '化学性' then rubbish.weight else 0 end),0.00) AS contagionWeight,
+        IFNULL(sum(case rubbish.rubbish_type when '病理性' then rubbish.weight else 0 end),0.00) AS PathologyWeight,
+        IFNULL(sum(case rubbish.rubbish_type when '损伤性' then rubbish.weight else 0 end),0.00) AS damageWeight,
+        IFNULL(sum(case rubbish.rubbish_type when '药物性' then rubbish.weight else 0 end),0.00) AS medicineWeight,
+        DATE_FORMAT(produce_date, '%Y-%m-%d') AS statiscsDate
+        FROM
+        tb_department_rubbish AS rubbish
+        <if test="!keshi">
+        LEFT JOIN (SELECT office.office_code,office.office_name FROM js_sys_office AS office where office.parent_codes like '%${officeParentCode}%') AS office1
+        ON office1.office_code = rubbish.institution_code
+        </if>
+        WHERE
+        rubbish.status = '0'
+        <if test="keshi">
+            AND
+            rubbish.create_by = #{userCode}
+        </if>
+        <if test="!keshi">
+            AND
+            rubbish.institution_code in (SELECT
+            office_code from js_sys_office where office_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode},parent_codes))
+        </if>
+
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        GROUP BY
+        DATE_FORMAT(rubbish.produce_date, '%Y-%m-%d')
+        ORDER BY
+        DATE_FORMAT(rubbish.produce_date, '%Y-%m-%d')
+    </select>
+
+    <select id="alarmStatiscs" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+       SELECT
+            COUNT(a.id) AS num,
+            b.alarm_type AS alarmType,
+            sum(a.weight) AS weight,
+            a.rubbish_type AS rubbishType,
+            c.office_name AS institutionName,
+            IFNULL( sum(CASE a.rubbish_type WHEN '感染性' THEN 1 ELSE 0 END ), 0 ) AS InfectedCount,
+            IFNULL( sum(CASE a.rubbish_type WHEN '化学性' THEN 1 ELSE 0 END ), 0 ) AS contagionCount,
+            IFNULL( sum(CASE a.rubbish_type WHEN '病理性' THEN 1 ELSE 0 END ), 0 ) AS PathologyCount,
+            IFNULL( sum(CASE a.rubbish_type WHEN '损伤性' THEN 1 ELSE 0 END ), 0 ) AS damageCount,
+            IFNULL( sum(CASE a.rubbish_type WHEN '药物性' THEN 1 ELSE 0 END ), 0 ) AS medicineCount
+        FROM
+            tb_department_rubbish a
+        RIGHT JOIN tb_waste_alarm b ON a.serial_number = b.department_rubbish_id
+                RIGHT JOIN js_sys_office c ON a.institution_code = c.office_code
+        WHERE
+            a.serial_number IN (
+                SELECT rubbish.serial_number  FROM tb_department_rubbish AS rubbish
+                WHERE rubbish.institution_code IN (
+                 SELECT office_code FROM js_sys_office WHERE office_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode} , parent_codes)
+                ))
+        AND a. STATUS != 1
+        AND b. STATUS = 1
+        AND b.alarm_date BETWEEN #{startTime}
+        AND #{endTime}
+        GROUP BY
+            c.office_code
+    </select>
+
+    <select id="alarmStatiscsBroken" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+        IFNULL(COUNT(*), 0) AS num,
+        DATE_FORMAT(
+        alarm.alarm_date,
+        '%Y-%m-%d'
+        ) AS statiscsDate
+        FROM
+        tb_waste_alarm AS alarm
+        WHERE
+        alarm.department_rubbish_id IN (
+        SELECT
+        rubbish.serial_number
+        FROM
+        tb_department_rubbish AS rubbish
+        WHERE
+        rubbish.institution_code IN (
+        SELECT
+        office_code
+        FROM
+        js_sys_office
+        WHERE
+        rubbish.status = '0' and
+        office_code = #{officeParentCode}
+        OR FIND_IN_SET(#{officeParentCode} , parent_codes)
+        )
+        )
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND alarm.alarm_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        GROUP BY
+        DATE_FORMAT(alarm_date, '%Y-%m-%d')
+    </select>
+
+    <!--<select id="weekStatiscs" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT office.office_name AS institutionName,
+        IFNULL(rubbish1.shangbaoWeight, 0) AS shangbaoWeight,
+        IFNULL(rubbish1.huishouWeight, 0) AS huishouWeight,
+        IFNULL(rubbish1.zhongzhuanWeight, 0) AS rukuWeight,
+        IFNULL(rubbish1.qingyunWeight, 0) AS qingyunWeight,
+        IFNULL(rubbish1.weight, 0) AS weight,
+        IFNULL(rubbish1.num, 0) AS num,
+        office.office_code AS institutionCode,
+        office.office_code AS officeCode,
+        office.office_code AS id,
+        office.parent_code AS "parentCode",
+        office.parent_codes AS "parentCodes",
+        office.tree_sort AS "treeSort",
+        office.tree_sorts AS "treeSorts",
+        office.tree_leaf AS "treeLeaf",
+        office.tree_level AS "treeLevel",
+        office.tree_names AS "treeNames"
+        from js_sys_office AS office LEFT JOIN (
+        SELECT
+        office1.office_code,
+        IFNULL(SUM(rubbish.weight),0.00) AS weight,
+        IFNULL(COUNT(rubbish.id),0) AS num,
+        sum(case rubbish.transport_status when '1' then rubbish.weight else 0 end) AS shangbaoWeight,
+        sum(case rubbish.transport_status when '2' then rubbish.weight else 0 end) AS huishouWeight,
+        sum(case rubbish.transport_status when '3' then rubbish.weight else 0 end) AS zhongzhuanWeight,
+        sum(case rubbish.transport_status when '4' then rubbish.weight else 0 end) AS qingyunWeight
+        FROM
+        js_sys_office AS office1 LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish.status = '0' and office1.status = '0'
+        AND
+        (office1.office_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode},office1.parent_codes))
+        AND rubbish.update_date BETWEEN #{startTime} AND #{endTime}
+        GROUP BY office1.office_code
+        ) AS rubbish1 ON office.office_code = rubbish1.office_code
+        <if test="treeLevel != null and treeLevel != 0 ">
+            WHERE office.parent_code=#{officeParentCode}  AND office. STATUS = '0'
+        </if>
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            WHERE office.office_code=#{officeParentCode}  AND office. STATUS = '0'
+        </if>
+    </select>
+
+    <select id="todayStatiscs" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT office.office_name AS institutionName,
+        IFNULL(rubbish1.shangbaoWeight, 0) AS shangbaoWeight,
+        IFNULL(rubbish1.huishouWeight, 0) AS huishouWeight,
+        IFNULL(rubbish1.zhongzhuanWeight, 0) AS rukuWeight,
+        IFNULL(rubbish1.qingyunWeight, 0) AS qingyunWeight,
+        IFNULL(rubbish1.weight, 0) AS weight,
+        IFNULL(rubbish1.num, 0) AS num,
+        office.office_code AS institutionCode,
+        office.office_code AS officeCode,
+        office.office_code AS id,
+        office.parent_code AS "parentCode",
+        office.parent_codes AS "parentCodes",
+        office.tree_sort AS "treeSort",
+        office.tree_sorts AS "treeSorts",
+        office.tree_leaf AS "treeLeaf",
+        office.tree_level AS "treeLevel",
+        office.tree_names AS "treeNames"
+        from js_sys_office AS office LEFT JOIN (
+        SELECT
+        office1.office_code,
+        IFNULL(SUM(rubbish.weight),0.00) AS weight,
+        IFNULL(COUNT(rubbish.id),0) AS num,
+        sum(case rubbish.transport_status when '1' then rubbish.weight else 0 end) AS shangbaoWeight,
+        sum(case rubbish.transport_status when '2' then rubbish.weight else 0 end) AS huishouWeight,
+        sum(case rubbish.transport_status when '3' then rubbish.weight else 0 end) AS zhongzhuanWeight,
+        sum(case rubbish.transport_status when '4' then rubbish.weight else 0 end) AS qingyunWeight
+        FROM
+        js_sys_office AS office1 LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish.status = '0' and office1.status = '0'
+        AND
+        (office1.office_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode},office1.parent_codes))
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.update_date LIKE '${statiscsTime}%'
+        </if>
+        GROUP BY office1.office_code
+        ) AS rubbish1 ON office.office_code = rubbish1.office_code
+        <if test="treeLevel != null and treeLevel != 0 ">
+            WHERE office.parent_code=#{officeParentCode}  AND office. STATUS = '0'
+        </if>
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            WHERE office.office_code=#{officeParentCode}  AND office. STATUS = '0'
+        </if>
+
+    </select>-->
+    <!--AND rubbish.produce_date BETWEEN #{startTime} AND #{endTime}-->
+    <select id="mouthStatiscs" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT office.office_name AS institutionName,
+        office.office_code AS institutionCode,
+        office.office_code AS officeCode,
+        office.office_code AS id,
+        office.parent_code AS "parentCode",
+        office.parent_codes AS "parentCodes",
+        office.tree_sort AS "treeSort",
+        office.tree_sorts AS "treeSorts",
+        office.tree_leaf AS "treeLeaf",
+        office.tree_names AS "treeNames",
+        office.tree_level AS "treeLevel",
+
+        IFNULL((
+        SELECT
+        count(rubbish.id)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.create_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.create_date LIKE '${statiscsTime}%'
+        </if>
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>)), 0 ) AS num,
+        IFNULL((
+        SELECT
+        sum(rubbish.weight)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.create_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.create_date LIKE '${statiscsTime}%'
+        </if>
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>
+        )), 0 ) AS weight,
+        IFNULL((
+        SELECT
+        sum(case rubbish.transport_status when '1' then rubbish.weight else 0 end)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.create_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.create_date LIKE '${statiscsTime}%'
+        </if>
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>
+        )), 0 ) AS shangbaoWeight,
+        IFNULL((
+        SELECT
+        sum(case rubbish.transport_status when '2' then rubbish.weight else 0 end)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.create_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.create_date LIKE '${statiscsTime}%'
+        </if>
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>
+        )), 0 ) AS huishouWeight,
+        IFNULL((
+        SELECT
+        sum(case rubbish.transport_status when '3' then rubbish.weight else 0 end)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.create_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.create_date LIKE '${statiscsTime}%'
+        </if>
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>
+        )), 0 ) AS rukuWeight,
+        IFNULL((
+        SELECT
+        sum(case rubbish.transport_status when '4' then rubbish.weight else 0 end)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.create_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.create_date LIKE '${statiscsTime}%'
+        </if>
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>
+        )), 0 ) AS qingyunWeight
+        from js_sys_office AS office
+        <if test="treeLevel != null and treeLevel == 0 ">
+            WHERE office.parent_code=#{officeParentCode} AND office. STATUS = '0'
+        </if>
+        <if test="treeLevel != null and  treeLevel == 3 ">
+            WHERE (office.parent_code=#{officeParentCode} OR office.office_code=#{officeParentCode}) AND office. STATUS
+            = '0'
+        </if>
+
+    </select>
+
+    <select id="statiscsExport" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+        office.office_name AS institutionName,
+        IFNULL(rubbish.num,0) AS num,
+        IFNULL(rubbish.weight,0) AS weight,
+        IFNULL(rubbish.huishouWeight,0) AS huishouWeight,
+        IFNULL(rubbish.yunshuWeight,0) AS yunshuWeight,
+        IFNULL(rubbish.shangbaoWeight,0)AS shangbaoWeight
+        FROM
+        js_sys_office AS office
+        LEFT JOIN (
+        SELECT
+        COUNT(id) AS num,
+        SUM(weight) AS weight,
+        institution_code as institutionCode,
+        IFNULL(sum(case transport_status when '1' then weight else 0 end),0) AS huishouWeight,
+        IFNULL(sum(case transport_status when '2' then weight else 0 end),0) AS yunshuWeight,
+        IFNULL(sum(case transport_status when '3' then weight else 0 end),0) AS shangbaoWeight,
+        IFNULL(sum(case transport_status when '4' then weight else 0 end),0) AS qingyunWeight
+        FROM
+        tb_department_rubbish
+        WHERE status = '0'
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != '' ">
+            AND create_date BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND create_date LIKE '${statiscsTime}%'
+        </if>
+        GROUP BY
+        institution_code
+        ) AS rubbish ON office.office_code = rubbish.institutionCode
+        WHERE
+        (office.office_code = #{officeParentCode} OR
+        FIND_IN_SET(#{officeParentCode}, office.parent_codes))
+        AND office.status = '0'
+        GROUP BY
+        office.office_code
+
+    </select>
+
+    <select id="officeTypeWeightStatiscs" resultType="com.jeesite.modules.statiscs.entity.OfficeRubbishTypeStatiscs">
+      SELECT office.office_name AS institutionName,
+        office.office_code AS institutionCode,
+        office.office_code AS officeCode,
+        office.office_code AS id,
+        office.parent_code AS "parentCode",
+        office.parent_codes AS "parentCodes",
+        office.tree_sort AS "treeSort",
+        office.tree_sorts AS "treeSorts",
+        office.tree_leaf AS "treeLeaf",
+        office.tree_level AS "treeLevel",
+        office.tree_names AS "treeNames",
+            IFNULL((
+                            SELECT
+        sum(rubbish.weight)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.produce_date LIKE '${statiscsTime}%'
+        </if>
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if> ) ), 0 ) AS weight,
+			IFNULL((
+							SELECT
+							sum(case rubbish.rubbish_type when '感染性' then rubbish.weight else 0 end)
+							FROM
+							js_sys_office AS office1
+							LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+							WHERE
+							rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.produce_date LIKE '${statiscsTime}%'
+        </if>
+							AND office1. STATUS = '0'
+							AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>) ), 0 ) AS infectedWeight,
+			IFNULL((
+							SELECT
+							sum(case rubbish.rubbish_type when '化学性' then rubbish.weight else 0 end)
+							FROM
+							js_sys_office AS office1
+							LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+							WHERE
+							rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.produce_date LIKE '${statiscsTime}%'
+        </if>
+							AND office1. STATUS = '0'
+							AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>) ), 0 ) AS contagionWeight,
+			IFNULL((
+							SELECT
+							sum(case rubbish.rubbish_type when '病理性' then rubbish.weight else 0 end)
+							FROM
+							js_sys_office AS office1
+							LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+							WHERE
+							rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.produce_date LIKE '${statiscsTime}%'
+        </if>
+							AND office1. STATUS = '0'
+							AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>) ), 0 ) AS pathologyWeight,
+			IFNULL((
+							SELECT
+							sum(case rubbish.rubbish_type when '损伤性' then rubbish.weight else 0 end)
+							FROM
+							js_sys_office AS office1
+							LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+							WHERE
+							rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.produce_date LIKE '${statiscsTime}%'
+        </if>
+							AND office1. STATUS = '0'
+							AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>) ), 0 ) AS damageWeight,
+			IFNULL((
+							SELECT
+							sum(case rubbish.rubbish_type when '药物性' then rubbish.weight else 0 end)
+							FROM
+							js_sys_office AS office1
+							LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+							WHERE
+							rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="statiscsTime != null and statiscsTime != ''">
+            AND rubbish.produce_date LIKE '${statiscsTime}%'
+        </if>
+							AND office1. STATUS = '0'
+							AND (office1.office_code = office.office_code
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            OR FIND_IN_SET(office.office_code,office1.parent_codes)
+        </if>) ), 0 ) AS medicineWeight
+        from js_sys_office AS office
+            <if test="treeLevel != null and treeLevel == 0 ">
+                WHERE (office.parent_code=#{officeParentCode}
+                <if test="institutionName != null and institutionName != '' ">
+                    OR office.office_name = #{institutionName}
+                </if>)
+            </if>
+            <if test="treeLevel != null and  treeLevel == 3 ">
+                WHERE (office.office_code=#{officeParentCode} OR office.parent_code=#{officeParentCode}
+                <if test="institutionName != null and institutionName != '' ">
+                    OR office.office_name = #{institutionName}
+                </if>)
+            </if>
+        AND office.status = '0'
+    </select>
+
+    <select id="officeTypeWeightStatiscsExport" resultType="com.jeesite.modules.statiscs.entity.OfficeRubbishTypeStatiscs">
+        SELECT
+        office.office_name AS institutionName,
+        IFNULL(rubbish.InfectedWeight,0) AS InfectedWeight,
+        IFNULL(rubbish.contagionWeight,0)AS contagionWeight,
+        IFNULL(rubbish.PathologyWeight,0) AS contagionWeight,
+        IFNULL(rubbish.damageWeight,0) AS damageWeight,
+        IFNULL(rubbish.medicineWeight,0) AS medicineWeight,
+        IFNULL(rubbish.weight,0) AS weight
+        FROM
+        js_sys_office AS office LEFT JOIN (
+        SELECT
+        rubbish.institution_code AS institutionCode,
+        sum(case rubbish.rubbish_type when '感染性' then rubbish.weight else 0 end)AS InfectedWeight,
+        sum(case rubbish.rubbish_type when '化学性' then rubbish.weight else 0 end) AS contagionWeight,
+        sum(case rubbish.rubbish_type when '病理性' then rubbish.weight else 0 end) AS PathologyWeight,
+        sum(case rubbish.rubbish_type when '损伤性' then rubbish.weight else 0 end) AS damageWeight,
+        sum(case rubbish.rubbish_type when '药物性' then rubbish.weight else 0 end) AS medicineWeight,
+        SUM(rubbish.weight) AS weight
+        FROM
+        tb_department_rubbish AS rubbish
+        RIGHT JOIN js_sys_office AS office ON office.office_code = rubbish.institution_code
+        WHERE
+        rubbish.status = '0'  AND office.status = '0'
+         AND (office.parent_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode},office.parent_codes))
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        GROUP BY
+        office.office_code) as rubbish on office.office_code = rubbish.institutionCode
+        WHERE
+        office.parent_code = #{officeParentCode}
+        OR FIND_IN_SET(
+        #{officeParentCode},
+        office.parent_codes
+        )
+        AND office.status = '0'
+        GROUP BY
+        office.office_code
+
+    </select>
+
+    <select id="rubbishStatiscs" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+        IFNULL(sum(case a.transport_status when '1' then a.weight else 0 end),0) AS shangbaoWeight,
+        IFNULL(sum(case a.transport_status when '2' then a.weight else 0 end),0) AS huishouWeight,
+        IFNULL(sum(case a.transport_status when '3' then a.weight else 0 end),0) AS rukuWeight,
+        IFNULL(sum(case a.transport_status when '4' then a.weight else 0 end),0) AS qingyunWeight
+        FROM
+        tb_department_rubbish AS a LEFT JOIN js_sys_user AS `user` ON a.create_by = `user`.user_code
+        WHERE
+        a.institution_code IN
+        (
+        SELECT
+        office_code
+        FROM js_sys_office
+        WHERE
+        office_code = #{departmentRubbish.institutionCode} OR FIND_IN_SET(#{departmentRubbish.institutionCode},parent_codes)
+        )
+        AND a.status = '0'
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            AND  a.update_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="departmentRubbish.institution != null and departmentRubbish.institution != '' and departmentRubbish.institution != 'null'">
+            AND  a.institution = #{departmentRubbish.institution}
+        </if>
+
+        <if test="departmentRubbish.transportStatus != null and departmentRubbish.transportStatus != ''and departmentRubbish.transportStatus != 'null'and departmentRubbish.transportStatus != '0'">
+            AND a.transport_status = #{departmentRubbish.transportStatus}
+        </if>
+        <if test="departmentRubbish.rubbishType != null and departmentRubbish.rubbishType != '' and departmentRubbish.rubbishType != 'null'">
+            AND a.rubbish_type = #{departmentRubbish.rubbishType}
+        </if>
+    </select>
+
+    <select id="institutionShangBaoNum" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT * FROM( SELECT
+        office.office_name AS institutionName,
+        office.office_code AS institutionCode,
+        office.office_code AS officeCode,
+        office.office_code AS id,
+        office.parent_code AS "parentCode",
+        office.parent_codes AS "parentCodes",
+        office.tree_sort AS "treeSort",
+        office.tree_sorts AS "treeSorts",
+        office.tree_leaf AS "treeLeaf",
+        office.tree_level AS "treeLevel",
+        office.tree_names AS "treeNames",
+        IFNULL(
+        (
+        SELECT
+        SUM(rubbish.weight) AS shangbaoWeight
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.update_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        AND rubbish.transport_status = '1'
+        AND office1. STATUS = '0'
+        AND (office1.office_code = office.office_code
+        OR FIND_IN_SET(office.office_code,office1.parent_codes) ) ), 0 ) AS shangbaoWeight,
+        IFNULL((SELECT
+        COUNT(rubbish.id) AS num
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+        WHERE
+        rubbish. STATUS = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.update_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        AND rubbish.transport_status = '1'
+        AND office1. STATUS = '0'
+        AND (
+        office1.office_code = office.office_code
+        OR FIND_IN_SET(office.office_code, office1.parent_codes ) )),0) AS num
+        FROM
+        js_sys_office AS office
+        <if test="treeLevel != null and treeLevel != 0 ">
+            WHERE (office.parent_code=#{officeParentCode}
+        <if test="officeName != null and officeName != ''">
+            or office.office_name = #{officeName}
+        </if>
+            )
+              AND office. STATUS = '0'
+        </if>
+        <if test="treeLevel != null and  treeLevel == 0 ">
+            WHERE (office.office_code=#{officeParentCode}
+            <if test="officeName != null and officeName != '' ">
+                or office.office_name = #{officeName}
+            </if>
+            )  AND office. STATUS = '0'
+        </if>
+        ) AS a
+        WHERE a.shangbaoWeight > 0
+    </select>
+
+    <select id="institutionShangBaoNumExprot" resultType="com.jeesite.modules.statiscs.entity.InstitutionShangBaoNumExportEntity">
+        SELECT
+            SUM(rubbish.weight) AS weight,
+            COUNT(rubbish.id) AS num,
+            office.office_name AS institutionName,
+            (SELECT office_name from js_sys_office where office_code = office.parent_code) AS parentName
+        FROM
+            tb_department_rubbish AS rubbish LEFT JOIN js_sys_office AS office ON rubbish.institution_code = office.office_code
+        WHERE
+            rubbish.transport_status = '1'
+            AND rubbish.status = '0'
+        <if test="startTime != '' and startTime != null and endTime != '' and endTime != null">
+            AND
+            rubbish.update_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        AND (office.office_code = #{officeParentCode} OR FIND_IN_SET(#{officeParentCode},office.parent_codes))
+        GROUP BY office.office_code
+        ORDER BY office.parent_code
+
+    </select>
+
+    <!--大屏统计数据-->
+    <select id="overviewScreen" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+            IFNULL(SUM(rubbish.weight),0.0) AS weight,
+            IFNULL(COUNT(rubbish.id),0) AS num,
+            IFNULL((
+                SELECT
+                    IFNULL(SUM(rubbish1.weight), 0)
+                FROM
+                    tb_waste_transport AS transport
+                LEFT JOIN tb_department_rubbish AS rubbish1 ON transport.department_rubbish_id = rubbish1.serial_number
+                WHERE
+                    transport.create_date LIKE '%${date}%'
+                AND rubbish1. STATUS = '0'
+                AND transport.STATUS = '0'
+            ),0.0) AS huishouWeight,
+           IFNULL( (
+                SELECT
+                    IFNULL(SUM(rubbish1.weight), 0)
+                FROM
+                    tb_waste_transfer AS transfer
+                LEFT JOIN tb_department_rubbish AS rubbish1 ON transfer.department_rubbish_id = rubbish1.serial_number
+                WHERE
+                    transfer.create_date LIKE '%${date}%'
+                AND rubbish1. STATUS = '0'
+                AND transfer.STATUS = '0'
+            ),0.0) AS rukuWeight,
+            IFNULL((
+                SELECT
+                    IFNULL(SUM(rubbish1.weight), 0)
+                FROM
+                    tb_department_rubbish AS rubbish1
+                WHERE
+                    rubbish1.update_date LIKE '%${date}%'
+                AND rubbish1. STATUS = '0'
+                AND rubbish1.transport_status ='4'
+            ),0.0) AS qingyunWeight
+        FROM
+            tb_department_rubbish AS rubbish
+        WHERE
+            rubbish.create_date LIKE '%${date}%'
+        AND rubbish. STATUS = '0'
+    </select>
+
+    <select id="typePercentage" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT IFNULL(sum(a.weight), 0) AS weight,
+          IFNULL(sum(case a.rubbish_type when '感染性' then a.weight else 0 end),0) AS InfectedWeight,
+          IFNULL(sum(case a.rubbish_type when '化学性' then a.weight else 0 end),0) AS contagionWeight,
+          IFNULL(sum(case a.rubbish_type when '病理性' then a.weight else 0 end),0) AS PathologyWeight,
+          IFNULL(sum(case a.rubbish_type when '损伤性' then a.weight else 0 end),0) AS damageWeight,
+           IFNULL(sum(case a.rubbish_type when '药物性' then a.weight else 0 end),0) AS medicineWeight
+        from tb_department_rubbish as a
+        where status = '0'
+    </select>
+
+    <select id="zzzstatiscsWeightList" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+            office.office_name AS institutionName,
+            IFNULL((
+                    SELECT
+                        count(rubbish.id)
+                    FROM
+                        js_sys_office AS office1
+                    LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+                    WHERE
+                        rubbish. STATUS = '0'
+                    <if test="date != null and date != ''">
+                        AND rubbish.create_date LIKE '${date}%'
+                    </if>
+                    AND office1. STATUS = '0'
+                    AND (
+                        office1.office_code = office.office_code
+                        OR FIND_IN_SET(
+                            office.office_code,
+                            office1.parent_codes
+                        )
+                    )
+                ),0 ) AS num,
+            IFNULL((
+                    SELECT
+                        sum(rubbish.weight)
+                    FROM
+                        js_sys_office AS office1
+                    LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+                    WHERE
+                        rubbish. STATUS = '0'
+                    <if test="date != null and date != ''">
+                        AND rubbish.create_date LIKE '${date}%'
+                    </if>
+                    AND office1. STATUS = '0'
+                    AND (
+                        office1.office_code = office.office_code
+                        OR FIND_IN_SET(
+                            office.office_code,
+                            office1.parent_codes
+                        )
+                    )
+                ),0) AS weight
+        FROM
+            js_sys_office AS office
+        WHERE
+            office.parent_code = 'JZWSJKJ'
+        AND office. STATUS = '0'
+    </select>
+
+    <select id="annualSummary" resultType="com.jeesite.modules.statiscs.entity.Statiscs">
+        SELECT
+            SUM(rubbish.weight) AS weight,
+            DATE_FORMAT(rubbish.create_date, '%m') AS month
+        FROM
+            tb_department_rubbish AS rubbish
+        WHERE
+            rubbish.create_date LIKE '%${date}%'
+            and status = '0'
+        GROUP BY
+            DATE_FORMAT(rubbish.create_date, '%m')
+    </select>
+
+
+</mapper>

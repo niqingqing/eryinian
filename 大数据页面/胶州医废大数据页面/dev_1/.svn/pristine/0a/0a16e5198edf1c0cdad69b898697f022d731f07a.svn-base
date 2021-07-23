@@ -1,0 +1,243 @@
+<% layout('/layouts/default.html', {title: '机构统计', libs: ['layout', 'dataGrid']}){ %>
+<div class="ui-layout-north">
+    <div class="main-content">
+        <div class="box box-main">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa fa-ambulance"></i> ${text('机构统计')}
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div class="box-tools pull-right">
+
+                </div>
+                <#form:form id="searchForm" model="" action=""
+                    method="post" class="form-inline"
+                    data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize!5}"
+                    data-order-by="${parameter.orderBy!}">
+
+                <!--<div class="form-group">
+                    <label class="control-label">${text('机构名称')}：</label>
+                    <div class="control-inline">
+                        <#form:input path="" maxlength="255" class="form-control width-120"/>
+                    </div>
+                </div>-->
+                <div class="form-group">
+                    <label class="control-label">${text('日期选择')}：</label>
+                    <div class="control-inline">
+                        <#form:input path="startTime" readonly="true" maxlength="22" class="form-control Wdate-datetime" defaultValue="${date()}"
+                        dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false,onpicked:function(){datetime_lte.click()}});"/>
+                        &nbsp;--&nbsp;
+                        <#form:input path="endTime" readonly="true" maxlength="22" class="form-control Wdate-datetime"
+                        dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+
+                        &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-primary" id="btnSubmit" onclick="institutionStatiscs()"> ${text('确 定')}</button>
+                        &nbsp;&nbsp;<button type="button" class="btn btn-sm" id="btnEmpty" onclick="empty()"> ${text('重 置')}</button>
+                    </div>
+                </div>
+                <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                <div id="weight" style="width: 90%;height:400px;margin-top: 50px"></div>
+                <div id="count" style="width: 90%;height:400px;margin-top: 100px"></div>
+
+                </#form:form>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+<!-- 引入 echarts.js -->
+<script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+
+
+<script>
+    $(function () {
+        datetimeVal();
+        institutionStatiscs();
+
+    })
+
+    //重置查询时间
+    function empty() {
+        datetimeVal();
+        institutionStatiscs();
+
+    }
+    //获取展示统计结果
+    function institutionStatiscs(){
+        $.ajax({
+            type: 'POST',
+            //数据加载地址
+            url: "../statiscs/institutionStatiscs",
+            //传递参数
+            data: {
+                startTime:$('input[name=startTime]').val(),
+                endTime:$('input[name=endTime]').val()
+            },
+            dataType: 'json',
+            async: false,
+            error: function (data) {
+                js.showErrorMessage(data.responseText);
+            },
+            success: function (data, status, xhr) {
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('weight'));
+                var myChart2 = echarts.init(document.getElementById('count'));
+
+                // 指定图表的配置项和数据
+                myChart.showLoading();
+                myChart2.showLoading();
+
+                // $.get(ROOT_PATH + '/data/asset/data/obama_budget_proposal_2012.list.json', function (obama_budget_2012) {
+                myChart.hideLoading();
+                myChart2.hideLoading();
+
+                option = {
+                    title : {
+                        text:'机构废弃物重量统计(kg)'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['感染性', '传染性', '病理性', '损伤性', '药物性']
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: data.institutionName
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            minInterval:0.01
+                        }
+                    ],
+                    series: [
+
+                        {
+                            name: '感染性',
+                            barWidth: 20,
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.infected
+                        },
+                        {
+                            name: '传染性',
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.contagion
+                        },
+                        {
+                            name: '病理性',
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.pathology
+                        },{
+                            name: '损伤性',
+                            barWidth: 20,
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.damage
+                        }, {
+                            name: '药物性',
+                            barWidth: 20,
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.medicine
+                        }
+                    ]
+                };
+                option2 = {
+                    title : {
+                        text:'机构废弃物数量统计(袋)'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['感染性', '传染性', '病理性', '损伤性', '药物性']
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: data.institutionName
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            minInterval:1
+                        }
+                    ],
+                    series: [
+
+                        {
+                            name: '感染性',
+                            barWidth: 20,
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.infectedCount
+                        },
+                        {
+                            name: '传染性',
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.contagionCount
+                        },
+                        {
+                            name: '病理性',
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.pathologyCount
+                        },{
+                            name: '损伤性',
+                            barWidth: 20,
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.damageCount
+                        }, {
+                            name: '药物性',
+                            barWidth: 20,
+                            type: 'bar',
+                            stack: '广告',
+                            data: data.medicineCount
+                        }
+                    ]
+                };
+
+
+                myChart.setOption(option);
+                myChart2.setOption(option2);
+            }
+
+        })
+    }
+    //获取当前七天日期
+    function datetimeVal() {
+        var date = new Date();
+
+        var today = js.formatDate(date,'yyyy-MM-dd');
+        var day = js.formatDate(js.addDate(date, -6),'yyyy-MM-dd')
+        $('input[name=endTime]').val(today);
+        $('input[name=startTime]').val(day)
+    }
+</script>

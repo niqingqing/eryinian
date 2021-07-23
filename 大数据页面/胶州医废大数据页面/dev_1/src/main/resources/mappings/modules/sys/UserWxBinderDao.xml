@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.sys.dao.UserWxBinderDao">
+
+    <insert id="save1">
+        INSERT INTO tb_user_wx_binder(user_code,openid,unionid,binder_source,binder_time)
+        VALUE (#{userCode},#{openid},#{unionid},#{binderSource},#{binderTime})
+    </insert>
+
+    <!-- 查询数据
+    <select id="findList" resultType="UserWxBinder">
+        SELECT ${sqlMap.column.toSql()}
+        FROM ${sqlMap.table.toSql()}
+        <where>
+            ${sqlMap.where.toSql()}
+        </where>
+        ORDER BY ${sqlMap.order.toSql()}
+    </select> -->
+
+    <select id="isExistByUserCode" resultType="java.lang.Boolean">
+        SELECT EXISTS(
+           SELECT * FROM tb_user_wx_binder WHERE user_code=#{userCode} AND binder_source=#{binderSource} AND status=0
+       )
+    </select>
+
+    <select id="getUserCodeByUnionid" resultType="java.lang.String">
+        SELECT user_code FROM tb_user_wx_binder WHERE unionid=#{unionid} AND status=0
+    </select>
+
+    <select id="getUserCodeByOpenid" resultType="java.lang.String">
+        SELECT user_code FROM tb_user_wx_binder WHERE openid=#{openid} AND status=0
+    </select>
+
+    <update id="unBinder">
+        UPDATE tb_user_wx_binder
+        SET
+            unbinder_time=NOW(),
+            status=1
+        WHERE user_code=#{userCode}
+        AND binder_source=#{binderSource}
+        AND status=0
+    </update>
+
+</mapper>

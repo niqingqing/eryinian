@@ -1,0 +1,80 @@
+<% layout('/layouts/default.html', {title: '本月废弃物概况', libs: ['dataGrid']}){ %>
+<link rel="stylesheet" href="${ctxStatic}/libs/layui/css/layui.css?${_version}">
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa icon-grid"></i> ${text('本月废弃物概况')}
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" model="${statiscs}" action="${ctx}/statiscs/mouthStatiscsList" method="post" class="form-inline "
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+            <div class="form-group">
+                <label class="control-label">${text('日期')}：</label>
+                <div class="control-inline">
+                    <#form:input path="startTime" readonly="true" maxlength="22" class="form-control Wdate-datetime" defaultValue="${date()}"
+                    dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false,onpicked:function(){datetime_lte.click()}});"/>
+                    &nbsp;--&nbsp;
+                    <#form:input path="endTime" readonly="true" maxlength="22" class="form-control Wdate-datetime"
+                    dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+                    &nbsp;&nbsp;<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit" onclick="alarmStatiscs()"> ${text('确 定')}</button>
+                    &nbsp;&nbsp;<button type="button" class="btn btn-sm" id="btnEmpty" onclick="empty()"> ${text('重 置')}</button>
+                    &nbsp;&nbsp;<button type="button" class="btn btn-sm" id="daochu"> ${text('导 出')}</button>
+                </div>
+
+            </div>
+        </#form:form>
+        <table id="dataGrid"></table>
+    </div>
+</div>
+</div>
+<% } %>
+<script src="${ctxStatic}/libs/layui/layui.js"></script>
+<script>
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        searchForm: $("#searchForm"),
+        columnModel: [
+            {header:'${text('机构名称')}', name:'institutionName', index:'a.institution_name', width:250, align:"left", frozen:true},
+            {header:'${text('待回收(kg)')}', name:'shangbaoWeight', index:'a.shangbaoWeight', width:200, align:"center",formatter: function(val, obj, row, act){ return row.shangbaoWeight; }},
+            {header:'${text('运输中(kg)')}', name:'huishouWeight', index:'a.huishouWeight', width:200, align:"center",formatter: function(val, obj, row, act){ return row.huishouWeight; }},
+            {header:'${text('已中转(kg)')}', name:'rukuWeight', index:'a.rukuWeight', width:200, align:"center",formatter: function(val, obj, row, act){ return row.rukuWeight; }},
+            {header:'${text('已清运(kg)')}', name:'qingyunWeight', index:'a.qingyunWeight', width:200, align:"center",formatter: function(val, obj, row, act){ return row.qingyunWeight; }},
+            {header:'${text('上报总重量(kg)')}', name:'weight', index:'a.weight', width:200, align:"center",formatter: function(val, obj, row, act){ return row.weight; }},
+            {header:'${text('上报总袋数(袋)')}', name:'num', index:'a.num', width:200, align:"center",formatter: function(val, obj, row, act){ return row.num; }},
+/*
+            {header:'${text('已运输(kg)')}', name:'yiyunshuWeight', index:'a.yiyunshuWeight', width:200, align:"center",formatter: function(val, obj, row, act){ return row.yiyunshuWeight; }},
+*/
+
+        ],
+        treeGrid: true,			// 启用树结构表格
+        defaultExpandLevel: 1,	// 默认展开的层次
+        expandNodeClearPostData: 'institutionCode,institutionName,officeType,treeLevel,', // 展开节点清理请求参数数据（一般设置查询条件的字段属性，否则在查询后，不能展开子节点数据）	// 加载成功后执行事件
+        ajaxSuccess: function(data){
+
+        }
+    });
+</script>
+<script>
+    $(function () {
+        var date = new Date();
+
+        var today = js.formatDate(date,'yyyy-MM-dd');
+        $("#endTime").val(today);
+        $("#endTime").placeholder(today);
+
+        var mouth = js.formatDate(date,'yyyy-MM');
+        $("#startTime").val(mouth+'-01');
+        $("#startTime").placeholder(mouth+'-01');
+    })
+
+    $('#daochu').click(function () {
+        console.log($("#startTime").val());
+        console.log($("#endTime").val())
+        js.ajaxSubmitForm($('#searchForm'), {
+            url: '${ctx}/statiscs/exportMouth',
+            downloadFile: true
+        })
+    })
+</script>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.trashrecyclingposition.dao.TrashRecyclingPositionDao">
+	
+	<!-- 查询数据
+	<select id="findList" resultType="TrashRecyclingPosition">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			${sqlMap.where.toSql()}
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select> -->
+
+    <insert id="save">
+        INSERT INTO tb_trash_recycling_position (user_code,type,altitude,longitude,latitude)
+        VALUE (#{userCode}, #{type}, #{altitude}, #{longitude}, #{latitude})
+    </insert>
+
+    <select id="listPosition"
+            resultType="com.jeesite.modules.trashrecyclingposition.entity.TrashRecyclingPosition">
+        SELECT * FROM tb_trash_recycling_position
+        WHERE user_code=#{userCode} AND time BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+</mapper>

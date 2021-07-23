@@ -1,0 +1,85 @@
+<% layout('/layouts/default.html', {title: '废弃物告警列表', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('废弃物告警列表')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<!--<% if(hasPermi('rubbishalarm:wasteAlarm:edit')){ %>
+					<a href="${ctx}/rubbishalarm/wasteAlarm/form" class="btn btn-default btnTool" title="${text('新增告警表')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>-->
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${wasteAlarm}" action="${ctx}/rubbishalarm/rubbishAlarm/overwriteListData" method="post" class="form-inline"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('所属机构')}：</label>
+					<div class="control-inline">
+						<#form:treeselect id="testOffice" title="机构选择"
+						path="" labelPath="institution" canSelectParent="true" canSelectRoot="true" placeholder="请选择所属机构"
+						url="${ctx}/sys/office/treeData" class="" allowClear="true"/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label">${text('垃圾类型')}：</label>
+					<div class="control-inline width-120">
+						<select name="rubbishType" class="form-control ">
+							<option value="">请选择</option>
+							<option value="传播型">传播型</option>
+							<option value="感染型">感染型</option>
+							<option value="病理型">病理型</option>
+							<option value="损伤型">损伤型</option>
+							<option value="药物型">药物型</option>
+						</select>
+					</div>
+				</div>
+
+
+			<div class="form-group">
+				<button type="submit" id="btn" class="btn btn-primary btn-sm">${text('查询')}</button>
+				<button id="reset" type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+			</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+	$("#reset").on("click",function () {
+		setTimeout(function () {
+			$("#btn").click();
+		},150);
+	})
+</script>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("所属机构")}', name:'institution', index:'', width:150, align:"center", frozen:true, sortable:false, },
+		{header:'${text("垃圾类型")}', name:'rubbishType', index:'', width:150, align:"center", frozen:true, sortable:false, },
+		{header:'${text("重量")}', name:'weight', index:'', width:150, align:"center", sortable:false, formatter: function(val, obj, row, act){
+			return row.weight + "kg";
+		}},
+		{header:'${text("废弃物扫码人")}', name:'createByName', index:'', width:150, align:"center", sortable:false,},
+		{header:'${text("封口日期")}', name:'produceDate', index:'', width:150, align:"center", sortable:false,},
+		{header:'${text("告警类型")}', name:'alarmType', index:'', width:150, align:"center", sortable:false,},
+		{header:'${text("告警日期")}', name:'alarmDate', index:'', width:150, align:"center", sortable:false,},
+		/*{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+
+			return actions.join('');
+		}}*/
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.rubbishalarm.dao.WasteAlarmDao">
+	<update id="updateStatusBySerialNumber">
+		UPDATE
+		    tb_waste_alarm
+		SET
+		    status = '2',
+			alarm_solve_date = #{alarmSolveDate},
+			alarm_solve_by = #{alarmSolveBy}
+		WHERE status = '1' AND department_rubbish_id = #{serialNumber}
+	</update>
+
+	<!-- 查询数据
+	<select id="findList" resultType="RubbishAlarm">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			${sqlMap.where.toSql()}
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select> -->
+
+	<select id="getDataBySerialNumber" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			tb_waste_alarm
+		WHERE
+		    status = '1'
+			AND department_rubbish_id = #{departmentRubbishId}
+	</select>
+	<select id="overwriteListData" resultType="com.jeesite.modules.rubbishalarm.entity.WasteAlarm">
+		SELECT
+			a.*,
+			b.institution AS institution,
+			b.rubbish_type AS rubbishType,
+			b.weight AS weight,
+			b.produce_date AS produceDate,
+			( SELECT user_name FROM js_sys_user WHERE user_code = b.create_by ) AS createByName
+		FROM
+			tb_waste_alarm a
+			LEFT JOIN tb_department_rubbish b ON a.department_rubbish_id = b.serial_number
+		WHERE
+			a.status = '1' AND b.transport_status = '1'
+			<if test=" rubbishType != '' and rubbishType != null">
+				AND b.rubbish_type = #{rubbishType}
+			</if>
+			<if test=" institution != '' and institution != null">
+				AND b.institution = #{institution}
+			</if>
+		<if test="page != null and page.orderBy != null and page.orderBy != ''">
+			ORDER BY ${page.orderBy}
+		</if>
+		ORDER BY
+		a.create_date DESC
+	</select>
+</mapper>

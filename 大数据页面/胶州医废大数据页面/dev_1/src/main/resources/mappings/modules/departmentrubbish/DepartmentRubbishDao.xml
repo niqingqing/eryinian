@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.departmentrubbish.dao.DepartmentRubbishDao">
+	
+	<!-- 查询数据
+	<select id="findList" resultType="DepartmentRubbish">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			${sqlMap.where.toSql()}
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select> -->
+
+    <select id="overwriteListData" resultType="com.jeesite.modules.departmentrubbish.entity.DepartmentRubbish">
+        SELECT
+        a.*,
+        b.user_name AS userName,
+        c.reclaim_person AS reclaimPerson
+        FROM
+        tb_department_rubbish AS a
+        LEFT JOIN js_sys_user b ON a.create_by = b.user_code
+        LEFT JOIN (SELECT * FROM tb_waste_transport AS transport WHERE transport.status=0) c ON c.department_rubbish_id = a.serial_number
+        LEFT JOIN js_sys_office d ON a.institution_code = d.office_code
+        <where>
+
+            AND a.status='0'
+            <!--<if test="transportStatus != null and transportStatus != ''">
+                AND a.transport_status = #{transportStatus}
+            </if>-->
+            <if test=" institutionParentCode != null and institutionParentCode != '' ">
+                AND d.parent_code = #{institutionParentCode}
+            </if>
+            <if test=" transportStatus != null and transportStatus == '' ">
+                AND a.transport_status != '1'
+            </if>
+            <if test=" transportStatus == 1">
+                AND a.transport_status = '1'
+            </if>
+            <if test=" transportStatus == 2">
+                AND a.transport_status = '2'
+            </if>
+            <if test=" transportStatus == 3">
+                AND a.transport_status = '3'
+            </if>
+            <if test=" transportStatus == 0 and transportStatus != ''">
+                AND a.transport_status IN ('1','2','3')
+            </if>
+
+            <if test=" reclaimPerson != null and reclaimPerson != ''">
+                AND c.reclaim_person = #{reclaimPerson}
+            </if>
+
+            <if test=" rubbishType != '' and rubbishType != null">
+                AND a.rubbish_type = #{rubbishType}
+            </if>
+
+            <if test=" institution != '' and institution != null">
+                AND a.institution = #{institution}
+            </if>
+
+            <if test="createBy != null and createBy != ''">
+                AND a.create_by = #{createBy}
+            </if>
+
+
+
+        </where>
+        <if test="page != null and page.orderBy != null and page.orderBy != ''">
+            ORDER BY ${page.orderBy}
+        </if>
+        ORDER BY
+        a.create_date DESC
+    </select>
+    <select id="getWeight" resultType="java.lang.Double">
+        SELECT
+            SUM(weight)
+        FROM
+            tb_department_rubbish AS a
+        <where>
+        AND status=0
+        <if test="transportStatus != null and transportStatus != ''">
+            AND a.transport_status = #{transportStatus}
+        </if>
+        <if test=" transportStatus == ''">
+            AND a.transport_status != '1'
+        </if>
+        <if test="createBy != null and createBy != ''">
+            AND a.create_by = #{createBy}
+        </if>
+    </where>
+    </select>
+
+    <select id="getDateById" resultType="com.jeesite.modules.departmentrubbish.entity.DepartmentRubbish">
+        SELECT
+            a.* ,
+            b.reclaim_date AS reclaimDate,
+            c.in_put_date AS inPutDate,
+            d.clean_time AS inCleanDate,
+            ( SELECT user_name FROM js_sys_user WHERE user_code = a.create_by ) AS createByName,
+            ( SELECT user_name FROM js_sys_user WHERE user_code = b.reclaim_person ) AS reclaimPersonName,
+            ( SELECT user_name FROM js_sys_user WHERE user_code = c.in_put_person ) AS inPutPersonName,
+            ( SELECT user_name FROM js_sys_user WHERE user_code = d.clean_person ) AS inCleanPersonName
+        FROM
+            tb_department_rubbish a
+                LEFT JOIN (
+                SELECT * FROM tb_waste_transport WHERE status!=1
+            ) b ON a.serial_number = b.department_rubbish_id
+                LEFT JOIN (
+                SELECT * FROM tb_waste_transfer WHERE status!=1
+            ) c ON a.serial_number = c.department_rubbish_id
+            LEFT JOIN (
+                SELECT * FROM tb_waste_clean WHERE status!=1
+            ) d ON a.serial_number = d.department_rubbish_id
+        WHERE
+            a.id = #{id}
+          AND a.status!=1
+    </select>
+    <select id="getTimeOutList" resultType="com.jeesite.modules.departmentrubbish.entity.DepartmentRubbish">
+        SELECT
+        *
+        FROM
+        tb_department_rubbish
+        WHERE
+        status=0
+        AND transport_status = '1'
+        AND produce_date &lt; #{produceDate}
+    </select>
+
+    <update id="wasteRecovery" >
+        update tb_department_rubbish set transport_status = #{status} where serial_number in(
+        <foreach collection="wasteRecovery" index="index" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </update>
+
+    <update id="remove">
+        UPDATE
+        tb_department_rubbish
+        SET
+        status = '1'
+        WHERE id = #{id}
+        <if test="createBy == null and createBy != ''">
+            AND create_by=#{createBy}
+        </if>
+    </update>
+
+    <update id="updateTransportStatusBySerialNumber">
+        UPDATE
+        tb_department_rubbish
+        SET
+            transport_status = #{status}
+        WHERE serial_number = #{serialNumber}
+    </update>
+
+    <select id="isExistSerialNumber" resultType="java.lang.Boolean">
+        SELECT EXISTS(
+           SELECT * FROM tb_department_rubbish WHERE serial_number=#{serialNumber} AND status='0'
+        )
+    </select>
+
+    <select id="getRubbishList" resultType="com.jeesite.modules.departmentrubbish.entity.DepartmentRubbish">
+        SELECT
+            a.institution AS institution,
+        a.rubbish_type AS rubbishType,
+        a.weight AS weight,
+        a.transport_status AS transportStatus,
+        a.produce_date AS produceDate,
+        `user`.ref_name AS userName,
+        a.create_date AS createDate,
+        a.id AS id
+        FROM
+            tb_department_rubbish AS a LEFT JOIN js_sys_user AS `user` ON a.create_by = `user`.user_code
+        WHERE
+        a.institution_code IN
+        (
+        SELECT
+        office_code
+        FROM js_sys_office
+        WHERE
+        office_code = #{departmentRubbish.institutionCode} OR FIND_IN_SET(#{departmentRubbish.institutionCode},parent_codes)
+        )
+        AND a.status = '0'
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            AND  a.produce_date BETWEEN #{startTime}
+            AND #{endTime}
+        </if>
+        <if test="departmentRubbish.institution != null and departmentRubbish.institution != '' and departmentRubbish.institution != 'null'">
+            AND  a.institution = #{departmentRubbish.institution}
+        </if>
+
+        <if test="departmentRubbish.transportStatus != null and departmentRubbish.transportStatus != ''and departmentRubbish.transportStatus != 'null'and departmentRubbish.transportStatus != '0'">
+            AND a.transport_status = #{departmentRubbish.transportStatus}
+        </if>
+        <if test="departmentRubbish.rubbishType != null and departmentRubbish.rubbishType != '' and departmentRubbish.rubbishType != 'null'">
+            AND a.rubbish_type = #{departmentRubbish.rubbishType}
+        </if>
+        <if test="page != null and page.orderBy != null and page.orderBy != ''">
+            ORDER BY ${page.orderBy}
+        </if>
+        ORDER BY
+        a.create_date DESC
+
+    </select>
+
+    <select id="transportationDetails" resultType="com.jeesite.modules.departmentrubbish.entity.DepartmentRubbish">
+        SELECT * FROM (SELECT office.office_name AS transferName,
+        IFNULL((
+        SELECT
+        count(rubbish.id)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+				LEFT JOIN tb_waste_transport AS transport ON rubbish.serial_number = transport.department_rubbish_id
+        WHERE
+        rubbish. STATUS = '0'
+        AND rubbish.transport_status = '2'
+        AND transport.reclaim_person = #{reclaimPerson}
+        AND office1. STATUS = '0'
+        AND transport.status = '0'
+        AND (office1.office_code = office.office_code
+        OR FIND_IN_SET(office.office_code,office1.parent_codes) ) ), 0 ) AS num,
+				IFNULL((
+        SELECT
+        sum(rubbish.weight)
+        FROM
+        js_sys_office AS office1
+        LEFT JOIN tb_department_rubbish AS rubbish ON office1.office_code = rubbish.institution_code
+				LEFT JOIN tb_waste_transport AS transport ON rubbish.serial_number = transport.department_rubbish_id
+        WHERE
+        rubbish. STATUS = '0'
+        AND rubbish.transport_status = '2'
+        AND transport.reclaim_person = #{reclaimPerson}
+        AND office1. STATUS = '0'
+        AND transport.status = '0'
+        AND (office1.office_code = office.office_code
+        OR FIND_IN_SET(office.office_code,office1.parent_codes) ) ), 0 ) AS weight
+        from js_sys_office AS office
+
+            WHERE office.parent_code='JZWSJKJ' AND office. STATUS = '0')as a
+WHERE a.num>0 and a.weight>0
+    </select>
+
+</mapper>

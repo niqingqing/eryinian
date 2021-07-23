@@ -1,0 +1,100 @@
+<% layout('/layouts/default.html', {title: '机构垃圾统计', libs: ['dataGrid']}){ %>
+<link rel="stylesheet" href="${ctxStatic}/libs/layui/css/layui.css?${_version}">
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa icon-grid"></i> ${text('机构废弃物统计')}
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" model="${statiscs}" action="${ctx}/statiscs/officeTypeWeightStatiscsList" method="post" class="form-inline "
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+            <div class="form-group">
+                <label class="control-label">${text('所属机构')}：</label>
+                <div class="control-inline">
+                    <!--<#form:input path="institution" maxlength="64" class="form-control width-120"/>-->
+                    <#form:treeselect id="testOffice" title="机构选择"
+                    path="" labelPath="institutionName" canSelectParent="true" canSelectRoot="true"
+                    url="${ctx}/sys/office/treeData?dataType=1" class="" allowClear="true"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">${text('封口日期选择')}：</label>
+                <div class="control-inline">
+                    <#form:input path="startTime" readonly="true" maxlength="22" class="form-control Wdate-datetime" defaultValue="${date()}"
+                    dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false,onpicked:function(){datetime_lte.click()}});"/>
+                    &nbsp;--&nbsp;
+                    <#form:input path="endTime" readonly="true" maxlength="22" class="form-control Wdate-datetime"
+                    dataFormat="datetime2"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+                    &nbsp;&nbsp;<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit" onclick="alarmStatiscs()"> ${text('确 定')}</button>
+                    &nbsp;&nbsp;<button type="button" class="btn btn-sm" id="empty"> ${text('重 置')}</button>
+                    &nbsp;&nbsp;<button type="button" class="btn btn-sm" id="daochu"> ${text('导 出')}</button>
+                </div>
+
+            </div>
+        </#form:form>
+        <table id="dataGrid"></table>
+    </div>
+</div>
+</div>
+<% } %>
+<script src="${ctxStatic}/libs/layui/layui.js"></script>
+<script>
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        searchForm: $("#searchForm"),
+        columnModel: [
+            {header:'${text('机构名称')}', name:'institutionName', index:'a.institution_name', width:250, align:"left", frozen:true},
+            {header:'${text('感染性(kg)')}', name:'infectedWeight', index:'a.infectedWeight', width:200, align:"center"},
+            {header:'${text('化学性(kg)')}', name:'contagionWeight', index:'a.contagionWeight', width:200, align:"center"},
+            {header:'${text('病理性(kg)')}', name:'pathologyWeight', index:'a.pathologyWeight', width:200, align:"center"},
+            {header:'${text('损伤性(kg)')}', name:'damageWeight', index:'a.damageWeight', width:200, align:"center"},
+            {header:'${text('药物性(kg)')}', name:'medicineWeight', index:'a.medicineWeight', width:200, align:"center"},
+            {header:'${text('总重量(kg)')}', name:'weight', index:'a.weight', width:200, align:"center"},
+
+        ],
+        treeGrid: true,			// 启用树结构表格
+        defaultExpandLevel: 1,	// 默认展开的层次
+        expandNodeClearPostData: 'institutionCode,institutionName,officeType,', // 展开节点清理请求参数数据（一般设置查询条件的字段属性，否则在查询后，不能展开子节点数据）	// 加载成功后执行事件
+        ajaxSuccess: function(data){
+
+        }
+    });
+</script>
+<script>
+    $(function () {
+        var date = new Date();
+
+        var today = js.formatDate(date,'yyyy-MM-dd');
+        $("#endTime").val(today);
+        $("#endTime").placeholder(today);
+
+        var mouth = js.formatDate(date,'yyyy-MM');
+        $("#startTime").val(mouth+'-01');
+        $("#startTime").placeholder(mouth+'-01');
+    })
+
+    $('#daochu').click(function () {
+        js.ajaxSubmitForm($('#searchForm'), {
+            url: '${ctx}/statiscs/exportOfficeTypeWeightStatiscsList',
+            downloadFile: true
+        })
+    })
+
+    $('#empty').click(function () {
+        console.log(123123);
+        var date = new Date();
+
+        var today = js.formatDate(date,'yyyy-MM-dd');
+        $("#endTime").val(today);
+        $("#endTime").placeholder(today);
+
+        var mouth = js.formatDate(date,'yyyy-MM');
+        $("#startTime").val(mouth+'-01');
+        $("#startTime").placeholder(mouth+'-01');
+
+        $("#testOfficeName").val("");
+        $("#testOfficeCode").val("");
+    })
+</script>

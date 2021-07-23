@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <title>胶州医疗废弃物大数据监控</title>
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+    <!--jquery-->
+    <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
+    <!--表格无缝滚动-->
+    <script src="https://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/table_scroll1.css">
+    <!--事件总数-->
+    <link type="text/css" rel="stylesheet" href="css/control.css">
+    <!--引入echarts-->
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+</head>
+<body>
+
+<!--标头-->
+<div class="header">
+    <div class="headerText">胶州医疗废弃物大数据监控</div>
+    <img src="images/head.png">
+</div>
+<!--内容-->
+<div class="content">
+
+    <!--左边-->
+    <div class="leftCon">
+        <!--上部分-->
+        <div class="leftConTop">
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="images/circle.png">
+                    <img class="picTu" src="images/pack.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">已打包(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="dayNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="mouthNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="yearNum">152.541</div>
+                        </div>
+
+                    </div>
+
+                    <div class="sanjiao"></div>
+
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="images/circle.png">
+                    <img class="picTu" src="images/bale.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">已打包(袋数)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="daiDayNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="daiMouthNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="daiYearNum">152.541</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="images/circle.png">
+                    <img class="picTu" src="images/transport.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">运送中(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="yunDayNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="yunMouthNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="yunYearNum">152.541</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="images/circle.png">
+                    <img class="picTu" src="images/transit.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">中转站(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="zhongDayNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="zhongMouthNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="zhongYearNum">152.541</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="statistical">
+                <div class="pic">
+                    <img class="picbg" src="images/circle.png">
+                    <img class="picTu" src="images/pickup.png">
+                </div>
+
+                <div class="statisticalCon">
+                    <div class="statisticalConTitle">清运(Kg)</div>
+                    <div class="statisticalContent">
+
+                        <div class="SContent">
+                            <div class="conTitle">本日</div>
+                            <div class="conNum" id="qingDayNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本月</div>
+                            <div class="conNum" id="qingMouthNum">152.541</div>
+                        </div>
+                        <div class="SContent">
+                            <div class="conTitle">本年</div>
+                            <div class="conNum" id="qingYearNum">152.541</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--下部分-->
+        <div class="leftConBottom">
+            <!--左边-->
+            <div class="bottomLeft">
+                <div class="blTitle">
+                    <div class="blTitleName">垃圾运输同步上传数据</div>
+                    <div class="blTitlePic"><img src="images/line-tongbu.png"></div>
+                </div>
+                <div class="tablebox">
+
+                    <div class="tbl-header">
+                        <table border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                            <tr>
+                                <th>单位名称</th>
+                                <th>时间</th>
+                                <th>重量(Kg)</th>
+                            </tr>
+                            </thead>
+                            <tbody style="opacity:0;"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="tbl-body">
+                        <table border="0" cellspacing="0" cellpadding="0">
+                            <thead style="display: none;">
+                            <tr>
+                                <th>单位名称</th>
+                                <th>时间</th>
+                                <th>重量(Kg)</th>
+                            </tr>
+                            </thead>
+                            <tbody class="aa"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <!--右边-->
+            <div class="bottomRight">
+                <div class="leixing">
+                    <div class="blTitle">
+                        <div class="blTitleName">医疗废物类型分析</div>
+                        <div class="blTitlePic"><img src="images/line-tongbu.png"></div>
+                    </div>
+                    <div class="chart">
+                        <div class="chartGan">
+                            <div class="gan" id="gan"></div>
+                            <div class="ganTitle">感染性</div>
+                        </div>
+                        <div class="chartHua">
+                            <div class="hua" id="hua"></div>
+                            <div class="huaTitle">化学性</div>
+                        </div>
+                        <div class="chartBing">
+                            <div class="bing" id="bing"></div>
+                            <div class="bingTitle">病理性</div>
+                        </div>
+                        <div class="chartSun">
+                            <div class="sun" id="sun"></div>
+                            <div class="sunTitle">损伤性</div>
+                        </div>
+                        <div class="chartYao">
+                            <div class="yao" id="yao"></div>
+                            <div class="yaoTitle">药物性</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="yearTop">
+                    <div class="blTitle">
+                        <div class="blTitleName">年度总览</div>
+                        <div class="blTitlePic"><img src="images/line-tongbu.png"></div>
+                    </div>
+                    <div class="yearData">
+                        <div class="shang">
+                            <div class="shangTu">
+                                <div class="shangTuBiao"><img src="images/shangbao.png"></div>
+                                <div class="shangTuText">
+                                    <div class="shangTuNum" id="shangTuNum"></div>
+                                    <div class="shangTuTitle">上报总数(Kg)</div>
+                                </div>
+                            </div>
+                            <div class="shangPic"><img src="images/pic2.png"></div>
+                        </div>
+                        <div class="qing">
+                            <div class="qingTu">
+                                <div class="qingTuBiao"><img src="images/pic3.png"></div>
+                                <div class="qingTuText">
+                                    <div class="qingTuNum" id="qingTuNum"></div>
+                                    <div class="qingTuTitle">清运总数(Kg)</div>
+                                </div>
+                            </div>
+                            <div class="qingPic"><img src="images/pic2.png"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="yearBottom">
+                    <div class="blTitle">
+                        <div class="blTitleName">年度总览</div>
+                        <div class="blTitlePic"><img src="images/line-tongbu.png"></div>
+                    </div>
+                    <div class="all">
+                        <div id="stepBarBox">
+                            <div id="stepBar" class="ui-stepBar-wrap">
+                                <div class="ui-stepBar">
+                                    <div class="ui-stepProcess"></div>
+                                </div>
+                                <div class="ui-stepInfo-wrap">
+                                    <table class="ui-stepLayout" border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.2万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">1月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.04万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">2月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.1万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">3月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">1.2万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">4月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">1.54万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">5月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">14.25万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">6月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.2万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">7月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.6万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">8月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.58万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">9月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.54万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">10月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.14万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">11月</p>
+                                            </td>
+                                            <td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence">0.6万</p>
+                                                <a class="ui-stepSequence"></a>
+                                                <p class="ui-stepName ui-stepSequence">12月</p>
+                                            </td>
+                                            <!--<td class="ui-stepInfo">
+                                                <p class="ui-stepName ui-stepSequence"></p>
+                &lt;!&ndash;                                <a class="ui-stepSequence"></a>&ndash;&gt;
+                                                <p class="ui-stepName ui-stepSequence"></p>
+                                            </td>-->
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--右边-->
+    <div class="rightCon">
+
+        <!--标题部分-->
+        <div class="bottomTittle">
+            <div class="bottomTab">
+                <div class="tabDay active">本日统计</div>
+                <div class="tabMouth">月度统计</div>
+                <div class="tabYear">年度统计</div>
+            </div>
+            <div class="bottomBorder"><img src="images/line-tongbu.png"></div>
+        </div>
+        <!--表格部分-->
+        <div class="bottomCon">
+
+            <div class="bottomConT">
+                <div class="bottomConTittle">
+                    <img src="images/pic3.png" class="tittleImg">
+                    <div class="conTittleText">单位医疗废物运输状态(1-7)</div>
+                </div>
+                <!--表格内容-->
+                <div class="conTable">
+                    <!--表头信息-->
+                    <div class="conTableTittle">
+                        <div class="tittleText">名称</div>
+                        <div class="tittleText">总袋数</div>
+                        <div class="tittleText">总重量(Kg)</div>
+                    </div>
+                    <!--表格详细内容-->
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText activeLing">0</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText activeLing">0</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+                    <div class="tableCon">
+                        <div class="tableConText">三里河街道社区卫生服务中心</div>
+                        <div class="tableConText">15263</div>
+                        <div class="tableConText">152.325</div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+<!--数字滚动-->
+<script type="text/javascript">
+    /**
+     * 数字滚动
+     */
+    function numJump(elem, num) {
+        let currNum = 0;
+        let interval, timeoutEle;
+
+        let stepNum = num > 50 ? parseInt(num / 50) : 1;
+
+        jump();
+
+        function jump() {
+            clearTimeout(timeoutEle);
+            interval = setInterval(function () {
+
+                currNum += stepNum;
+                $(elem).html(currNum > num ? num : currNum);
+
+                if (currNum >= num) {
+                    currNum = 0;
+                    clearInterval(interval);
+                    timeOut();
+                }
+            }, 1)
+        }
+
+        function timeOut() {
+            timeoutEle = setTimeout(jump, 3000);
+        }
+
+    }
+
+    numJump("#dayNum", 403.8);
+    numJump("#mouthNum", 22099.2);
+    numJump("#yearNum", 2299.2);
+
+    numJump("#daiDayNum", 403);
+    numJump("#daiMouthNum", 21299);
+    numJump("#daiYearNum", 2299);
+
+    numJump("#yunDayNum", 403.8);
+    numJump("#yunMouthNum", 2299.2);
+    numJump("#yunYearNum", 2299.2);
+
+    numJump("#zhongDayNum", 403.8);
+    numJump("#zhongMouthNum", 2292129.2);
+    numJump("#zhongYearNum", 2299.2);
+
+    numJump("#qingDayNum", 403.8);
+    numJump("#qingMouthNum", 2299.2);
+    numJump("#qingYearNum", 2299.2);
+
+    numJump("#shangTuNum", 2299.2);
+    numJump("#qingTuNum", 2299.2);
+
+</script>
+<!--告警事件 表格无缝滚动-->
+<script>
+    var MyMarhq = '';
+    clearInterval(MyMarhq);
+    $('.tbl-body tbody').empty();
+    $('.tbl-header tbody').empty();
+    var str = '';
+    var Items = [{
+        "name": "三里河街道社区卫生服务中心",
+        "time": "2021/4/15",
+        "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        },
+        {
+            "name": "三里河街道社区卫生服务中心三里河街道社区卫生服务中心",
+            "time": "2021/4/15",
+            "weight": "2541.361"
+        }]
+    $.each(Items, function (i, item) {
+        let color;
+        // switch (item.SaleIncome) {
+        //     case "低":
+        //         color = "#f0cd03";
+        //         break;
+        //     case "中":
+        //         color = "#ff9b29";
+        //         break;
+        //     case "高":
+        //         color = "#df0024";
+        //         break;
+        // }
+
+        str = '<tr>' +
+            '<td>' + item.name + '</td>' +
+            '<td>' + item.time + '</td>' +
+            '<td >' + '<div style="background-color: ' + color + '">' + item.weight + '</div>' + '</td>' +
+            '</tr>'
+
+        $('.tbl-body tbody').append(str);
+        $('.tbl-header tbody').append(str);
+    });
+
+    if (Items.length > 10) {
+        $('.tbl-body tbody').html($('.tbl-body tbody').html() + $('.tbl-body tbody').html());
+        $('.tbl-body').css('top', '0');
+        var tblTop = 0;
+        var speedhq = 50; // 数值越大越慢
+        var outerHeight = $('.tbl-body tbody').find("tr").outerHeight();
+
+        function Marqueehq() {
+            if (tblTop <= -outerHeight * Items.length) {
+                tblTop = 0;
+            } else {
+                tblTop -= 1;
+            }
+            $('.tbl-body').css('top', tblTop + 'px');
+        }
+
+        MyMarhq = setInterval(Marqueehq, speedhq);
+
+        // 鼠标移上去取消事件
+        $(".tbl-header tbody").hover(function () {
+            clearInterval(MyMarhq);
+        }, function () {
+            clearInterval(MyMarhq);
+            MyMarhq = setInterval(Marqueehq, speedhq);
+        })
+
+    }
+</script>
+<!--事件总数-->
+<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="js/stepBar.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        initStepBar();
+    });
+
+    function initStepBar() {
+        stepBar.init("stepBar", {
+            step: 12,
+            change: true,
+            animation: true,
+        });
+    }
+</script>
+<!--感染性-->
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('gan'));
+
+    var chartData = 78;
+    var getvalue=1123;
+    var gradient = new echarts.graphic.LinearGradient(
+        0, 0, 1, 0, [{
+            offset: 0,
+            color: "#3eebff",
+        },
+            {
+                offset: 1,
+                color: "#3eebff",
+            }
+        ]
+    );
+
+    option = {
+        // backgroundColor: '#fff',
+        legend: {
+            show: false
+        },
+        title: [{
+            text: chartData+'%',
+            x: '46%',
+            y: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '16',
+                fontWeight: '400',
+                color: '#fff',
+                textAlign: 'center',
+            },
+        }, {
+            // text: '宿舍检查优秀率',
+            left: '40%',
+            top: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '12',
+                fontWeight: '400',
+                color: '#666666',
+                textAlign: 'center',
+            },
+        }],
+        series: [{
+            type: 'pie',
+            clockwise: false,
+            radius: ['78%', '80%'],
+            center: ['50%', '50%'],
+            zlevel: 3,
+            hoverAnimation: false,
+            label: {
+                show: false,
+            },
+            data: [{
+                value: 100 - chartData,
+                itemStyle: {
+                    color: 'transparent',
+                }
+            }, {
+                value: chartData,
+                itemStyle: {
+                    normal: {
+                        borderWidth: 10,
+                        borderColor: gradient,
+                        color: gradient
+                    }
+                },
+            }, ]
+        },
+            {
+                type: 'pie',
+                clockwise: false,
+                radius: ['78%', '80%'],
+                center: ['50%', '50%'],
+                hoverAnimation: false,
+                zlevel: 2,
+                label: {
+                    show: false,
+                },
+                itemStyle: {
+                    color: '#DBE9F6',
+                    borderWidth: 10,
+                    borderColor: '#DBE9F6'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#DBE9F6',
+                        borderWidth: 10,
+                        borderColor: '#DBE9F6'
+                    }
+                },
+                data: [100]
+            }
+        ]
+
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+</script>
+<!--化学性-->
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('hua'));
+
+    var chartData = 78;
+    var getvalue=1123;
+    var gradient = new echarts.graphic.LinearGradient(
+        0, 0, 1, 0, [{
+            offset: 0,
+            color: "#ffa67d",
+        },
+            {
+                offset: 1,
+                color: "#ffa67d",
+            }
+        ]
+    );
+
+    option = {
+        // backgroundColor: '#fff',
+        legend: {
+            show: false
+        },
+        title: [{
+            text: chartData+'%',
+            x: '46%',
+            y: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '16',
+                fontWeight: '400',
+                color: '#fff',
+                textAlign: 'center',
+            },
+        }, {
+            // text: '宿舍检查优秀率',
+            left: '40%',
+            top: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '12',
+                fontWeight: '400',
+                color: '#666666',
+                textAlign: 'center',
+            },
+        }],
+        series: [{
+            type: 'pie',
+            clockwise: false,
+            radius: ['78%', '80%'],
+            center: ['50%', '50%'],
+            zlevel: 3,
+            hoverAnimation: false,
+            label: {
+                show: false,
+            },
+            data: [{
+                value: 100 - chartData,
+                itemStyle: {
+                    color: 'transparent',
+                }
+            }, {
+                value: chartData,
+                itemStyle: {
+                    normal: {
+                        borderWidth: 10,
+                        borderColor: gradient,
+                        color: gradient
+                    }
+                },
+            }, ]
+        },
+            {
+                type: 'pie',
+                clockwise: false,
+                radius: ['78%', '80%'],
+                center: ['50%', '50%'],
+                hoverAnimation: false,
+                zlevel: 2,
+                label: {
+                    show: false,
+                },
+                itemStyle: {
+                    color: '#DBE9F6',
+                    borderWidth: 10,
+                    borderColor: '#DBE9F6'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#DBE9F6',
+                        borderWidth: 10,
+                        borderColor: '#DBE9F6'
+                    }
+                },
+                data: [100]
+            }
+        ]
+
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+</script>
+<!--病理性-->
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('bing'));
+
+    var chartData = 78;
+    var getvalue=1123;
+    var gradient = new echarts.graphic.LinearGradient(
+        0, 0, 1, 0, [{
+            offset: 0,
+            color: "#438eff",
+        },
+            {
+                offset: 1,
+                color: "#438eff",
+            }
+        ]
+    );
+
+    option = {
+        // backgroundColor: '#fff',
+        legend: {
+            show: false
+        },
+        title: [{
+            text: chartData+'%',
+            x: '46%',
+            y: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '16',
+                fontWeight: '400',
+                color: '#fff',
+                textAlign: 'center',
+            },
+        }, {
+            // text: '宿舍检查优秀率',
+            left: '40%',
+            top: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '12',
+                fontWeight: '400',
+                color: '#666666',
+                textAlign: 'center',
+            },
+        }],
+        series: [{
+            type: 'pie',
+            clockwise: false,
+            radius: ['78%', '80%'],
+            center: ['50%', '50%'],
+            zlevel: 3,
+            hoverAnimation: false,
+            label: {
+                show: false,
+            },
+            data: [{
+                value: 100 - chartData,
+                itemStyle: {
+                    color: 'transparent',
+                }
+            }, {
+                value: chartData,
+                itemStyle: {
+                    normal: {
+                        borderWidth: 10,
+                        borderColor: gradient,
+                        color: gradient
+                    }
+                },
+            }, ]
+        },
+            {
+                type: 'pie',
+                clockwise: false,
+                radius: ['78%', '80%'],
+                center: ['50%', '50%'],
+                hoverAnimation: false,
+                zlevel: 2,
+                label: {
+                    show: false,
+                },
+                itemStyle: {
+                    color: '#DBE9F6',
+                    borderWidth: 10,
+                    borderColor: '#DBE9F6'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#DBE9F6',
+                        borderWidth: 10,
+                        borderColor: '#DBE9F6'
+                    }
+                },
+                data: [100]
+            }
+        ]
+
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+</script>
+<!--损伤性-->
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('sun'));
+
+    var chartData = 78;
+    var getvalue=1123;
+    var gradient = new echarts.graphic.LinearGradient(
+        0, 0, 1, 0, [{
+            offset: 0,
+            color: "#fcc040",
+        },
+            {
+                offset: 1,
+                color: "#fcc040",
+            }
+        ]
+    );
+
+    option = {
+        // backgroundColor: '#fff',
+        legend: {
+            show: false
+        },
+        title: [{
+            text: chartData+'%',
+            x: '46%',
+            y: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '16',
+                fontWeight: '400',
+                color: '#fff',
+                textAlign: 'center',
+            },
+        }, {
+            // text: '宿舍检查优秀率',
+            left: '40%',
+            top: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '12',
+                fontWeight: '400',
+                color: '#666666',
+                textAlign: 'center',
+            },
+        }],
+        series: [{
+            type: 'pie',
+            clockwise: false,
+            radius: ['78%', '80%'],
+            center: ['50%', '50%'],
+            zlevel: 3,
+            hoverAnimation: false,
+            label: {
+                show: false,
+            },
+            data: [{
+                value: 100 - chartData,
+                itemStyle: {
+                    color: 'transparent',
+                }
+            }, {
+                value: chartData,
+                itemStyle: {
+                    normal: {
+                        borderWidth: 10,
+                        borderColor: gradient,
+                        color: gradient
+                    }
+                },
+            }, ]
+        },
+            {
+                type: 'pie',
+                clockwise: false,
+                radius: ['78%', '80%'],
+                center: ['50%', '50%'],
+                hoverAnimation: false,
+                zlevel: 2,
+                label: {
+                    show: false,
+                },
+                itemStyle: {
+                    color: '#DBE9F6',
+                    borderWidth: 10,
+                    borderColor: '#DBE9F6'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#DBE9F6',
+                        borderWidth: 10,
+                        borderColor: '#DBE9F6'
+                    }
+                },
+                data: [100]
+            }
+        ]
+
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+</script>
+<!--药物性-->
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('yao'));
+
+    var chartData = 78;
+    var getvalue=1123;
+    var gradient = new echarts.graphic.LinearGradient(
+        0, 0, 1, 0, [{
+            offset: 0,
+            color: "#77ff9d",
+        },
+            {
+                offset: 1,
+                color: "#77ff9d",
+            }
+        ]
+    );
+
+    option = {
+        // backgroundColor: '#fff',
+        legend: {
+            show: false
+        },
+        title: [{
+            text: chartData+'%',
+            x: '46%',
+            y: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '16',
+                fontWeight: '400',
+                color: '#fff',
+                textAlign: 'center',
+            },
+        }, {
+            // text: '宿舍检查优秀率',
+            left: '40%',
+            top: '46%',
+            textAlign: 'center',
+            textStyle: {
+                fontSize: '12',
+                fontWeight: '400',
+                color: '#666666',
+                textAlign: 'center',
+            },
+        }],
+        series: [{
+            type: 'pie',
+            clockwise: false,
+            radius: ['78%', '80%'],
+            center: ['50%', '50%'],
+            zlevel: 3,
+            hoverAnimation: false,
+            label: {
+                show: false,
+            },
+            data: [{
+                value: 100 - chartData,
+                itemStyle: {
+                    color: 'transparent',
+                }
+            }, {
+                value: chartData,
+                itemStyle: {
+                    normal: {
+                        borderWidth: 10,
+                        borderColor: gradient,
+                        color: gradient
+                    }
+                },
+            }, ]
+        },
+            {
+                type: 'pie',
+                clockwise: false,
+                radius: ['78%', '80%'],
+                center: ['50%', '50%'],
+                hoverAnimation: false,
+                zlevel: 2,
+                label: {
+                    show: false,
+                },
+                itemStyle: {
+                    color: '#DBE9F6',
+                    borderWidth: 10,
+                    borderColor: '#DBE9F6'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#DBE9F6',
+                        borderWidth: 10,
+                        borderColor: '#DBE9F6'
+                    }
+                },
+                data: [100]
+            }
+        ]
+
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+</script>
+<!--给表格每隔一条数据就添加一个背景色-->
+<script type="text/javascript">
+    /**
+     * 给表格每隔一条数据就添加一个背景色
+     */
+    let bg = document.getElementsByClassName("tableCon");
+    let bg1 = $(".aa tr");
+    console.log(bg1.length);
+    for (let i = 0; i < bg.length; i++) {
+        if (i / 2 == 0) {
+            console.log('tableCon');
+            bg[i].className = 'tableCon'
+        } else {
+            console.log('tab');
+            bg[i].className = 'tab'
+        }
+    }
+
+    for (let j = 0; j < bg1.length; j++) {
+        if (j % 2 == 0) {
+            $(bg1).eq(j).addClass('tableCon');
+        } else {
+            $(bg1).eq(j).addClass('tab');
+        }
+    }
+
+</script>
+</html>

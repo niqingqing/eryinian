@@ -1,0 +1,148 @@
+<% layout('/layouts/default.html', {title: '数据管理', libs: ['layui']}){ %>
+<link href="${ctxStatic}/modules/test/test.css?${_version}" rel="stylesheet" />
+<div class="main-content">
+    <div class="box box-main">
+
+        <div class="col-xs-6 process" id="app">
+            <div class="box-header with-border">
+                <div class="pro">${text('过程描述')}</div>
+                <div class="jichu">基础信息：</div>
+                <div class="contentText" style="margin-top: 20px">
+                    <div class="con">
+                        <h4 class="textTitle">单位：</h4>
+                        <div class="textCon" >青岛胶州人民医院</div>
+                    </div>
+                    <div class="con">
+                        <h4 class="textTitle">废物类型：</h4>
+                        <div class="textCon" >传播型</div>
+                    </div>
+                    <div class="con">
+                        <h4 class="textTitle">废物重量：</h4>
+                        <div class="textCon" >0.523g</div>
+                    </div>
+                    <div class="con">
+                        <h4 class="textTitle">封口日期：</h4>
+                        <div class="textCon" >2020-01-18 15:20:50</div>
+                    </div>
+                </div>
+                <div class="jichu" style="margin-top: 30px">进程：</div>
+                <div style="margin-top: 24px">
+                    <ul class="layui-timeline">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis"></i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title"><span class="name" >上报</span></div>
+                                <div class="contentText">
+                                    <div class="con">
+                                        <!--                                        <h4 class="textTitle">在</h4>-->
+                                        <text class="textCon sta">倪青青</text>
+                                        <text>在</text>
+                                        <text class="textCon" style="font-weight: 700">2020-01-18 15:20:50</text>
+                                        <text class="textCon">将垃圾</text>
+                                        <text class="textCon " style="font-weight: 700">上报</text>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="layui-timeline">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis"></i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title"><span class="name" >回收</span></div>
+                                <div class="contentText">
+                                    <div class="con">
+                                        <!--                                        <h4 class="textTitle">在</h4>-->
+                                        <text class="textCon sta">倪青青</text>
+                                        <text>在</text>
+                                        <text class="textCon" style="font-weight: 700">2020-01-18 15:20:50</text>
+                                        <text class="textCon">将垃圾</text>
+                                        <text class="textCon " style="font-weight: 700">回收</text>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="layui-timeline">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis"></i>
+                            <div class="layui-timeline-content layui-text">
+                                <div class="layui-timeline-title"><span class="name" >入库</span></div>
+                                <div class="contentText">
+                                    <div class="con">
+                                        <!--                                        <h4 class="textTitle">在</h4>-->
+                                        <text class="textCon sta">倪青青</text>
+                                        <text>在</text>
+                                        <text class="textCon" style="font-weight: 700">2020-01-18 15:20:50</text>
+                                        <text class="textCon">将垃圾</text>
+                                        <text class="textCon " style="font-weight: 700">入库</text>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <div class="tishiPic"><img src="${ctxStatic}/images/gallery/emp.png"></div>
+                            <div class="tishiText">暂无相关内容</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 add">
+            <#form:form id="inputForm" action="${ctx}/test/test/save" method="post" class="form-horizontal">
+            <div class="box-body">
+                <div class="pro">${text('地图')}</div>
+                <#form:hidden path="id"/>
+                <div class="row">
+                    <div class="col-xs-6 hide">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required hide">*</span> ${text('工单id')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:input path="workOrderId" maxlength="64" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 hide">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required hide">*</span> ${text('工单状态')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:input path="wordOrderStatus" maxlength="1" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 hide">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" title="">
+                                <span class="required hide">*</span> ${text('流程任务id')}：<i class="fa icon-question hide"></i></label>
+                            <div class="col-sm-8">
+                                <#form:input path="taskId" maxlength="64" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </#form:form>
+    </div>
+
+    </div>
+
+
+
+
+</div>
+<% } %>
+<script>
+
+</script>
+<link rel="stylesheet" href="${ctxStatic}/libs/layui/css/layui.css">
+<script src="${ctxStatic}/libs/layui/layui.js"></script>
