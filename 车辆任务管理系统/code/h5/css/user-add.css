@@ -1,0 +1,57 @@
+/*申请时间*/
+.time{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 0 0.36rem;
+    margin-bottom: 0.25rem;
+}
+.timeTitle{
+    font-size: 0.4rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    width: 30%;
+}
+.timeInfor{
+    width: 70%;
+}
+/*end*/
+/*申请原因*/
+.reason{}
+.rea{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.36rem;
+    background: #fff;
+    margin-bottom: 0.25rem;
+    height: 1.2rem;
+}
+.reaTitle{
+    font-size: 0.4rem;
+    width: 30%;
+}
+.reaType{
+    font-size: 0.4rem;
+    width: 70%;
+}
+.but{
+    margin-top: 1rem;
+    padding: 0 0.36rem;
+    margin-bottom: 0 !important;
+    display: flex;
+    justify-content: center;
+}
+
+
+/*end*/
+.time .layui-form-label{
+    padding: 0;
+    text-align: left;
+}
+
+.reason .layui-form-label{
+    padding: 0;
+    text-align: left;
+}

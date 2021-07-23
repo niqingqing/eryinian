@@ -1,0 +1,108 @@
+
+/*状态筛选*/
+.state {
+    width: 100%;
+    /* background-color: green; */
+}
+
+.btn {
+    width: 100%;
+    height: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0rem 0.06rem 0.1rem 0rem #ccc;
+    position: fixed;
+    top: 0;
+    background: #fff;
+}
+
+.spanList {
+    font-family: PingFang-SC-Medium;
+    font-size: 0.4rem;
+    color: #3f3f3f;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    letter-spacing: 0.005rem;
+    font-weight: 400;
+}
+
+.active {
+    font-family: PingFang-SC-Bold;
+    font-weight: 600;
+    color: #3f3f3f;
+    text-align: center;
+    line-height: 1rem;
+    letter-spacing: 0.005rem;
+    display: inline-block;
+    border-bottom: 4px solid #41e0f6;
+}
+
+.context {
+    width: calc(100% - 0.72rem);
+    margin: 0 auto;
+    margin-top: 1rem;
+}
+
+.con {
+    padding-top: 0.18rem;
+}
+
+.list {
+    background: #fff;
+    border-radius: 0.2rem;
+    margin: 0.28rem 0;
+    padding: 0.2rem 0;
+}
+
+.listTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 1rem;
+    padding: 0 0.3rem;
+    border-bottom: 0.01rem solid #cfcfcf;
+    margin-bottom: 0.15rem;
+}
+
+.userTitle {
+    color: #222;
+    font-weight: 700;
+    font-size: 0.4rem;
+}
+
+.userState {
+    font-weight: 700;
+    /*color: #555;*/
+    color: #fff;
+    font-size: 0.34rem;
+    background: #0089ff;
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.1rem;
+}
+
+.listCon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.4rem;
+    padding: 0 0.3rem;
+    height: 0.88rem;
+}
+
+.conTitle {
+    color: #76817e;
+    width: 30%;
+}
+
+.conState {
+    width: 70%;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+
+/*end*/
