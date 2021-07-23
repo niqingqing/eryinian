@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <title>预约界面</title>
+    <link rel="stylesheet" type="text/css" href="css/subscribe.css">
+    <script src="Mdate/iScroll.js"></script>
+    <script src="Mdate/Mdate.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<body>
+<!--地址-->
+<div class="address">
+    <div class="addressTitle">东湖街道凌和医院接种点(完成预约请凭身份证接种)</div>
+    <div class="addressInformation">
+        <div class="inforItem">地址</div>
+        <div class="inforContent">朝阳区宏昌路望京西园一区120号原望京凌和医院</div>
+    </div>
+</div>
+<!--选择时间-->
+<div class="time">
+    <div class="timeTitle">选择预约日期：</div>
+    <div class="demo">
+        <input type="text" id="dateSelectorOne" placeholder="选择日期" readonly>
+    </div>
+</div>
+<!--选择时间段-->
+<div class="timeQuantum">
+    <div class="quantumTitle">选择时间段</div>
+    <div class="quanTime">
+        <div class="quantumItem checked">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+        <div class="quantumItem">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+        <div class="quantumItem">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+        <div class="quantumItem">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+        <div class="quantumItem">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+        <div class="quantumItem">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+        <div class="quantumItem">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+        <div class="quantumItem">
+            <div class="ItemTime">08:30-09:00</div>
+            <div class="ItemSurplus">剩余52</div>
+        </div>
+    </div>
+</div>
+<div class="sub">预约</div>
+</body>
+<script type="text/javascript">
+    new Mdate("dateSelectorOne");
+
+    $(".quantumItem").click(function(){
+        let isCheck = $(this).hasClass('checked');
+        $(".checked").removeClass('checked');
+        if (!isCheck) {
+            $(this).addClass("checked");
+        }
+    })
+
+</script>
+</html>

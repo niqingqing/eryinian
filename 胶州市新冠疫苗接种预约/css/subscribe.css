@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-appearance: none;
+/ / 去掉浏览器默认样式 -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: none;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0 auto;
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    -webkit-user-select: none;
+}
+
+body {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+/ / 关闭自动调整字体 -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    background: #f5f5f5;
+    padding: 0 16px !important;
+}
+
+/*内容*/
+.address {
+    border-radius: 12px;
+    background: #fff;
+    width: 100%;
+    padding: 14px;
+    margin-top: 16px;
+}
+
+.addressTitle {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.addressInformation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 14px 0;
+}
+
+.inforItem {
+    width: 50px;
+    color: #666666;
+}
+
+.inforContent {
+    width: calc(100% - 60px);
+}
+
+/*选择时间*/
+.time {
+    border-radius: 12px;
+    background: #fff;
+    width: 100%;
+    padding: 14px;
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timeTitle {
+    width: 40%;
+}
+
+.demo {
+    width: 60%;
+    height: 35px;
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+
+}
+
+.demo > input {
+    display: block;
+    border: 0;
+    padding: 0 8px;
+    height: 100%;
+    flex: 1;
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ebebeb;
+}
+
+/*选择时间段*/
+.timeQuantum {
+    border-radius: 12px;
+    background: #fff;
+    width: 100%;
+    padding: 14px 12.5px 14px 12.5px;
+    margin-top: 14px;
+}
+
+.quantumTitle {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0px 0 10px 1.5%;
+}
+
+.quanTime {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.quantumItem {
+    background: #e6f7ff;
+    width: 30%;
+    margin: 0 1.5%;
+    text-align: center;
+    flex: 0 0 30%;
+    border-radius: 5px;
+    margin-top: 8px;
+    padding: 8px 0;
+}
+
+.ItemTime, .ItemSurplus {
+    font-size: 14px;
+}
+
+.sub {
+    border-radius: 6px;
+    background: #1485ed;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 14px;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 10px;
+}
+
+.checked{
+    background: #0179ff;
+    color: #fff;
+}

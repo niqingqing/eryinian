@@ -1,0 +1,89 @@
+body{
+    padding: 0px;
+    margin: 0px;
+    background: #f7f7f7;
+}
+.banner{
+    width: 100%;
+}
+.banner img{
+    width: 100%;
+    height: 100%;
+}
+/*内容*/
+.content{
+    height: 40px;
+    line-height: 40px;
+    background: #e6e5e1;
+    padding-left: 20px;
+}
+.pic{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 24px;
+}
+.query{
+    background: red;
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    /*padding: 14px;*/
+}
+.queryPic img{
+    width: 100%;
+    height: 100%;
+
+}
+.queryTitle{
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    margin-top: 20px;
+}
+.queryPic{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+    height: 64px;
+}
+.pic .query:nth-child(1){
+    background: #33bae7;
+}
+.pic .query:nth-child(2){
+    background: #a2b50e;
+}
+.pic .query:nth-child(3){
+    background: #eb9b0f;
+}
+.pic .query:nth-child(4){
+    background: #25bd2e;
+}
+
+.pic .query:nth-child(1) img{
+    width: 34px;
+    height: 32px;
+}
+.pic .query:nth-child(2) img{
+    width: 36px;
+    height: 36px;
+}
+.pic .query:nth-child(3) img{
+    width: 34px;
+    height: 34px;
+}
+.pic .query:nth-child(4) img{
+    width: 32px;
+    height: 30px;
+}
+
+.bottom{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    height: 48px;
+    line-height: 48px；
+}

@@ -1,0 +1,106 @@
+body{
+    padding: 0px 10px 10px 10px;
+    background: #f7f7f7;
+    background-image: url("../images/bg2.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+/*头部*/
+.title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 48px;
+    font-size: 18px;
+}
+.back{
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.back img{
+    width: 100%;
+    height: 100%;
+}
+.titleName{
+    color: #fff;
+}
+
+/*人员基本信息*/
+.personalInfo{
+    padding: 8px 30px 12px 30px;
+    background: #fff;
+    border-radius: 10px;
+    color: #000;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    margin-top: 6vh;
+}
+.personalInfoTitle{
+    font-size: 16px;
+    border-bottom: 1px solid #eaeaea;
+    color: #19a4db;
+    line-height: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.picture{
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+.picture img{
+    width: 100%;
+    height: 100%;
+}
+.name{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 32px;
+    margin: 40px 0;
+}
+.nameTitle{
+    /*width: 30%;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+}
+.name:nth-child(1) .nameTitle img{
+    width: 24px;
+    height: 24px;
+}
+.name:nth-child(2) .nameTitle img{
+    width: 26px;
+    height: 20px;
+}
+.name:nth-child(3) .nameTitle img{
+    width: 18px;
+    height: 26px;
+}
+.nameCon{
+    /*width: 70%;*/
+    line-height: 30px;
+    color: #454545;
+}
+input{
+    width: calc(100% - 50px);
+    border: none;
+    border-bottom: 1px solid #f3f3f3;
+}
+.but{
+    width: 100%;
+    background-image: linear-gradient(#09b6ff, #449cff);
+    border-radius: 100px;
+    text-align: center;
+    color: #fff;
+    line-height: 40px;
+    margin-top: 8vh;
+    margin-bottom: 3vh;
+    box-shadow: 0px 0px 10px rgba(25,164,219,0.4);
+}

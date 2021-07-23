@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <title>首页</title>
+    <!-- 公共样式 -->
+    <link rel="stylesheet" type="text/css" href="css/public.css">
+    <!-- 此页面样式 -->
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+</head>
+<body>
+<!--banner-->
+<div class="banner">
+    <img src="images/img1.png" id="img" class="img">
+</div>
+
+<!--内容-->
+<div class="content">疫苗接种凭证展示</div>
+<div class="pic">
+    <div class="query">
+        <div class="queryPic"><img src="images/search.png"></div>
+        <div class="queryTitle">查询接种信息</div>
+    </div>
+    <div class="query">
+        <div class="queryPic"><img src="images/bind.png"></div>
+        <div class="queryTitle">接种凭证下载</div>
+    </div>
+    <div class="query">
+        <div class="queryPic"><img src="images/credentials.png"></div>
+        <div class="queryTitle">接种凭证代查</div>
+    </div>
+    <div class="query">
+        <div class="queryPic"><img src="images/modify.png"></div>
+        <div class="queryTitle">修改绑定信息</div>
+    </div>
+
+
+</div>
+<div class="bottom">胶州市卫生健康局 版权所有</div>
+</body>
+<script type="text/javascript">
+    let banner = document.getElementById("img");
+    let i = 1;
+    setInterval(function () {
+
+        if (i == 1) {
+            banner.src = "images/img" + i + ".png"
+            i = 2;
+        } else if (i <= 2) {
+            banner.src = "images/img" + i + ".png";
+            i = 1;
+        }
+        console.log(i)
+    }, 3000);
+</script>
+</html>

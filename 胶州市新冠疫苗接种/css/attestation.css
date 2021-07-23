@@ -1,0 +1,77 @@
+body{
+    padding: 0px 10px 10px 10px;
+    background: #f7f7f7;
+    background-image: url("../images/bg1.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+/*头部*/
+.title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 48px;
+    font-size: 18px;
+}
+.back{
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.back img{
+    width: 100%;
+    height: 100%;
+}
+.titleName{
+    color: #fff;
+}
+
+/*人员基本信息*/
+.personalInfo{
+    padding: 24px 16px 24px 16px;
+    background: #fff;
+    border-radius: 10px;
+    margin: 16px 0;
+    color: #000;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    margin-top: 15vh;
+}
+.name{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 56px;
+}
+.nameTitle{
+    /*width: 30%;*/
+    color: #262626;
+    font-size: 16px;
+}
+.nameCon{
+    /*width: 70%;*/
+    text-align: right;
+    line-height: 30px;
+    color: #454545;
+    font-size: 14px;
+}
+.name1{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 16px 0;
+}
+.nameTitle1{
+    width: 60px;
+    height: 60px;
+}
+.nameTitle1 img{
+    width: 100%;
+    height: 100%;
+}
+.name2{
+    display: flex;
+    justify-content: center;
+}
